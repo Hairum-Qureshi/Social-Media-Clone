@@ -47,6 +47,10 @@ const userSchema = new Schema(
         bio: {
             type: String,
             default: ""
+        },
+        link: {
+            type: String,
+            default: ""
         }
 	},
 	{
