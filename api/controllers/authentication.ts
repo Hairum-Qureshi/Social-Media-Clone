@@ -3,6 +3,7 @@ import User from "../models/User";
 import bcrypt from "bcrypt";
 import { IUser } from "../interfaces";
 import generateAndSetCookie from "../lib/utils/generateCookie";
+import getUserData from "../lib/utils/getUserData";
 
 const signUp = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -46,16 +47,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
 		if (user) {
 			generateAndSetCookie(user._id, res);
 
-			res.json({
-				_id: user._id,
-				username: user.username,
-				fullName: user.fullName,
-				email: user.email,
-				followers: user.followers,
-				following: user.following,
-				profilePicture: user.profilePicture,
-				coverImage: user.coverImage
-			});
+			res.json(getUserData(user));
 		} else {
 			res.status(500).json({ message: "Failed to create user" });
 		}
@@ -85,16 +77,7 @@ const signIn = async (req: Request, res: Response): Promise<void> => {
 
 		generateAndSetCookie(user._id, res);
 
-		res.json({
-			_id: user._id,
-			username: user.username,
-			fullName: user.fullName,
-			email: user.email,
-			followers: user.followers,
-			following: user.following,
-			profilePicture: user.profilePicture,
-			coverImage: user.coverImage
-		});
+		res.json(getUserData(user));
 	} catch (error) {
 		console.error(
 			"Error in authentication.ts file, signIn function controller".red.bold,
