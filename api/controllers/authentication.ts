@@ -87,6 +87,23 @@ const signIn = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-const signOut = async (req: Request, res: Response) => {};
+const signOut = async (req: Request, res: Response) => {
+	try {
+		res
+			.cookie("auth-session", "", {
+				maxAge: 0
+			})
+			.status(200)
+			.json({
+				message: "Logged out successfully"
+			});
+	} catch (error) {
+		console.error(
+			"Error in authentication.ts file, signOut function controller".red.bold,
+			error
+		);
+		res.status(500).json({ message: "Internal Server Error" });
+	}
+};
 
 export { signUp, signIn, signOut };
