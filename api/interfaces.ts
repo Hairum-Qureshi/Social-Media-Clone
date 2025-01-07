@@ -10,6 +10,7 @@ export interface User {
     profilePicture: string,
     coverImage: string,
     bio: string,
+    link: string,
     createdAt: Date,
     updatedAt: Date
 }
