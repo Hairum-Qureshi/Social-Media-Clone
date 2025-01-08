@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { IUser } from "../interfaces";
+import { INotification, IUser } from "../interfaces";
 import User from "../models/User";
+import Notification from "../models/Notification";
 import mongoose from "mongoose";
 
 const getProfile = async (req: Request, res: Response): Promise<void> => {
@@ -114,6 +115,12 @@ const handleFollowStatus = async (
 				}
 			);
 		}
+
+        await Notification.create({
+            from: currUID,
+            to: uid,
+            notifType: "FOLLOW"
+        });
 
 		res.status(200).json({
 			message: "User followed successfully"
