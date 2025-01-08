@@ -106,14 +106,13 @@ const signOut = async (req: Request, res: Response) => {
 	}
 };
 
-const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
+const getCurrentUser = async (req: Request, res: Response) => {
 	try {
 		const user: IUser = (await User.findById({
 			_id: req.user._id
-		}).select("-password")) as IUser;
+		}).select("-password -__v")) as IUser;
 
 		res.status(200).send(user);
-
 	} catch (error) {
 		console.error(
 			"Error in authentication.ts file, getCurrentUser function controller".red
