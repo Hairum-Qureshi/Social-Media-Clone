@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
-import { IUser, UserData } from "../interfaces";
+import { IUser } from "../interfaces";
 import generateAndSetCookie from "../lib/utils/generateCookie";
 import getUserData from "../lib/utils/getUserData";
 
