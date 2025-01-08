@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
-import { IUser } from "../interfaces";
+import { IUser, UserData } from "../interfaces";
 import generateAndSetCookie from "../lib/utils/generateCookie";
 import getUserData from "../lib/utils/getUserData";
 
@@ -106,4 +106,22 @@ const signOut = async (req: Request, res: Response) => {
 	}
 };
 
-export { signUp, signIn, signOut };
+const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const user: IUser = (await User.findById({
+			_id: req.user._id
+		}).select("-password")) as IUser;
+
+		res.status(200).send(user);
+
+	} catch (error) {
+		console.error(
+			"Error in authentication.ts file, getCurrentUser function controller".red
+				.bold,
+			error
+		);
+		res.status(500).json({ message: "Internal Server Error" });
+	}
+};
+
+export { signUp, signIn, signOut, getCurrentUser };
