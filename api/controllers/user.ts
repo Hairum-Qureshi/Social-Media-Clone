@@ -3,8 +3,8 @@ import { IUser } from "../interfaces";
 import User from "../models/User";
 
 const getProfile = async (req: Request, res: Response): Promise<void> => {
-	const { username } = req.params;
 	try {
+        const { username } = req.params;
 		const user: IUser = (await User.findOne({ username }).select(
 			"-password -__v"
 		)) as IUser;
@@ -24,18 +24,29 @@ const getProfile = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-const getSuggestedUsers = async (req: Request, res: Response) => {};
+const getSuggestedUsers = async (req: Request, res: Response) => {
 
-const followUser = async (req: Request, res: Response) => {};
+};
 
-const unfollowUser = async (req: Request, res: Response) => {};
+const handleFollowStatus = async (req: Request, res: Response) => {
+    try {
+        const { uid } = req.params;
+
+
+    } catch (error) {
+        console.error(
+			"Error in user.ts file, followUser function controller".red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+    }
+};
 
 const updateProfile = async (req: Request, res: Response) => {};
 
 export {
 	getProfile,
 	getSuggestedUsers,
-	followUser,
-	unfollowUser,
+	handleFollowStatus,
 	updateProfile
 };
