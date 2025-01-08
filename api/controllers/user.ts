@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { INotification, IUser } from "../interfaces";
 import User from "../models/User";
 import Notification from "../models/Notification";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 const getProfile = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -26,7 +26,47 @@ const getProfile = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-const getSuggestedUsers = async (req: Request, res: Response) => {};
+const getSuggestedUsers = async (req: Request, res: Response) => {
+	try {
+		const currUID: string = req.user._id.toString();
+		const getUsersCurrUserFollowed = await User.findById({
+			_id: req.user._id
+		}).select("following -_id");
+
+		const usersCurrUserFollowed: Types.ObjectId[] =
+			getUsersCurrUserFollowed?.following || [];
+
+		const users: IUser[] = (await User.aggregate([
+			{
+				$match: {
+					$ne: {
+						_id: currUID
+					}
+				},
+				$sample: {
+					size: 10
+				}
+			}
+		])) as IUser[];
+
+		const filteredUsers: IUser[] = users.filter(
+			(user: IUser) => !usersCurrUserFollowed.includes(user._id)
+		);
+
+		const suggestedUsers: IUser[] = filteredUsers.slice(0, 4);
+		suggestedUsers.forEach((user: IUser) => {
+			user.password = undefined;
+		});
+
+		res.status(200).json(suggestedUsers);
+	} catch (error) {
+		console.error(
+			"Error in user.ts file, getSuggestedUsers function controller".red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
 
 const handleFollowStatus = async (
 	req: Request,
@@ -37,11 +77,10 @@ const handleFollowStatus = async (
 		const userToModify: IUser = (await User.findById({
 			_id: uid
 		})) as IUser;
-		const currUID:string = req.user._id.toString();
+		const currUID: string = req.user._id.toString();
 		const currentUser: IUser = (await User.findById({
 			_id: currUID
 		})) as IUser;
-
 
 		if (uid === currUID) {
 			res.status(400).json({ error: "You cannot follow/unfollow yourself" });
@@ -116,11 +155,11 @@ const handleFollowStatus = async (
 			);
 		}
 
-        await Notification.create({
-            from: currUID,
-            to: uid,
-            notifType: "FOLLOW"
-        });
+		await Notification.create({
+			from: currUID,
+			to: uid,
+			notifType: "FOLLOW"
+		});
 
 		res.status(200).json({
 			message: "User followed successfully"
