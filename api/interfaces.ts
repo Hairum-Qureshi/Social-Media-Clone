@@ -39,7 +39,7 @@ export interface INotification {
 	from: Types.ObjectId;
 	to: Types.ObjectId;
 	notifType: NotificationTypes;
-	read?: boolean;
+	read: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
