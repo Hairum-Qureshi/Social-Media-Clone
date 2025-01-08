@@ -27,3 +27,17 @@ export interface UserData {
 	coverImage: string;
 	bio: string;
 }
+
+enum NotificationTypes {
+	Like = "LIKE",
+	Comment = "COMMENT",
+	FOLLOW = "FOLLOW",
+	Message = "MeSSAGE"
+}
+
+export interface INotification {
+	from: Types.ObjectId;
+	to: Types.ObjectId;
+	notifType: NotificationTypes;
+	read: boolean;
+}
