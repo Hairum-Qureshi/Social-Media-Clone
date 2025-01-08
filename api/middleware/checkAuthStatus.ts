@@ -24,7 +24,7 @@ export default async function checkAuthStatus(
 		}
 
 		const user: IUser = (await User.findById({ _id: decoded.uid }).select(
-			"-password"
+			"-password -__v"
 		)) as IUser;
 
 		if (!user) {
@@ -33,6 +33,7 @@ export default async function checkAuthStatus(
 		}
 
 		req.user = user;
+
 		next();
 	} catch (error) {
 		console.error(
