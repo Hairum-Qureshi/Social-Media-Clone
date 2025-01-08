@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import colors from "colors";
 import authentication from "./routes/authentication";
 import mongoose from "mongoose";
+import checkAuthStatus from "./middleware/checkAuthStatus";
 
 dotenv.config();
 colors.enable();
@@ -17,15 +18,15 @@ const corsOptions = {
 	optionSuccessStatus: 200
 };
 
-// Middleware:
-app.use(cors(corsOptions)); // <-- for CORS
-app.use(cookieParser()); // <-- allows you to read req.cookies
-app.use(express.json()); // <-- without this, req.body won't work (for JSON data being passed to the backend)
-app.use(express.urlencoded({ extended: true })); // <-- without this, you won't be able to read form data
+app.use(cors(corsOptions)); 
+app.use(cookieParser()); 
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
+app.use(checkAuthStatus);
 
 app.use("/api/auth", authentication);
 
-const PORT: string | number = process.env.PORT! || 3000;
+const PORT: number = +process.env.PORT! || 3000;  
 
 app.listen(PORT, () => {
 	const connectToMongoDB = async () => {
