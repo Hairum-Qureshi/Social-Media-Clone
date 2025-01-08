@@ -4,9 +4,9 @@ import checkAuthStatus from "../middleware/checkAuthStatus";
 
 const router = express.Router();
 
-router.post('/sign-up', checkAuthStatus, signUp);
+router.post('/sign-up', signUp);
 router.post('/sign-in', signIn);
 router.post('/sign-out', signOut);
-router.get('/current-user', getCurrentUser);
+router.get('/current-user', checkAuthStatus, getCurrentUser);
 
 export default router;
