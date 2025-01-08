@@ -25,5 +25,5 @@ export interface UserData {
 	following: Types.ObjectId[];
 	profilePicture: string;
 	coverImage: string;
-    bio: string;
+	bio: string;
 }
