@@ -4,7 +4,7 @@ export interface IUser {
 	_id: Types.ObjectId;
 	username: string;
 	fullName: string;
-	password: string;
+	password?: string; // sometimes password won't be included in the object because it's being excluded from the database query
 	email: string;
 	followers: Types.ObjectId[];
 	following: Types.ObjectId[];
