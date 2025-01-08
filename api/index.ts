@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import colors from "colors";
 import authentication from "./routes/authentication";
 import mongoose from "mongoose";
-import checkAuthStatus from "./middleware/checkAuthStatus";
+import user from "./routes/user";
 
 dotenv.config();
 colors.enable();
@@ -24,6 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authentication);
+app.use("/api/user", user);
 
 const PORT: number = +process.env.PORT! || 3000;  
 
