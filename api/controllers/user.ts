@@ -26,7 +26,7 @@ const getProfile = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-const getSuggestedUsers = async (req: Request, res: Response) => {
+const getSuggestedUsers = async (req: Request, res: Response):Promise<void> => {
 	try {
 		const currUID: string = req.user._id.toString();
 		const getUsersCurrUserFollowed = await User.findById({
