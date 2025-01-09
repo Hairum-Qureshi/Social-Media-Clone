@@ -36,6 +36,11 @@ const getSuggestedUsers = async (req: Request, res: Response) => {
 		const usersCurrUserFollowed: Types.ObjectId[] =
 			getUsersCurrUserFollowed?.following || [];
 
+		if (usersCurrUserFollowed.length === 0) {
+			res.status(200).json([]);
+			return;
+		}
+
 		const users: IUser[] = (await User.aggregate([
 			{
 				$match: {
