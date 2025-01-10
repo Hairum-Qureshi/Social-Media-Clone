@@ -4,7 +4,7 @@ export interface IUser {
 	_id: Types.ObjectId;
 	username: string;
 	fullName: string;
-	password: string;
+	password: string | undefined;
 	email: string;
 	followers: Types.ObjectId[];
 	following: Types.ObjectId[];
