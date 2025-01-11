@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
-import { INotification, IUser } from "../interfaces";
+import { IUser } from "../interfaces";
 import User from "../models/User";
 import Notification from "../models/Notification";
 import mongoose, { Types } from "mongoose";
+import bcrypt from "bcrypt";
+import { v2 as cloudinary } from "cloudinary";
 
 const getProfile = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -26,7 +28,10 @@ const getProfile = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-const getSuggestedUsers = async (req: Request, res: Response):Promise<void> => {
+const getSuggestedUsers = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
 	try {
 		const currUID: string = req.user._id.toString();
 		const getUsersCurrUserFollowed = await User.findById({
@@ -179,6 +184,130 @@ const handleFollowStatus = async (
 	}
 };
 
-const updateProfile = async (req: Request, res: Response) => {};
+const updateProfile = async (req: Request, res: Response): Promise<void> => {
+	const { fullName, email, username, currentPassword, newPassword, bio, link } =
+		req.body;
+	let { profileImage, coverImage } = req.body;
+	const currUID: Types.ObjectId = req.user._id;
+
+	try {
+		let user: IUser = (await User.findById({ _id: currUID })) as IUser;
+		if (!user) {
+			res.status(404).json({ message: "User not found" });
+			return;
+		}
+
+		if (
+			(!newPassword && currentPassword) ||
+			(newPassword && !currentPassword)
+		) {
+			res
+				.status(400)
+				.json({ message: "Current password is required for password change" });
+			return;
+		}
+
+		if (currentPassword && newPassword && user.password) {
+			const correctPassword = await bcrypt.compare(
+				currentPassword,
+				user.password
+			);
+
+			if (!correctPassword) {
+				res.status(400).json({ message: "Incorrect password" });
+				return;
+			}
+
+			if (newPassword.length < 6) {
+				res
+					.status(400)
+					.json({ message: "Password must be at least 6 characters" });
+				return;
+			}
+
+			const salt = await bcrypt.genSalt(10);
+			const hashedPassword = await bcrypt.hash(newPassword, salt);
+			user.password = hashedPassword;
+
+			user = (await User.findByIdAndUpdate(
+				{
+					_id: currUID
+				},
+				{
+					$set: {
+						password: hashedPassword
+					}
+				}
+			).select("-password -__v")) as IUser;
+		}
+
+		if (profileImage) {
+			if (user.profilePicture) {
+				// get the image's ID from the URL and delete it
+				const profilePictureID: string = profileImage
+					.split("/")
+					.pop()
+					.split(".")[0];
+				await cloudinary.uploader.destroy(profilePictureID);
+			}
+
+			const uploadedProfileImage = await cloudinary.uploader.upload(
+				profileImage
+			);
+			profileImage = uploadedProfileImage.secure_url;
+		}
+
+		if (coverImage) {
+			if (user.coverImage) {
+				// get the image's ID from the URL and delete it
+				const coverImageID: string = coverImage.split("/").pop().split(".")[0];
+				await cloudinary.uploader.destroy(coverImageID);
+			}
+			const uploadedCoverImage = await cloudinary.uploader.upload(coverImage);
+			coverImage = uploadedCoverImage.secure_url;
+		}
+
+		if (username) {
+			// check if the username is taken or not
+			const foundUser = await User.findOne({
+				username,
+				_id: { $ne: currUID }
+			});
+
+			if (foundUser) {
+				res.status(400).json({ message: "Username is taken" });
+				return;
+			}
+		}
+
+		user = (await User.findByIdAndUpdate(
+			{ _id: currUID },
+			{
+				$set: {
+					fullName: fullName || user.fullName,
+					email: email || user.email,
+					username: username || user.username,
+					bio: bio || user.bio,
+					link: link || user.link,
+					profilePicture: profileImage || user.profilePicture,
+					coverImage: coverImage || user.coverImage
+				}
+			},
+			{ new: true }
+		)
+			.select("-password -__v")
+			.lean()) as IUser;
+
+		res.status(200).json({ message: "User updated successfully", user });
+
+		return;
+	} catch (error) {
+		console.error(
+			"Error in user.ts file, updateProfile function controller".red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
 
 export { getProfile, getSuggestedUsers, handleFollowStatus, updateProfile };
