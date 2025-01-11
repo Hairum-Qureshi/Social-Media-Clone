@@ -44,18 +44,18 @@ export interface INotification {
 	updatedAt: Date;
 }
 
+export interface Comment {
+	text: string;
+	user: Types.ObjectId;
+}
+
 export interface IPost {
 	_id: Types.ObjectId;
 	user: Types.ObjectId;
 	text: string;
 	image: string;
 	likes: Types.ObjectId[];
-	comments: [
-		{
-			text: string;
-			user: Types.ObjectId;
-		}
-	];
+	comments: Comment[];
 	createdAt: Date;
 	updatedAt: Date;
 }
