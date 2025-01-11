@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import User from "../models/User";
-import { IPost, IUser } from "../interfaces";
+import { IPost, Comment } from "../interfaces";
 import Post from "../models/Post";
 import { v2 as cloudinary } from "cloudinary";
+import { Types } from "mongoose";
 
 const createPost = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -80,6 +80,48 @@ const deletePost = async (req: Request, res: Response): Promise<void> => {
 
 const likePost = async (req: Request, res: Response) => {};
 
-const postComment = async (req: Request, res: Response) => {};
+const postComment = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { text } = req.body;
+		const { postID } = req.params;
+		const currUID: Types.ObjectId = req.user._id;
+
+		if (!text) {
+			res.status(400).json({ message: "Please enter a comment" });
+			return;
+		}
+
+		const post: IPost = (await Post.findById({ _id: postID })) as IPost;
+		if (!post) {
+			res.status(404).json({ message: "Post not found" });
+			return;
+		}
+
+		const comment: Comment = {
+			text,
+			user: currUID
+		};
+
+		const updatedPost = await Post.findByIdAndUpdate(
+			postID,
+			{
+				$push: {
+					comments: comment
+				}
+			},
+			{
+				new: true
+			}
+		);
+
+		res.status(200).json(updatedPost);
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, postComment function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
 
 export { createPost, deletePost, likePost, postComment };
