@@ -7,6 +7,7 @@ import authentication from "./routes/authentication";
 import mongoose from "mongoose";
 import user from "./routes/user";
 import { v2 as cloudinary } from "cloudinary";
+import post from "./routes/post";
 
 dotenv.config();
 colors.enable();
@@ -32,6 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/auth", authentication);
 app.use("/api/user", user);
+app.use("/api/post", post);
 
 const PORT: number = +process.env.PORT! || 3000;
 
