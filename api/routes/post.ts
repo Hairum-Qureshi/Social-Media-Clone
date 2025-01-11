@@ -5,7 +5,7 @@ import { createPost, deletePost, likePost, postComment } from "../controllers/po
 const router = express.Router();
 
 router.post("/create", checkAuthStatus, createPost);
-router.delete("/", checkAuthStatus, deletePost);
+router.delete("/:postID", checkAuthStatus, deletePost);
 router.post("/like/:postID", checkAuthStatus, likePost);
 router.post("/comment/:postID", checkAuthStatus, postComment);
 
