@@ -13,11 +13,6 @@ const getProfile = async (req: Request, res: Response): Promise<void> => {
 			"-password -__v"
 		)) as IUser;
 
-		if (!user) {
-			res.status(404).json({ message: "User not found" });
-			return;
-		}
-
 		res.status(200).json(user);
 	} catch (error) {
 		console.error(
@@ -192,10 +187,6 @@ const updateProfile = async (req: Request, res: Response): Promise<void> => {
 
 	try {
 		let user: IUser = (await User.findById({ _id: currUID })) as IUser;
-		if (!user) {
-			res.status(404).json({ message: "User not found" });
-			return;
-		}
 
 		if (
 			(!newPassword && currentPassword) ||
