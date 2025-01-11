@@ -10,7 +10,6 @@ const createPost = async (req: Request, res: Response): Promise<void> => {
 		let { image } = req.body;
 
 		const currUID: string = req.user._id.toString();
-		let user: IUser = (await User.findById({ _id: currUID })) as IUser;
 
 		if (!text && !image) {
 			res.status(400).json({ message: "Please enter either text or image" });
