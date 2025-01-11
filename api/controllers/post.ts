@@ -107,6 +107,9 @@ const postComment = async (req: Request, res: Response): Promise<void> => {
 			{
 				$push: {
 					comments: comment
+				},
+				$inc: {
+					numComments: 1
 				}
 			},
 			{
