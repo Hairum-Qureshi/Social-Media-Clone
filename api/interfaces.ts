@@ -56,6 +56,8 @@ export interface IPost {
 	image: string;
 	likes: Types.ObjectId[];
 	comments: Comment[];
+	numLikes: number;
+	numComments: number;
 	createdAt: Date;
 	updatedAt: Date;
 }
