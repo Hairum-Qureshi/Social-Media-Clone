@@ -43,3 +43,19 @@ export interface INotification {
 	createdAt: Date;
 	updatedAt: Date;
 }
+
+export interface IPost {
+	_id: Types.ObjectId;
+	user: Types.ObjectId;
+	text: string;
+	image: string;
+	likes: Types.ObjectId[];
+	comments: [
+		{
+			text: string;
+			user: Types.ObjectId;
+		}
+	];
+	createdAt: Date;
+	updatedAt: Date;
+}
