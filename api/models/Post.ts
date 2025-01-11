@@ -31,7 +31,15 @@ const postSchema = new Schema(
 					ref: "User"
 				}
 			}
-		]
+		],
+		numLikes: {
+			type: Number,
+			default: 0
+		},
+		numComments: {
+			type: Number,
+			default: 0
+		}
 	},
 	{
 		timestamps: true
