@@ -204,17 +204,19 @@ const postComment = async (req: Request, res: Response): Promise<void> => {
 
 const getAllPosts = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const posts: IPost[] = (await Post.find({}).sort({
-			createdAt: -1
-		})) as IPost[];
+		const posts: IPost[] = (await Post.find({})
+			.sort({
+				createdAt: -1
+			})
+			.populate({ path: "user", select: "-password -__v" })
+			.select("-__v")) as IPost[];
 
 		if (posts.length === 0) {
 			res.status(200).send([]);
 			return;
 		}
 
-        res.status(200).json(posts);
-
+		res.status(200).json(posts);
 	} catch (error) {
 		console.error(
 			"Error in post.ts file, getAllPosts function controller".red.bold,
