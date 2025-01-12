@@ -58,7 +58,17 @@ const userSchema = new Schema(
 				ref: "Post",
 				default: []
 			}
-		]
+		],
+		numFollowers: {
+			type: Number,
+			default: 0,
+			min: 0
+		},
+		numFollowing: {
+			type: Number,
+			default: 0,
+			min: 0
+		}
 	},
 	{
 		timestamps: true
