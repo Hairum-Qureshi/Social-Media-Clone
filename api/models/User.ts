@@ -52,7 +52,7 @@ const userSchema = new Schema(
 			type: String,
 			default: ""
 		},
-		likedPost: [
+		likedPosts: [
 			{
 				type: Types.ObjectId,
 				ref: "Post",
