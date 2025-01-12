@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import user from "./routes/user";
 import { v2 as cloudinary } from "cloudinary";
 import post from "./routes/post";
-import notification from "./routes/post";
+import notification from "./routes/notification";
 
 dotenv.config();
 colors.enable();
