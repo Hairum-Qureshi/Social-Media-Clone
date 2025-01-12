@@ -36,22 +36,29 @@ const userSchema = new Schema(
 				default: []
 			}
 		],
-        profilePicture: {
-            type: String,
-            default: ""
-        },
-        coverImage: {
-            type: String,
-            default: ""
-        },
-        bio: {
-            type: String,
-            default: ""
-        },
-        link: {
-            type: String,
-            default: ""
-        }
+		profilePicture: {
+			type: String,
+			default: ""
+		},
+		coverImage: {
+			type: String,
+			default: ""
+		},
+		bio: {
+			type: String,
+			default: ""
+		},
+		link: {
+			type: String,
+			default: ""
+		},
+		likedPost: [
+			{
+				type: Types.ObjectId,
+				ref: "Post",
+				default: []
+			}
+		]
 	},
 	{
 		timestamps: true
