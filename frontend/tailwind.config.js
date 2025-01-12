@@ -4,7 +4,7 @@ export default {
 	theme: {
 		extend: {
 			fontFamily: {
-				Archivo: ["Archivo Black", "serif"]
+				Archivo: ["Lato", "serif"]
 			}
 		}
 	},
