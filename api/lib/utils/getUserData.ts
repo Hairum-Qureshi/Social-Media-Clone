@@ -10,6 +10,8 @@ export default function getUserData(user: IUser): UserData {
 		following: user.following,
 		profilePicture: user.profilePicture,
 		coverImage: user.coverImage,
-		bio: user.bio
+		bio: user.bio,
+		link: user.link,
+		likedPosts: user.likedPosts
 	};
 }
