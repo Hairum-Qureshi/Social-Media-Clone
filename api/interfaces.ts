@@ -13,6 +13,8 @@ export interface IUser {
 	bio: string;
 	link: string;
 	likedPosts: Types.ObjectId[];
+	numFollowers: number;
+	numFollowing: number;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -29,6 +31,8 @@ export interface UserData {
 	bio: string;
 	link: string;
 	likedPosts: Types.ObjectId[];
+	numFollowers: number;
+	numFollowing: number;
 }
 
 enum NotificationTypes {
