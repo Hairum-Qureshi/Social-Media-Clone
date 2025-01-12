@@ -107,8 +107,8 @@ const handleLikes = async (req: Request, res: Response) => {
 				}
 			);
 
-            res.status(200).json({ message: "Post disliked successfully" });
-            return;
+			res.status(200).json({ message: "Post disliked successfully" });
+			return;
 		} else {
 			// like the post and increment the total number of likes
 			await Post.updateOne(
@@ -134,8 +134,8 @@ const handleLikes = async (req: Request, res: Response) => {
 				});
 			}
 
-            res.status(200).json({ message: "Post liked successfully" });
-            return;
+			res.status(200).json({ message: "Post liked successfully" });
+			return;
 		}
 	} catch (error) {
 		console.error(
@@ -202,4 +202,26 @@ const postComment = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-export { createPost, deletePost, handleLikes, postComment };
+const getAllPosts = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const posts: IPost[] = (await Post.find({}).sort({
+			createdAt: -1
+		})) as IPost[];
+
+		if (posts.length === 0) {
+			res.status(200).send([]);
+			return;
+		}
+
+        res.status(200).json(posts);
+
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, getAllPosts function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+export { createPost, deletePost, handleLikes, postComment, getAllPosts };
