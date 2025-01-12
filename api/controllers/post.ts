@@ -78,7 +78,61 @@ const deletePost = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-const likePost = async (req: Request, res: Response) => {};
+const handleLikes = async (req: Request, res: Response) => {
+	try {
+		const currUID: Types.ObjectId = req.user._id;
+		const postID: string = req.params.postID;
+		const post: IPost = (await Post.findById(postID)) as IPost;
+
+		if (!post) {
+			res.status(404).json({ message: "Post not found" });
+			return;
+		}
+
+		const userLikedPost: boolean = post.likes.some((uid: Types.ObjectId) =>
+			uid.equals(currUID)
+		);
+		if (userLikedPost) {
+			console.log("ran unlike");
+			// unlike the post and decrement the total number of likes
+			await Post.updateOne(
+				{
+					_id: postID
+				},
+				{
+					$pull: {
+						likes: currUID
+					},
+					$inc: { numLikes: -1 }
+				}
+			);
+		} else {
+			console.log("ran like");
+			// like the post and increment the total number of likes
+			await Post.updateOne(
+				{
+					_id: postID
+				},
+				{
+					$push: {
+						likes: currUID
+					},
+					$inc: {
+						numLikes: 1
+					}
+				}
+			);
+		}
+
+		res.json({ message: "Post liked/unliked successfully" });
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, handleLikes function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
 
 const postComment = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -127,4 +181,4 @@ const postComment = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-export { createPost, deletePost, likePost, postComment };
+export { createPost, deletePost, handleLikes, postComment };
