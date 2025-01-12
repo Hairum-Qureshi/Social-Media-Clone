@@ -115,6 +115,9 @@ const handleFollowStatus = async (
 				{
 					$pull: {
 						followers: currUID
+					},
+					$inc: {
+						numFollowers: -1
 					}
 				}
 			);
@@ -126,6 +129,9 @@ const handleFollowStatus = async (
 				{
 					$pull: {
 						following: uid
+					},
+					$inc: {
+						numFollowing: -1
 					}
 				}
 			);
@@ -144,6 +150,9 @@ const handleFollowStatus = async (
 				{
 					$push: {
 						followers: currUID
+					},
+					$inc: {
+						numFollowers: 1
 					}
 				}
 			);
@@ -155,6 +164,9 @@ const handleFollowStatus = async (
 				{
 					$push: {
 						following: uid
+					},
+					$inc: {
+						numFollowing: 1
 					}
 				}
 			);
