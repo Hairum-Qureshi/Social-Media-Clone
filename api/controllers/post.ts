@@ -266,7 +266,7 @@ const getAllLikedPosts = async (req: Request, res: Response): Promise<void> => {
 		}
 
 		// finds all the posts based on the array of post IDs
-		const likedPosts: IPost[] = await Post.find({
+		const likedPosts: IPost[] = (await Post.find({
 			_id: {
 				$in: user.likedPosts
 			}
@@ -278,7 +278,7 @@ const getAllLikedPosts = async (req: Request, res: Response): Promise<void> => {
 			.populate({
 				path: "comments.user",
 				select: "-password -__v"
-			});
+			}).select("-__v")) as IPost[];
 
 		res.status(200).json(likedPosts);
 		return;
