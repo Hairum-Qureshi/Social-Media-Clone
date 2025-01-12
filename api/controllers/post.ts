@@ -4,6 +4,7 @@ import Post from "../models/Post";
 import { v2 as cloudinary } from "cloudinary";
 import { Types } from "mongoose";
 import Notification from "../models/Notification";
+import User from "../models/User";
 
 const createPost = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -107,6 +108,17 @@ const handleLikes = async (req: Request, res: Response) => {
 				}
 			);
 
+			await User.updateOne(
+				{
+					_id: currUID
+				},
+				{
+					$pull: {
+						likedPosts: postID
+					}
+				}
+			);
+
 			res.status(200).json({ message: "Post disliked successfully" });
 			return;
 		} else {
@@ -121,6 +133,17 @@ const handleLikes = async (req: Request, res: Response) => {
 					},
 					$inc: {
 						numLikes: 1
+					}
+				}
+			);
+
+			await User.updateOne(
+				{
+					_id: currUID
+				},
+				{
+					$push: {
+						likedPosts: postID
 					}
 				}
 			);
