@@ -34,11 +34,13 @@ const postSchema = new Schema(
 		],
 		numLikes: {
 			type: Number,
-			default: 0
+			default: 0,
+			min: 0
 		},
 		numComments: {
 			type: Number,
-			default: 0
+			default: 0,
+			min: 0
 		}
 	},
 	{
