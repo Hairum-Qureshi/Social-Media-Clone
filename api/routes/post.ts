@@ -1,6 +1,6 @@
 import express from "express";
 import checkAuthStatus from "../middleware/checkAuthStatus";
-import { createPost, deletePost, handleLikes, postComment, getAllPosts, getAllLikedPosts, getFollowingUsersPosts } from "../controllers/post";
+import { createPost, deletePost, handleLikes, postComment, getAllPosts, getAllLikedPosts, getFollowingUsersPosts, getUserPosts } from "../controllers/post";
 
 const router = express.Router();
 
@@ -11,6 +11,7 @@ router.post("/comment/:postID", checkAuthStatus, postComment);
 router.get("/all", checkAuthStatus, getAllPosts);
 router.get("/liked-posts/:userID", checkAuthStatus, getAllLikedPosts);
 router.get("/following", checkAuthStatus, getFollowingUsersPosts);
+router.get("/user/:username", checkAuthStatus, getUserPosts);
 // router.delete("/comment/:postID", checkAuthStatus, deleteComment);
 
 export default router;
