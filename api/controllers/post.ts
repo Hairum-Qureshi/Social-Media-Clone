@@ -313,7 +313,8 @@ const getFollowingUsersPosts = async (
 			.populate({
 				path: "comments.user",
 				select: "-password -__v"
-			}).select("-__v");
+			})
+			.select("-__v");
 
 		res.status(200).json(followingFeedPosts);
 		return;
@@ -327,6 +328,83 @@ const getFollowingUsersPosts = async (
 	}
 };
 
+const getUserPosts = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { username } = req.params;
+		const user: IUser | undefined = (await User.findOne({ username })) as IUser;
+		if (!user) {
+			res.status(404).json({ error: "User not found" });
+			return;
+		}
+
+		const posts: IPost[] = await Post.find({ user: user._id })
+			.sort({ createdAt: -1 })
+			.populate({
+				path: "user",
+				select: "-password -__v"
+			})
+			.populate({
+				path: "comments.user",
+				select: "-password -__v"
+			})
+			.select("-__v");
+
+		res.status(200).json(posts);
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, getUserPosts function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+const deleteComment = async (req: Request, res: Response) => {
+	try {
+		const { postID, commentID } = req.params;
+		const currUID: Types.ObjectId = req.user._id;
+
+		const post: IPost = (await Post.findById({ _id: postID })) as IPost;
+		if (!post) {
+			res.status(404).json({ message: "Post not found" });
+			return;
+		}
+
+		// const commentToDelete = Post.findOne({
+		// 	_id: postID,
+		// 	comments: {
+		// 	  $elemMatch: {
+		// 		_id: commentID,  // Match specific comment ID
+		// 		userId: currUID   // Ensure the comment was written by the user
+		// 	  }
+		// 	}
+		//   }, { "comments.$": 1 });  // Return only the matching comment
+
+		// const updatedPost = await Post.findByIdAndUpdate(
+		// 	postID,
+		// 	{
+		// 		$pull: {
+		// 			comments: comment
+		// 		},
+		// 		$inc: {
+		// 			numComments: -1
+		// 		}
+		// 	},
+		// 	{
+		// 		new: true
+		// 	}
+		// );
+
+		res.status(200).json({ message: "Comment deleted successfully" });
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, deleteComment function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
 export {
 	createPost,
 	deletePost,
@@ -334,5 +412,7 @@ export {
 	postComment,
 	getAllPosts,
 	getAllLikedPosts,
-	getFollowingUsersPosts
+	getFollowingUsersPosts,
+	getUserPosts,
+	deleteComment
 };
