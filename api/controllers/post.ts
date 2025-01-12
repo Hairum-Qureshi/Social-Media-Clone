@@ -94,7 +94,7 @@ const handleLikes = async (req: Request, res: Response) => {
 			uid.equals(currUID)
 		);
 		if (userLikedPost) {
-			// unlike the post and decrement the total number of likes
+			// dislike the post and decrement the total number of likes
 			await Post.updateOne(
 				{
 					_id: postID
@@ -106,6 +106,9 @@ const handleLikes = async (req: Request, res: Response) => {
 					$inc: { numLikes: -1 }
 				}
 			);
+
+            res.status(200).json({ message: "Post disliked successfully" });
+            return;
 		} else {
 			// like the post and increment the total number of likes
 			await Post.updateOne(
@@ -130,9 +133,10 @@ const handleLikes = async (req: Request, res: Response) => {
 					notifType: "LIKE"
 				});
 			}
-		}
 
-		res.json({ message: "Post liked/unliked successfully" });
+            res.status(200).json({ message: "Post liked successfully" });
+            return;
+		}
 	} catch (error) {
 		console.error(
 			"Error in post.ts file, handleLikes function controller".red.bold,
