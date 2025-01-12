@@ -12,6 +12,8 @@ export default function getUserData(user: IUser): UserData {
 		coverImage: user.coverImage,
 		bio: user.bio,
 		link: user.link,
-		likedPosts: user.likedPosts
+		likedPosts: user.likedPosts,
+		numFollowers: user.numFollowers,
+		numFollowing: user.numFollowing
 	};
 }
