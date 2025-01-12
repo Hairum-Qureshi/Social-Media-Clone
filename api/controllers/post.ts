@@ -209,6 +209,10 @@ const getAllPosts = async (req: Request, res: Response): Promise<void> => {
 				createdAt: -1
 			})
 			.populate({ path: "user", select: "-password -__v" })
+			.populate({
+				path: "comments.user",
+				select: "-password -__v"
+			})
 			.select("-__v")) as IPost[];
 
 		if (posts.length === 0) {
