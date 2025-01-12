@@ -27,6 +27,8 @@ export interface UserData {
 	profilePicture: string;
 	coverImage: string;
 	bio: string;
+	link: string;
+	likedPosts: Types.ObjectId[];
 }
 
 enum NotificationTypes {
