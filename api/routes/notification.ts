@@ -7,5 +7,4 @@ const router = express.Router();
 router.get('/all', checkAuthStatus, getAllNotifications);
 router.delete('/all', checkAuthStatus, deleteNotifications);
 
-
 export default router;
