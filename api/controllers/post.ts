@@ -3,6 +3,7 @@ import { IPost, Comment } from "../interfaces";
 import Post from "../models/Post";
 import { v2 as cloudinary } from "cloudinary";
 import { Types } from "mongoose";
+import Notification from "../models/Notification";
 
 const createPost = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -93,7 +94,6 @@ const handleLikes = async (req: Request, res: Response) => {
 			uid.equals(currUID)
 		);
 		if (userLikedPost) {
-			console.log("ran unlike");
 			// unlike the post and decrement the total number of likes
 			await Post.updateOne(
 				{
@@ -107,7 +107,6 @@ const handleLikes = async (req: Request, res: Response) => {
 				}
 			);
 		} else {
-			console.log("ran like");
 			// like the post and increment the total number of likes
 			await Post.updateOne(
 				{
@@ -122,6 +121,15 @@ const handleLikes = async (req: Request, res: Response) => {
 					}
 				}
 			);
+
+			// if the current user likes their own post, don't notify them
+			if (!post.user.equals(currUID)) {
+				await Notification.create({
+					from: currUID,
+					to: post.user,
+					notifType: "LIKE"
+				});
+			}
 		}
 
 		res.json({ message: "Post liked/unliked successfully" });
@@ -170,6 +178,15 @@ const postComment = async (req: Request, res: Response): Promise<void> => {
 				new: true
 			}
 		);
+
+		// if the current user comments on their own post, don't notify them
+		if (!post.user.equals(currUID)) {
+			await Notification.create({
+				from: currUID,
+				to: post.user,
+				notifType: "COMMENT"
+			});
+		}
 
 		res.status(200).json(updatedPost);
 	} catch (error) {
