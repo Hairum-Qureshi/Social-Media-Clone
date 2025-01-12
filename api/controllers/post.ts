@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IPost, Comment } from "../interfaces";
+import { IPost, Comment, IUser } from "../interfaces";
 import Post from "../models/Post";
 import { v2 as cloudinary } from "cloudinary";
 import { Types } from "mongoose";
@@ -253,4 +253,49 @@ const getAllPosts = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-export { createPost, deletePost, handleLikes, postComment, getAllPosts };
+const getAllLikedPosts = async (req: Request, res: Response): Promise<void> => {
+	const { userID } = req.params;
+	try {
+		const user: IUser | undefined = (await User.findById({
+			_id: userID
+		})) as IUser;
+
+		if (!user) {
+			res.status(404).json({ error: "User not found" });
+			return;
+		}
+
+		// finds all the posts based on the array of post IDs
+		const likedPosts: IPost[] = await Post.find({
+			_id: {
+				$in: user.likedPosts
+			}
+		})
+			.populate({
+				path: "user",
+				select: "-password -__v"
+			})
+			.populate({
+				path: "comments.user",
+				select: "-password -__v"
+			});
+
+		res.status(200).json(likedPosts);
+		return;
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, getAllLikedPosts function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+export {
+	createPost,
+	deletePost,
+	handleLikes,
+	postComment,
+	getAllPosts,
+	getAllLikedPosts
+};
