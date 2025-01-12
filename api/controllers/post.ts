@@ -278,7 +278,8 @@ const getAllLikedPosts = async (req: Request, res: Response): Promise<void> => {
 			.populate({
 				path: "comments.user",
 				select: "-password -__v"
-			}).select("-__v")) as IPost[];
+			})
+			.select("-__v")) as IPost[];
 
 		res.status(200).json(likedPosts);
 		return;
@@ -291,11 +292,47 @@ const getAllLikedPosts = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+const getFollowingUsersPosts = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const currUID: Types.ObjectId = req.user._id;
+		const currUser: IUser = (await User.findById({ _id: currUID })) as IUser;
+		const followedUsers: Types.ObjectId[] = currUser.following;
+		const followingFeedPosts: IPost[] = await Post.find({
+			user: {
+				$in: followedUsers
+			}
+		})
+			.sort({ createdAt: -1 })
+			.populate({
+				path: "user",
+				select: "-password -__v"
+			})
+			.populate({
+				path: "comments.user",
+				select: "-password -__v"
+			}).select("-__v");
+
+		res.status(200).json(followingFeedPosts);
+		return;
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, getFollowingUsersPosts function controller".red
+				.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
 export {
 	createPost,
 	deletePost,
 	handleLikes,
 	postComment,
 	getAllPosts,
-	getAllLikedPosts
+	getAllLikedPosts,
+	getFollowingUsersPosts
 };
