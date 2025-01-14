@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Feed from "./pages/feed/Feed";
-import SignIn from "./authentication/SignIn";
-import SignUp from "./authentication/SignUp";
+import SignIn from "./pages/authentication/SignIn";
+import SignUp from "./pages/authentication/SignUp";
 import Explore from "./pages/feed/Explore";
 import Notifications from "./pages/Notifications";
 import Messages from "./pages/Messages";
