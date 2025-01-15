@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import EditorOptions from "./EditorOptions";
-import Carousel from "./Carousel";
+import Carousel from "./carousel/Carousel";
 
 export default function Editor() {
 	const [postContent, setPostContent] = useState("");
