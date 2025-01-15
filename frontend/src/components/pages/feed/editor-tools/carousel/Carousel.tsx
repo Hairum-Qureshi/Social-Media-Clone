@@ -1,23 +1,36 @@
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CarouselImage from "./CarouselImage";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
 	images: string[];
 	numImages: number;
-    removeImage: (imageIndex:number) => void
+	removeImage: (imageIndex: number) => void;
 }
 
 export default function Carousel({ images, numImages, removeImage }: Props) {
 	const [index, setIndex] = useState(0);
 
+	// Resets the index back to 0 every time numImage changes (such as when the user deletes an image) which prevents indexing out of bounds
+	useEffect(() => {
+		setIndex(0);
+	}, [numImages]);
+
 	return (
 		<div className="relative flex mb-3 w-full">
 			{numImages === 4 ? (
 				<>
-					<CarouselImage image={images[index]} imageIndex={index} removeImage={removeImage} />
-					<CarouselImage image={images[index + 2]} imageIndex={index + 2} removeImage={removeImage} />
+					<CarouselImage
+						image={images[index]}
+						imageIndex={index}
+						removeImage={removeImage}
+					/>
+					<CarouselImage
+						image={images[index + 2]}
+						imageIndex={index + 2}
+						removeImage={removeImage}
+					/>
 					<div
 						className={`absolute top-28 ${
 							index === 1 && index + 1 === 2 ? "ml-5 left-0" : "mr-5 right-0"
@@ -38,8 +51,16 @@ export default function Carousel({ images, numImages, removeImage }: Props) {
 				</>
 			) : numImages === 3 ? (
 				<>
-					<CarouselImage image={images[index]} imageIndex={index} removeImage={removeImage} />
-					<CarouselImage image={images[index + 1]} imageIndex={index + 1} removeImage={removeImage} />
+					<CarouselImage
+						image={images[index]}
+						imageIndex={index}
+						removeImage={removeImage}
+					/>
+					<CarouselImage
+						image={images[index + 1]}
+						imageIndex={index + 1}
+						removeImage={removeImage}
+					/>
 					<div
 						className={`absolute top-28 ${
 							index === 1 && index + 1 === 2 ? "ml-5 left-0" : "mr-5 right-0"
@@ -60,12 +81,24 @@ export default function Carousel({ images, numImages, removeImage }: Props) {
 				</>
 			) : numImages === 2 ? (
 				<>
-					<CarouselImage image={images[index]} imageIndex={index} removeImage={removeImage} />
-					<CarouselImage image={images[index + 1]} imageIndex={index + 1} removeImage={removeImage} />
+					<CarouselImage
+						image={images[index]}
+						imageIndex={index}
+						removeImage={removeImage}
+					/>
+					<CarouselImage
+						image={images[index + 1]}
+						imageIndex={index + 1}
+						removeImage={removeImage}
+					/>
 				</>
 			) : (
 				<div className="w-full flex items-center mt-4 justify-center">
-					<CarouselImage image={images[index]} imageIndex={index} removeImage={removeImage} />
+					<CarouselImage
+						image={images[index]}
+						imageIndex={index}
+						removeImage={removeImage}
+					/>
 				</div>
 			)}
 		</div>
