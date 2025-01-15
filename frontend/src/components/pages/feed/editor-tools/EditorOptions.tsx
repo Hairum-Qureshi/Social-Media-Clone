@@ -1,13 +1,13 @@
 import {
 	faFaceSmile,
 	faFilm,
-	faLocationPin,
 	faPhotoFilm,
 	faSquarePollHorizontal
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef } from "react";
 import { EditorOptionsProps } from "../../../../interfaces";
+import { faLocationDot } from "@fortawesome/free-solid-svg-icons/faLocationDot";
 
 export default function EditorOptions({ handleImage }: EditorOptionsProps) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -37,7 +37,7 @@ export default function EditorOptions({ handleImage }: EditorOptionsProps) {
 				<FontAwesomeIcon icon={faFaceSmile} /> {/* EMOJIS */}
 			</span>
 			<span className="mx-4 hover:cursor-pointer">
-				<FontAwesomeIcon icon={faLocationPin} /> {/* LOCATION */}
+			<FontAwesomeIcon icon={faLocationDot} /> {/* LOCATION */}
 			</span>
 			<div className="ml-auto flex items-center mr-5 border-l-2 border-gray-500">
 				<div
