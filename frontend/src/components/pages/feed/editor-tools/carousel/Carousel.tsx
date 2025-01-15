@@ -4,7 +4,12 @@ import CarouselImage from "./CarouselImage";
 import { useEffect, useState } from "react";
 import { CarouselProps } from "../../../../../interfaces";
 
-export default function Carousel({ images, numImages, removeImage }: CarouselProps) {
+export default function Carousel({
+	images,
+	numImages,
+	removeImage,
+	allowDelete
+}: CarouselProps) {
 	const [index, setIndex] = useState(0);
 
 	// Resets the index back to 0 every time numImage changes (such as when the user deletes an image) which prevents indexing out of bounds
@@ -13,18 +18,20 @@ export default function Carousel({ images, numImages, removeImage }: CarouselPro
 	}, [numImages]);
 
 	return (
-		<div className="relative flex mb-3 w-full">
+		<div className="relative flex mb-3 w-full h-auto">
 			{numImages === 4 ? (
 				<>
 					<CarouselImage
 						image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
+						allowDelete={allowDelete}
 					/>
 					<CarouselImage
 						image={images[index + 2]}
 						imageIndex={index + 2}
 						removeImage={removeImage}
+						allowDelete={allowDelete}
 					/>
 					<div
 						className={`absolute top-28 ${
@@ -50,11 +57,13 @@ export default function Carousel({ images, numImages, removeImage }: CarouselPro
 						image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
+						allowDelete={allowDelete}
 					/>
 					<CarouselImage
 						image={images[index + 1]}
 						imageIndex={index + 1}
 						removeImage={removeImage}
+						allowDelete={allowDelete}
 					/>
 					<div
 						className={`absolute top-28 ${
@@ -80,11 +89,13 @@ export default function Carousel({ images, numImages, removeImage }: CarouselPro
 						image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
+						allowDelete={allowDelete}
 					/>
 					<CarouselImage
 						image={images[index + 1]}
 						imageIndex={index + 1}
 						removeImage={removeImage}
+						allowDelete={allowDelete}
 					/>
 				</>
 			) : (
@@ -93,6 +104,7 @@ export default function Carousel({ images, numImages, removeImage }: CarouselPro
 						image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
+						allowDelete={allowDelete}
 					/>
 				</div>
 			)}
