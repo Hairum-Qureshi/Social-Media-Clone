@@ -8,7 +8,7 @@ export default function Landing() {
 	// TODO - add feature where if you're in that route, the icon should be filled in, otherwise it shouldn't
 	// TODO - make sure it's mobile friendly for ALL screen sizes!
 	return (
-		<div className="bg-black w-full text-white h-screen">
+		<div className="bg-black w-full text-white min-h-screen overflow-auto">
 			<div className="bg-black h-screen">
 				<div className="border-b-2 border-gray-500 h-14 flex text-center hover:cursor-pointer font-bold w-full">
 					<div
@@ -37,30 +37,6 @@ export default function Landing() {
 				<div>
 					<Editor />
 				</div>
-				{/* <div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div>
-				<div className="bg-red-500 w-full h-10"></div> */}
 			</div>
 		</div>
 	);
