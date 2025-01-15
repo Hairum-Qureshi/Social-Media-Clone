@@ -17,7 +17,7 @@ export default function UserNotificationCard({
 	notifDescription
 }: UserNotificationCardProps) {
 	return (
-		<div className="w-full border-2 border-gray-700 lg:text-3xl text-xl">
+		<div className="w-full border-2 border-gray-700 lg:text-2xl text-xl">
 			<div className="p-4 flex items-center">
 				{notifType === "follow" ? (
 					<span className="text-sky-400 mr-4">
@@ -39,7 +39,7 @@ export default function UserNotificationCard({
 				<img
 					src="https://i.pinimg.com/474x/2c/47/d5/2c47d5dd5b532f83bb55c4cd6f5bd1ef.jpg"
 					alt="User pfp"
-					className="lg:w-10 lg:h-10 w-8 h-8 rounded-full"
+					className="lg:w-9 lg:h-9 w-8 h-8 rounded-full"
 				/>
 				<div className="flex justify-center flex-col w-full text-left ml-3">
 					<span className="lg:text-base text-sm flex justify-between items-center w-full">
