@@ -2,14 +2,9 @@ import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CarouselImage from "./CarouselImage";
 import { useEffect, useState } from "react";
+import { CarouselProps } from "../../../../../interfaces";
 
-interface Props {
-	images: string[];
-	numImages: number;
-	removeImage: (imageIndex: number) => void;
-}
-
-export default function Carousel({ images, numImages, removeImage }: Props) {
+export default function Carousel({ images, numImages, removeImage }: CarouselProps) {
 	const [index, setIndex] = useState(0);
 
 	// Resets the index back to 0 every time numImage changes (such as when the user deletes an image) which prevents indexing out of bounds

@@ -7,12 +7,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef } from "react";
+import { EditorOptionsProps } from "../../../../interfaces";
 
-interface Props {
-	handleImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-export default function EditorOptions({ handleImage }: Props) {
+export default function EditorOptions({ handleImage }: EditorOptionsProps) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	return (
