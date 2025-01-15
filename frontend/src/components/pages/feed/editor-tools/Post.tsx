@@ -9,9 +9,10 @@ import Carousel from "./carousel/Carousel";
 
 interface Props {
 	images?: string[];
+	text?: string;
 }
 
-export default function Post({ images }: Props) {
+export default function Post({ images, text }: Props) {
 	const [showOptions, setShowOptions] = useState(false);
 
 	function close() {
@@ -34,12 +35,7 @@ export default function Post({ images }: Props) {
 						John Doe&nbsp;
 						<span className="text-gray-500 font-light">@username · 7hr</span>
 					</span>
-					<span className="ml-3">
-						Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
-						esse velit voluptatum minus illo distinctio. Nihil facilis iure odio
-						esse temporibus, quasi alias obcaecati unde, rem exercitationem non
-						mollitia quaerat?
-					</span>
+					{text && <span className="ml-3">{text}</span>}
 					<div>
 						{images && images.length > 0 && (
 							<div className="w-full flex">
@@ -76,7 +72,7 @@ export default function Post({ images }: Props) {
 					<FontAwesomeIcon icon={faBookmark} />
 					<span className="ml-1">0</span>
 				</div>
-				<div className = "hover:cursor-pointer hover:text-sky-400">
+				<div className="hover:cursor-pointer hover:text-sky-400">
 					<FontAwesomeIcon icon={faShare} />
 				</div>
 			</div>
