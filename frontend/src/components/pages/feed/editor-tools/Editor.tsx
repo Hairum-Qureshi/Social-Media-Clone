@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import EditorOptions from "./EditorOptions";
 import Carousel from "./carousel/Carousel";
 
-// Uploading a duplicate image doens't work unless you add a different image and then that same image, but pasting a duplicate image is fine
+// TODO - need to resolve image aspect ratio when uploading images
 export default function Editor() {
 	const [postContent, setPostContent] = useState("");
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -48,7 +48,7 @@ export default function Editor() {
 		if (files) {
 			const blobURL = window.URL.createObjectURL(files[0]);
 			setUploadedImages(prev => [...prev, blobURL]);
-			event.target.value = '';  // Resets input to allow duplicate uploads consecutively
+			event.target.value = ""; // Resets input to allow duplicate uploads consecutively
 		}
 	}
 
@@ -77,11 +77,12 @@ export default function Editor() {
 									></textarea>
 								</div>
 								{uploadedImages.length > 0 && (
-									<div className="min-h-60 h-auto w-full flex">
+									<div className="w-full flex">
 										<Carousel
 											images={uploadedImages}
 											numImages={uploadedImages.length}
 											removeImage={removeImage}
+											allowDelete={true}
 										/>
 									</div>
 								)}
