@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import EditorOptions from "./EditorOptions";
 import Carousel from "./carousel/Carousel";
 
+// Uploading a duplicate image doens't work unless you add a different image and then that same image, but pasting a duplicate image is fine
 export default function Editor() {
 	const [postContent, setPostContent] = useState("");
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -38,9 +39,8 @@ export default function Editor() {
 	}
 
 	function removeImage(imageIndex: number) {
-		const image = uploadedImages[imageIndex];
 		const filteredImages = uploadedImages.filter(
-			(img: string) => img !== image
+			(_, index) => index !== imageIndex
 		);
 		setUploadedImages(filteredImages);
 	}
