@@ -6,13 +6,14 @@ import {
 	faHouse,
 	faMagnifyingGlass,
 	faMessage,
+	faRightFromBracket,
 	faUser
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 
 export default function SideNavbar() {
 	return (
-		<div className="bg-black border-r-2 border-r-gray-700 text-white h-screen lg:w-1/4 w-32">
+		<div className="bg-black border-r-2 border-r-gray-700 text-white h-screen lg:w-1/4 w-32 overflow-hidden">
 			<div className="h-full lg:w-2/3 w-full ml-auto lg:relative lg:block flex flex-col items-center justify-center">
 				<Link to="/">
 					<img
@@ -87,7 +88,9 @@ export default function SideNavbar() {
 				</div>
 				<div className="lg:absolute lg:bottom-0 lg:left-0 lg:w-full flex flex-col items-center justify-center text-center">
 					<div className="w-full rounded-full p-2 text-lg text-black font-bold text-center">
-						<div className="bg-white p-2 lg:rounded-md hover:cursor-pointer lg:mr-4">POST</div>
+						<div className="bg-white p-2 lg:rounded-md hover:cursor-pointer lg:mr-4">
+							POST
+						</div>
 					</div>
 					<div className="w-full lg:rounded-md text-lg font-bold text-center my-8">
 						<div className="hover:bg-gray-800 p-2 rounded-md lg:mx-2 hover:cursor-pointer">
@@ -98,7 +101,13 @@ export default function SideNavbar() {
 									className="lg:w-10 lg:h-10 w-12 h-12 rounded-full"
 								/>
 								<div className="hidden lg:flex lg:flex-col lg:w-full lg:text-left lg:ml-3">
-									<span className="text-lg font-bold">Username</span>
+									<span className="text-lg font-bold flex justify-between items-center">
+										Username
+										<FontAwesomeIcon
+											icon={faRightFromBracket}
+											className="ml-auto"
+										/>
+									</span>
 									<span className="text-sm text-gray-400 font-light">
 										@username
 									</span>
