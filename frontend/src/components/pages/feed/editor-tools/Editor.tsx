@@ -50,6 +50,7 @@ export default function Editor() {
 		if (files) {
 			const blobURL = window.URL.createObjectURL(files[0]);
 			setUploadedImages(prev => [...prev, blobURL]);
+			event.target.value = '';  // Resets input to allow duplicate uploads consecutively
 		}
 	}
 
