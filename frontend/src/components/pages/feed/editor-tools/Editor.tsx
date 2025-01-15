@@ -5,6 +5,7 @@ import Carousel from "./carousel/Carousel";
 export default function Editor() {
 	const [postContent, setPostContent] = useState("");
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
+	const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
 	const handleInput = () => {
 		const textarea = textAreaRef.current;
@@ -13,8 +14,6 @@ export default function Editor() {
 			textarea.style.height = `${textarea.scrollHeight}px`; // Set to scrollHeight for dynamic resizing
 		}
 	};
-	
-	const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 
 	function handlePaste(e: React.ClipboardEvent<HTMLTextAreaElement>) {
 		const image = e.clipboardData || window.Clipboard;
@@ -40,8 +39,18 @@ export default function Editor() {
 
 	function removeImage(imageIndex: number) {
 		const image = uploadedImages[imageIndex];
-		const filteredImages = uploadedImages.filter((img: string) => img !== image);
+		const filteredImages = uploadedImages.filter(
+			(img: string) => img !== image
+		);
 		setUploadedImages(filteredImages);
+	}
+
+	function handleImage(event: React.ChangeEvent<HTMLInputElement>) {
+		const files: FileList | null = event.target.files;
+		if (files) {
+			const blobURL = window.URL.createObjectURL(files[0]);
+			setUploadedImages(prev => [...prev, blobURL]);
+		}
 	}
 
 	// TODO - allow users to paste images
@@ -81,7 +90,7 @@ export default function Editor() {
 						</div>
 
 						<div className="flex items-center text-xl mt-3">
-							<EditorOptions />
+							<EditorOptions handleImage={handleImage} />
 						</div>
 					</div>
 				</div>

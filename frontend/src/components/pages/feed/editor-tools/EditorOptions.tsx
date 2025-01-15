@@ -1,11 +1,34 @@
-import { faFaceSmile, faFilm, faLocationPin, faPhotoFilm, faSquarePollHorizontal } from "@fortawesome/free-solid-svg-icons";
+import {
+	faFaceSmile,
+	faFilm,
+	faLocationPin,
+	faPhotoFilm,
+	faSquarePollHorizontal
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRef } from "react";
 
-export default function EditorOptions() {
+interface Props {
+	handleImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export default function EditorOptions({ handleImage }: Props) {
+	const fileInputRef = useRef<HTMLInputElement>(null);
+
 	return (
 		<>
-			<span className="mx-4 hover:cursor-pointer">
-				<FontAwesomeIcon icon={faPhotoFilm} /> {/* Photos + Images */}
+			<span
+				className="mx-4 hover:cursor-pointer"
+				onClick={() => fileInputRef.current?.click()}
+			>
+				<FontAwesomeIcon icon={faPhotoFilm} /> {/* Photos */}
+				<input
+					type="file"
+					onChange={event => handleImage(event)}
+					className="hidden"
+					ref={fileInputRef}
+					accept=".jpg, .jpeg, .png, .gif"
+				/>
 			</span>
 			<span className="mx-4 hover:cursor-pointer">
 				<FontAwesomeIcon icon={faFilm} /> {/* GIF */}
