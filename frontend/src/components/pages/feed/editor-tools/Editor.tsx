@@ -32,9 +32,7 @@ export default function Editor() {
 				}
 			};
 
-			if (file) {
-				reader.readAsDataURL(file);
-			}
+			reader.readAsDataURL(file);
 		}
 	}
 
@@ -89,7 +87,6 @@ export default function Editor() {
 								)}
 							</div>
 						</div>
-
 						<div className="flex items-center text-xl mt-3">
 							<EditorOptions handleImage={handleImage} />
 						</div>
