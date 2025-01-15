@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import SideNavbar from "./pages/feed/SideNavbar";
+import SideNavbar from "./pages/navigation/SideNavbar";
 import SideSuggestions from "./pages/feed/SideSuggestions";
 
 export default function ProtectedRoutesGuard({
