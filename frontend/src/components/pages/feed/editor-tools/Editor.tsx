@@ -77,7 +77,7 @@ export default function Editor() {
 									></textarea>
 								</div>
 								{uploadedImages.length > 0 && (
-									<div className="h-60 w-full flex">
+									<div className="min-h-60 h-auto w-full flex">
 										<Carousel
 											images={uploadedImages}
 											numImages={uploadedImages.length}
@@ -87,7 +87,7 @@ export default function Editor() {
 								)}
 							</div>
 						</div>
-						<div className="flex items-center text-xl mt-3">
+						<div className="flex items-center text-xl mt-3 text-sky-400">
 							<EditorOptions handleImage={handleImage} />
 						</div>
 					</div>
