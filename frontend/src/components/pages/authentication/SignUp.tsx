@@ -91,9 +91,6 @@ export default function SignUp() {
 								/>
 							</div>
 						</div>
-						<p className="text-gray-200 text-sm mt-1">
-							ⓘ Don't worry, your full name will not be made public
-						</p>
 						<div className="border-2 focus-within:border-sky-400 border-gray-500 rounded-sm p-2 lg:w-3/4 w-full relative mt-5">
 							<div>
 								<p className="text-gray-400 text-sm">Email</p>
