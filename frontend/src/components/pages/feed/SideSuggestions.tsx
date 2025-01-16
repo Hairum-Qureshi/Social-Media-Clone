@@ -1,4 +1,4 @@
-import FollowersSuggestions from "./editor-tools/FollowersSuggestions";
+import FollowersSuggestions from "./FollowersSuggestions";
 
 export default function SideSuggestions() {
 	return (
