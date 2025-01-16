@@ -37,6 +37,7 @@ export default function Profile() {
 					src="https://wallpapers.com/images/hd/blue-tree-aesthetic-pc-cqlbvlg42a4d0tob.jpg"
 					alt="Background image"
 					className="w-full h-full object-cover"
+					accept="image/png, image/gif, image/jpeg"
 				/>
 				<div
 					className="absolute top-0 right-0 mr-5 bg-slate-500 rounded-lg p-2 border-2 border-gray-300 w-8 h-8 text-sm flex items-center justify-center opacity-40 hover:opacity-100 hover:cursor-pointer active:opacity-80"
