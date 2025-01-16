@@ -3,12 +3,10 @@ import TwitterXSVG from "../../../assets/twitter-x.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
-import useAuth from "../../../hooks/useAuth";
 
 export default function SignIn() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-	const { errorMessage } = useAuth();
 
 	// ! the black background color isn't filling the entire screen on mobile view
 	// ! need to add labels for inputs
@@ -21,21 +19,10 @@ export default function SignIn() {
 			</div>
 			<div className="w-full lg:w-1/2 h-screen text-white lg:p-0 p-5">
 				<h1 className="mt-24 font-bold text-7xl">Happening now</h1>
-				{errorMessage.message && (
-					<p className="text-red-600 mt-4 text-center text-sm w-3/4">
-						{errorMessage.message}
-					</p>
-				)}
 				<h3 className="text-4xl font-bold mt-20">Sign in to 𝕏</h3>
 				<div className="mt-6">
 					<form action="">
-						<div
-							className={`border-2 focus-within:border-sky-400 ${
-								errorMessage.for === "username"
-									? "border-red-600"
-									: "border-gray-500"
-							} rounded-sm p-2 lg:w-3/4 w-full relative`}
-						>
+						<div className="border-2 focus-within:border-sky-400 border-gray-500 rounded-sm p-2 lg:w-3/4 w-full relative">
 							<div>
 								<p className="text-gray-400 text-xs w-1/4">Username</p>
 							</div>
