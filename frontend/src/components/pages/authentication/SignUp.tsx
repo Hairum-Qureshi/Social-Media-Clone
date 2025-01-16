@@ -18,7 +18,7 @@ export default function SignUp() {
 		setFullNameCharacters(fullName.length);
 	}, [username, fullName]);
 
-	const { signUp, errorMessage } = useAuth();
+	const { signUp } = useAuth();
 
 	// ! the black background color isn't filling the entire screen on mobile view
 	// ! need to add labels for inputs
@@ -31,21 +31,10 @@ export default function SignUp() {
 			</div>
 			<div className="w-full lg:w-1/2 h-screen text-white lg:p-0 p-5">
 				<h1 className="mt-10 font-bold text-7xl">Happening now</h1>
-				{errorMessage.message && (
-					<p className="text-red-600 mt-4 text-center text-sm w-3/4">
-						{errorMessage.message}
-					</p>
-				)}
 				<h3 className="text-4xl font-bold mt-7">Join today.</h3>
 				<div className="mt-6">
 					<form action="">
-						<div
-							className={`border-2 focus-within:border-sky-400 ${
-								errorMessage.for === "username"
-									? "border-red-600"
-									: "border-gray-500"
-							} rounded-sm p-2 lg:w-3/4 w-full relative`}
-						>
+						<div className="border-2 focus-within:border-sky-400 border-gray-500 rounded-sm p-2 lg:w-3/4 w-full relative">
 							<div>
 								<p className="text-gray-400 text-xs w-1/4">
 									Username
