@@ -46,15 +46,13 @@ export default function Profile() {
 					<FontAwesomeIcon icon={faPencil} />
 				</div>
 			</div>
-			<div
-				className="w-full flex items-center hover:cursor-pointer"
-				onClick={() => fileInputRef.current?.click()}
-			>
+			<div className="w-full flex items-center hover:cursor-pointer">
 				<img
 					src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
 					alt="User profile picture"
 					accept="image/png, image/gif, image/jpeg"
 					className="border-2 border-black rounded-full z-10 w-1/4 h-1/4 object-cover ml-10 lg:-mt-28 -mt-20 hover:opacity-85 active:opacity-80"
+					onClick={() => fileInputRef.current?.click()}
 				/>
 				<input type="file" ref={fileInputRef} className="hidden" />
 				<button
