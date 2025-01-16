@@ -114,11 +114,12 @@ export default function SignUp() {
 								/>
 							</div>
 						</div>
-						<div className="bg-sky-600 hover:bg-sky-500 h-10 flex items-center justify-center rounded-md p-2 mt-7 lg:w-3/4 w-full text-center font-bold text-lg hover:cursor-pointer active:bg-sky-600">
+						<div>
 							<button
-								onClick={event =>
-									signUp(event, username, fullName, email, password)
-								}
+								onClick={event => {
+									signUp(event, username, fullName, email, password);
+								}}
+								className="bg-sky-600 hover:bg-sky-500 h-10 flex items-center justify-center rounded-md p-2 mt-7 lg:w-3/4 w-full text-center font-bold text-lg hover:cursor-pointer active:bg-sky-600"
 							>
 								CREATE ACCOUNT
 							</button>
