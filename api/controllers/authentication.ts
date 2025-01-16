@@ -44,13 +44,8 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
 			email
 		});
 
-		if (user) {
-			generateAndSetCookie(user._id, res);
-
-			res.status(200).json(getUserData(user));
-		} else {
-			res.status(500).json({ error: "Failed to create user" });
-		}
+		generateAndSetCookie(user._id, res);
+		res.status(200).json(getUserData(user));
 	} catch (error) {
 		console.error(
 			"Error in authentication.ts file, signUp function controller".red.bold,
