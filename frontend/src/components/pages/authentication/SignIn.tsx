@@ -57,8 +57,10 @@ export default function SignIn() {
 								/>
 							</div>
 						</div>
-						<div className="bg-sky-600 hover:bg-sky-500 h-10 flex items-center justify-center rounded-md p-2 mt-7 lg:w-3/4 w-full text-center font-bold text-lg hover:cursor-pointer active:bg-sky-600">
-							<button>SIGN IN</button>
+						<div>
+							<button className="bg-sky-600 hover:bg-sky-500 h-10 flex items-center justify-center rounded-md p-2 mt-7 lg:w-3/4 w-full text-center font-bold text-lg hover:cursor-pointer active:bg-sky-600">
+								SIGN IN
+							</button>
 						</div>
 					</form>
 					<h4 className="text-lg font-bold mt-5">Don't have an account?</h4>
