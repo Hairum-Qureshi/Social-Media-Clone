@@ -3,10 +3,12 @@ import TwitterXSVG from "../../../assets/twitter-x.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLock, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
 
 export default function SignIn() {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+	const { signIn, signInIsPending } = useAuth();
 
 	// ! the black background color isn't filling the entire screen on mobile view
 	// ! need to add labels for inputs
@@ -58,8 +60,14 @@ export default function SignIn() {
 							</div>
 						</div>
 						<div>
-							<button className="bg-sky-600 hover:bg-sky-500 h-10 flex items-center justify-center rounded-md p-2 mt-7 lg:w-3/4 w-full text-center font-bold text-lg hover:cursor-pointer active:bg-sky-600">
-								SIGN IN
+							<button
+								className="bg-sky-600 hover:bg-sky-500 h-10 flex items-center justify-center rounded-md p-2 mt-7 lg:w-3/4 w-full text-center font-bold text-lg hover:cursor-pointer active:bg-sky-600"
+								onClick={event => {
+									signIn(event, username, password);
+								}}
+								disabled={signInIsPending}
+							>
+								{signInIsPending ? "Loading..." : "SIGN IN"}
 							</button>
 						</div>
 					</form>
