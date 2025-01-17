@@ -18,7 +18,7 @@ export default function SignUp() {
 		setFullNameCharacters(fullName.length);
 	}, [username, fullName]);
 
-	const { signUp } = useAuth();
+	const { signUp, signUpIsPending } = useAuth();
 
 	// ! the black background color isn't filling the entire screen on mobile view
 	// ! need to add labels for inputs
@@ -120,8 +120,9 @@ export default function SignUp() {
 									signUp(event, username, fullName, email, password);
 								}}
 								className="bg-sky-600 hover:bg-sky-500 h-10 flex items-center justify-center rounded-md p-2 mt-7 lg:w-3/4 w-full text-center font-bold text-lg hover:cursor-pointer active:bg-sky-600"
+								disabled = {signUpIsPending}
 							>
-								CREATE ACCOUNT
+								{!signUpIsPending ? "CREATE ACCOUNT" : "Loading..."}
 							</button>
 						</div>
 					</form>
