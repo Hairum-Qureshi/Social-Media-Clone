@@ -235,8 +235,6 @@ export default function useAuth(): AuthTools {
 						withCredentials: true
 					}
 				);
-
-				console.log("ran");
 			} catch (error) {
 				if (axios.isAxiosError(error)) {
 					toast(error.response?.data.error, {
