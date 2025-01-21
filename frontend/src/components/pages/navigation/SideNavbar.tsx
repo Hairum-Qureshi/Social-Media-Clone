@@ -15,6 +15,7 @@ import useAuth from "../../../hooks/useAuth";
 export default function SideNavbar() {
 	const { signOut } = useAuth();
 
+	// TODO - need to replace hardcoded '/username' param for profile route with the authenticated user's username
 	return (
 		<div className="bg-black border-r-2 border-r-gray-700 text-white h-screen lg:w-1/4 w-32 overflow-hidden">
 			<div className="h-full lg:w-2/3 w-full ml-auto lg:relative lg:block flex flex-col items-center justify-center">
@@ -103,23 +104,28 @@ export default function SideNavbar() {
 									alt="User pfp"
 									className="lg:w-10 lg:h-10 w-12 h-12 rounded-full"
 								/>
-								<div className="hidden lg:flex lg:flex-col lg:w-full lg:text-left lg:ml-3">
-									<span
-										className="text-lg font-bold flex justify-between items-center"
-										onClick={() => signOut()}
-									>
-										Username
-										<Link to="/sign-in">
-											<FontAwesomeIcon
-												icon={faRightFromBracket}
-												className="ml-auto"
-											/>
-										</Link>
-									</span>
-									<span className="text-sm text-gray-400 font-light">
-										@username
-									</span>
-								</div>
+								<Link
+									to="/profile"
+									className="hidden lg:flex lg:flex-col lg:w-full lg:text-left lg:ml-3"
+								>
+									<div>
+										<span
+											className="text-lg font-bold flex justify-between items-center"
+											onClick={() => signOut()}
+										>
+											Username
+											<Link to="/sign-in">
+												<FontAwesomeIcon
+													icon={faRightFromBracket}
+													className="ml-auto"
+												/>
+											</Link>
+										</span>
+										<span className="text-sm text-gray-400 font-light">
+											@username
+										</span>
+									</div>
+								</Link>
 							</div>
 						</div>
 					</div>
