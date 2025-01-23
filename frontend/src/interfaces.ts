@@ -15,3 +15,21 @@ export interface CarouselProps {
 export interface EditorOptionsProps {
 	handleImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
+
+export interface UserData {
+	_id: string;
+	username: string;
+	fullName: string;
+	email: string;
+	followers: string[];
+	following: string[];
+	profilePicture: string;
+	coverImage: string;
+	bio: string;
+	link: string;
+	likedPosts: string[];
+	numFollowers: number;
+	numFollowing: number;
+	createdAt: Date;
+	updatedAt: Date;
+}
