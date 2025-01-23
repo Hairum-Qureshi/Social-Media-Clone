@@ -33,6 +33,8 @@ export interface UserData {
 	likedPosts: Types.ObjectId[];
 	numFollowers: number;
 	numFollowing: number;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 enum NotificationTypes {
