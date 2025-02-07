@@ -10,6 +10,7 @@ import Post from "../feed/editor-tools/Post";
 import { useRef, useState } from "react";
 import UserSettingsModal from "../../UserSettingsModal";
 
+// ! FIX: the kebab buttons are not shifted to the right in mobile view for the posts
 export default function Profile() {
 	const [showModal, setShowModal] = useState(false);
 	const [isPosts, setIsPosts] = useState(true);
@@ -96,7 +97,7 @@ export default function Profile() {
 					</div>
 					<div className="w-full flex text-center">
 						<div
-							className={`flex items-center justify-center w-1/2 p-2hover:cursor-pointer hover:bg-gray-900 ${
+							className={`flex items-center justify-center w-1/2 p-2 hover:cursor-pointer hover:bg-gray-900 ${
 								isPosts && "border-b-2 border-sky-500"
 							}`}
 							onClick={() => {
