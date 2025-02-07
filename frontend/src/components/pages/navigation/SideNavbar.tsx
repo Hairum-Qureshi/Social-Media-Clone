@@ -16,6 +16,7 @@ export default function SideNavbar() {
 	const { signOut } = useAuth();
 
 	// TODO - need to replace hardcoded '/username' param for profile route with the authenticated user's username
+	// TODO - need to make the icons centered
 	return (
 		<div className="bg-black border-r-2 border-r-gray-700 text-white h-screen lg:w-1/4 w-32 overflow-hidden">
 			<div className="h-full lg:w-2/3 w-full ml-auto lg:relative lg:block flex flex-col items-center justify-center">
@@ -96,22 +97,19 @@ export default function SideNavbar() {
 							POST
 						</div>
 					</div>
-					<div className="w-full lg:rounded-md text-lg font-bold text-center my-8">
+					<div className="w-full lg:rounded-md text-lg font-bold text-center my-8 break-all">
 						<div className="hover:bg-gray-800 p-2 rounded-md lg:mx-2 hover:cursor-pointer">
-							<div className="flex items-center justify-center">
+							<div className="flex items-center">
 								<img
 									src="https://i.pinimg.com/474x/2c/47/d5/2c47d5dd5b532f83bb55c4cd6f5bd1ef.jpg"
 									alt="User pfp"
 									className="lg:w-10 lg:h-10 w-12 h-12 rounded-full"
 								/>
-								<Link
-									to="/profile"
-									className="hidden lg:flex lg:flex-col lg:w-full lg:text-left lg:ml-3"
-								>
-									<div>
+								<Link to="/profile" className = "w-full">
+									<div className="hidden lg:flex lg:flex-col lg:w-full lg:text-left">
 										<span
-											className="text-lg font-bold flex justify-between items-center"
-											onClick={() => signOut()}
+											className="text-lg font-bold flex justify-between items-center ml-3"
+											onClick={signOut}
 										>
 											Username
 											<Link to="/sign-in">
@@ -121,7 +119,7 @@ export default function SideNavbar() {
 												/>
 											</Link>
 										</span>
-										<span className="text-sm text-gray-400 font-light">
+										<span className="text-sm text-gray-400 font-light ml-3">
 											@username
 										</span>
 									</div>
