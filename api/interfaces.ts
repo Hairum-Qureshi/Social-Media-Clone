@@ -40,7 +40,7 @@ export interface UserData {
 enum NotificationTypes {
 	Like = "LIKE",
 	Comment = "COMMENT",
-	FOLLOW = "FOLLOW",
+	Follow = "FOLLOW",
 	Message = "MeSSAGE"
 }
 
