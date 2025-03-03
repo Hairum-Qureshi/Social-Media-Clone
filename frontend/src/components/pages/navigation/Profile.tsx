@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Post from "../feed/editor-tools/Post";
 import { useRef, useState } from "react";
 import UserSettingsModal from "../../UserSettingsModal";
+import useAuthContext from "../../../contexts/AuthContext";
 
 // ! FIX: the kebab buttons are not shifted to the right in mobile view for the posts
 export default function Profile() {
@@ -16,6 +17,7 @@ export default function Profile() {
 	const [isPosts, setIsPosts] = useState(true);
 	const [isLikes, setIsLikes] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const { userData } = useAuthContext()!;
 
 	function closeModal() {
 		setShowModal(false);
@@ -29,13 +31,13 @@ export default function Profile() {
 					<FontAwesomeIcon icon={faArrowLeft} />
 				</div>
 				<div>
-					<h2 className="font-bold ml-5 text-xl">Username</h2>
-					<div className="ml-5 text-gray-600">2 posts</div>
+					<h2 className="font-bold ml-5 text-xl">{userData?.username}</h2>
+					<div className="ml-5 text-gray-600">0 posts</div>
 				</div>
 			</div>
 			<div className="w-full h-1/4 relative">
 				<img
-					src="https://wallpapers.com/images/hd/blue-tree-aesthetic-pc-cqlbvlg42a4d0tob.jpg"
+					src={userData?.coverImage}
 					alt="Background image"
 					className="w-full h-full object-cover"
 					accept="image/png, image/gif, image/jpeg"
@@ -49,7 +51,7 @@ export default function Profile() {
 			</div>
 			<div className="w-full flex items-center hover:cursor-pointer">
 				<img
-					src="https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
+					src={userData?.profilePicture}
 					alt="User profile picture"
 					accept="image/png, image/gif, image/jpeg"
 					className="border-2 border-black rounded-full z-10 w-1/4 h-1/4 object-cover ml-10 lg:-mt-28 -mt-20 hover:opacity-85 active:opacity-80"
@@ -65,14 +67,11 @@ export default function Profile() {
 			</div>
 			<div className="w-full border-b-2 border-b-gray-700">
 				<div className="mt-5">
-					<h3 className="font-bold ml-5 text-xl">Username</h3>
-					<p className="text-gray-500 text-base ml-5">@username</p>
+					<h3 className="font-bold ml-5 text-xl">{userData?.fullName}</h3>
+					<p className="text-gray-500 text-base ml-5">@{userData?.username}</p>
 					<div className="mx-5 my-2">
 						<div>
-							Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab facere
-							soluta autem, repellendus vel quos! Est, praesentium rem! Debitis
-							maxime labore fugit consequuntur explicabo enim rem laborum minima
-							quibusdam magnam!
+							{userData?.bio}
 						</div>
 						<div className="mt-3 text-gray-500">
 							<span>
@@ -86,11 +85,11 @@ export default function Profile() {
 						</div>
 						<div className="w-full mt-3 flex mb-3">
 							<p className="text-gray-500">
-								<span className="text-white font-bold">100</span>
+								<span className="text-white font-bold">{userData?.numFollowers}</span>
 								<span className="">&nbsp; Followers</span>
 							</p>
 							<p className="text-gray-500 ml-3">
-								<span className="text-white font-bold">2</span>
+								<span className="text-white font-bold">{userData?.numFollowing}</span>
 								<span className="">&nbsp; Following</span>
 							</p>
 						</div>
