@@ -23,6 +23,15 @@ export default function Profile() {
 		setShowModal(false);
 	}
 
+	function getMonthAndYear(isoString: Date | undefined) {
+		if (isoString) {
+			const date = new Date(isoString);
+			const year = date.getFullYear();
+			const month = date.toLocaleString("default", { month: "long" });
+			return { month, year };
+		}
+	}
+
 	return (
 		<div className="bg-black w-full text-white min-h-screen overflow-auto relative">
 			{showModal && <UserSettingsModal closeModal={closeModal} />}
@@ -70,9 +79,7 @@ export default function Profile() {
 					<h3 className="font-bold ml-5 text-xl">{userData?.fullName}</h3>
 					<p className="text-gray-500 text-base ml-5">@{userData?.username}</p>
 					<div className="mx-5 my-2">
-						<div>
-							{userData?.bio}
-						</div>
+						<div>{userData?.bio}</div>
 						<div className="mt-3 text-gray-500">
 							<span>
 								<FontAwesomeIcon icon={faLocationDot} />
@@ -80,16 +87,23 @@ export default function Profile() {
 							</span>
 							<span className="ml-5">
 								<FontAwesomeIcon icon={faCalendarDays} />
-								&nbsp; Joined January 2025
+								&nbsp; Joined{" "}
+								{`${getMonthAndYear(userData?.createdAt)?.month} ${
+									getMonthAndYear(userData?.createdAt)?.year
+								}`}
 							</span>
 						</div>
 						<div className="w-full mt-3 flex mb-3">
 							<p className="text-gray-500">
-								<span className="text-white font-bold">{userData?.numFollowers}</span>
+								<span className="text-white font-bold">
+									{userData?.numFollowers}
+								</span>
 								<span className="">&nbsp; Followers</span>
 							</p>
 							<p className="text-gray-500 ml-3">
-								<span className="text-white font-bold">{userData?.numFollowing}</span>
+								<span className="text-white font-bold">
+									{userData?.numFollowing}
+								</span>
 								<span className="">&nbsp; Following</span>
 							</p>
 						</div>
