@@ -11,10 +11,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
+import useAuthContext from "../../../contexts/AuthContext";
 
 export default function SideNavbar() {
 	const { signOut } = useAuth();
-
+	const { userData } = useAuthContext()!;
 	// TODO - need to replace hardcoded '/username' param for profile route with the authenticated user's username
 	// TODO - need to make the icons centered
 	return (
@@ -80,7 +81,7 @@ export default function SideNavbar() {
 							</div>
 						</div>
 					</Link>
-					<Link to="/username">
+					<Link to={`/${userData.username}`}>
 						<div className="ml-3">
 							<div className="my-6 -ml-4 hover:bg-gray-800 p-2 rounded-full">
 								<span>
@@ -105,13 +106,13 @@ export default function SideNavbar() {
 									alt="User pfp"
 									className="lg:w-10 lg:h-10 w-12 h-12 rounded-full"
 								/>
-								<Link to="/profile" className = "w-full">
+								<Link to={`/${userData.username}`} className="w-full">
 									<div className="hidden lg:flex lg:flex-col lg:w-full lg:text-left">
 										<span
 											className="text-lg font-bold flex justify-between items-center ml-3"
 											onClick={signOut}
 										>
-											Username
+											{userData.fullName}
 											<Link to="/sign-in">
 												<FontAwesomeIcon
 													icon={faRightFromBracket}
@@ -120,7 +121,7 @@ export default function SideNavbar() {
 											</Link>
 										</span>
 										<span className="text-sm text-gray-400 font-light ml-3">
-											@username
+											@{userData.username}
 										</span>
 									</div>
 								</Link>
