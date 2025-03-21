@@ -22,7 +22,7 @@ cloudinary.config({
 const app = express();
 
 const corsOptions = {
-	origin: ["http://localhost:5174", "http://localhost:5173"], // note: this normally is your frontend URL; however, I changed it to 2000 via vite config
+	origin: ["http://localhost:5174", "http://localhost:5173"],
 	credentials: true,
 	optionSuccessStatus: 200
 };
