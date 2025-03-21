@@ -33,3 +33,11 @@ export interface UserData {
 	createdAt: Date;
 	updatedAt: Date;
 }
+
+export interface AuthProps {
+	children: React.ReactNode;
+}
+
+export interface ContextData {
+	userData: UserData | null;
+}
