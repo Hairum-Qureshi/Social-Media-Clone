@@ -61,3 +61,8 @@ export interface OptionsProps {
 	isOwner: boolean;
 	username: string;
 }
+
+export interface PostProps {
+	isOwner: boolean;
+	postData: Post;
+}
