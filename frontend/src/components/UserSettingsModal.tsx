@@ -8,6 +8,8 @@ interface UserSettingsModalProps {
 export default function UserSettingsModal({
 	closeModal
 }: UserSettingsModalProps) {
+	// TODO - make sure to add logic where if the user enters "Israel"/"State of Israel", it will change to "Palestine"
+	// TODO - make sure to update database so that it handles storing the user's location too
 	return (
 		<div className="absolute top-40 right-14 z-20 bg-black text-white w-10/12 border-2 rounded-md border-white p-2">
 			<div className="flex items-center">
@@ -49,6 +51,14 @@ export default function UserSettingsModal({
 						type="password"
 						placeholder="New Password"
 						className="bg-transparent border-2 border-gray-600 p-2 w-1/2 ml-2 mb-4 focus:border-sky-400 focus:outline-none rounded-md"
+					/>
+					
+				</div>
+				<div>
+					<input
+						type="text"
+						placeholder="Country/Location"
+						className="bg-transparent border-2 border-gray-600 w-full p-2 mr-2 mb-4 focus:border-sky-400 focus:outline-none rounded-md"
 					/>
 				</div>
 				<div>
