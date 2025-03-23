@@ -4,13 +4,15 @@ import { useEffect, useState } from "react";
 import { Post } from "../interfaces";
 
 interface PostData {
-    postData: Post[]
-    loadingStatus: boolean;
+	postData: Post[];
+	loadingStatus: boolean;
+	currentUserPostData: Post[];
 }
 
-export default function usePosts(feedType: string):PostData {
-    const [postData, setPostData] = useState<Post[]>([]);
-    const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
+export default function usePosts(feedType?: string): PostData {
+	const [postData, setPostData] = useState<Post[]>([]);
+	const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
+	const [currentUserPostData, setCurrentUserPostData] = useState<Post[]>([]);
 
 	function getFeedTypeEndpoint(): string {
 		switch (feedType) {
@@ -43,10 +45,32 @@ export default function usePosts(feedType: string):PostData {
 		}
 	});
 
+	const { data: currUserPostData, isLoading: loading } = useQuery({
+		queryKey: ["currentUserPosts"],
+		queryFn: async () => {
+			try {
+				const response = await axios.get(
+					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/current-user/all`,
+					{
+						withCredentials: true
+					}
+				);
+
+				return response.data;
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	});
+
+	useEffect(() => {
+		setCurrentUserPostData(currUserPostData);
+	}, [currUserPostData, loading]);
+
 	useEffect(() => {
 		setPostData(data);
-        setLoadingStatus(isLoading);
+		setLoadingStatus(isLoading);
 	}, [feedType, isLoading]);
 
-	return { postData, loadingStatus };
+	return { postData, loadingStatus, currentUserPostData };
 }
