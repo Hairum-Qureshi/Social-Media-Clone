@@ -359,6 +359,7 @@ const getUserPosts = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+// TODO - still need to implement
 const deleteComment = async (req: Request, res: Response) => {
 	try {
 		const { postID, commentID } = req.params;
@@ -405,6 +406,24 @@ const deleteComment = async (req: Request, res: Response) => {
 	}
 };
 
+const getAllYourPosts = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const currUID: Types.ObjectId = req.user._id;
+		const userPosts: IPost[] = await Post.find({ user: currUID })
+			.populate({ path: "user", select: "-password -__v" })
+			.sort({ createdAt: -1 })
+			.lean();
+
+		res.status(200).json(userPosts);
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, getAllYourPosts function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
 export {
 	createPost,
 	deletePost,
@@ -414,5 +433,6 @@ export {
 	getAllLikedPosts,
 	getFollowingUsersPosts,
 	getUserPosts,
-	deleteComment
+	deleteComment,
+	getAllYourPosts
 };
