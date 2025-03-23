@@ -41,6 +41,10 @@ const postSchema = new Schema(
 			type: Number,
 			default: 0,
 			min: 0
+		},
+		postImages: {
+			type: [String],
+			default: []
 		}
 	},
 	{
