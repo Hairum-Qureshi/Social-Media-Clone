@@ -8,9 +8,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRef } from "react";
 import { EditorOptionsProps } from "../../../../interfaces";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons/faLocationDot";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
-export default function EditorOptions({ handleImage }: EditorOptionsProps) {
+export default function EditorOptions({ handleImage, uploadedImages, postContent }: EditorOptionsProps) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	const { mutate, isPending } = useMutation({
+		mutationFn: async () => {
+			try {
+				const response = await axios.post(`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/create`, {
+					uploadedImages,
+					postContent
+				}, {
+					withCredentials: true
+				});
+
+				return response.data;
+			} catch (error) {
+				console.log(error);
+			}
+		},
+		onSuccess: () => {
+			alert("Successfully posted!")
+		}
+	});
 
 	return (
 		<>
@@ -58,7 +80,7 @@ export default function EditorOptions({ handleImage }: EditorOptionsProps) {
 				>
 					1
 				</div>
-				<button className="text-base ml-4 px-2 py-1 bg-white rounded-md text-black">
+				<button className="text-base ml-4 px-2 py-1 bg-white rounded-md text-black" onClick = {() => mutate()}>
 					POST
 				</button>
 			</div>
