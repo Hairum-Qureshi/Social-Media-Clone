@@ -14,6 +14,8 @@ export interface CarouselProps {
 
 export interface EditorOptionsProps {
 	handleImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	uploadedImages: string[];
+	postContent: string;
 }
 
 export interface UserData {
