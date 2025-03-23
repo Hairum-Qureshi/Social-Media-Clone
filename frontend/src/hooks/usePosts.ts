@@ -3,7 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Post, PostData } from "../interfaces";
 
-export default function usePosts(feedType?: string): PostData {
+export default function usePosts(feedType?: string ): PostData {
 	const [postData, setPostData] = useState<Post[]>([]);
 	const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
 	const [currentUserPostData, setCurrentUserPostData] = useState<Post[]>([]);
@@ -22,7 +22,7 @@ export default function usePosts(feedType?: string): PostData {
 	const POST_ENDPOINT: string = getFeedTypeEndpoint();
 
 	const { data, isLoading } = useQuery({
-		queryKey: ["posts", feedType],
+		queryKey: ["posts", feedType || "For You"],
 		queryFn: async () => {
 			try {
 				const response = await axios.get(
