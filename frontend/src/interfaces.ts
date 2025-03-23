@@ -44,7 +44,7 @@ export interface ContextData {
 
 export interface Post {
 	_id: string;
-	user: string;
+	user: UserData;
 	text: string;
 	image: string;
 	likes: string[];
