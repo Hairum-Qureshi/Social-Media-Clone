@@ -57,7 +57,7 @@ export default function UserSettingsModal({
 				<div>
 					<input
 						type="text"
-						placeholder="Country/Location"
+						placeholder="Location"
 						className="bg-transparent border-2 border-gray-600 w-full p-2 mr-2 mb-4 focus:border-sky-400 focus:outline-none rounded-md"
 					/>
 				</div>
