@@ -3,12 +3,14 @@ import Feed from "./pages/feed/Feed";
 import SignIn from "./pages/authentication/SignIn";
 import SignUp from "./pages/authentication/SignUp";
 import Explore from "./pages/navigation/Explore";
-import Notifications from "./pages/navigation/Notifications";
+import Notifications from "./pages/navigation/notification/Notifications";
 import Messages from "./pages/navigation/Messages";
 import Bookmarks from "./pages/navigation/Bookmarks";
 import Profile from "./pages/navigation/Profile";
 import NotFound from "./pages/NotFound";
 import ProtectedRoutesGuard from "./ProtectedRoutesGuard";
+import { AuthProvider } from "../contexts/AuthContext";
+import PostDetails from "./post/PostDetails";
 
 export default function App() {
 	return (
@@ -19,49 +21,71 @@ export default function App() {
 				<Route
 					path="/"
 					element={
-						<ProtectedRoutesGuard>
-							<Feed />
-						</ProtectedRoutesGuard>
+						<AuthProvider>
+							<ProtectedRoutesGuard>
+								<Feed />
+							</ProtectedRoutesGuard>
+						</AuthProvider>
 					}
 				/>
 				<Route
 					path="/explore"
 					element={
-						<ProtectedRoutesGuard>
-							<Explore />
-						</ProtectedRoutesGuard>
+						<AuthProvider>
+							<ProtectedRoutesGuard>
+								<Explore />
+							</ProtectedRoutesGuard>
+						</AuthProvider>
 					}
 				/>
 				<Route
 					path="/notifications"
 					element={
-						<ProtectedRoutesGuard>
-							<Notifications />
-						</ProtectedRoutesGuard>
+						<AuthProvider>
+							<ProtectedRoutesGuard>
+								<Notifications />
+							</ProtectedRoutesGuard>
+						</AuthProvider>
 					}
 				/>
 				<Route
 					path="/messages"
 					element={
-						<ProtectedRoutesGuard>
-							<Messages />
-						</ProtectedRoutesGuard>
+						<AuthProvider>
+							<ProtectedRoutesGuard>
+								<Messages />
+							</ProtectedRoutesGuard>
+						</AuthProvider>
 					}
 				/>
 				<Route
 					path="/bookmarks"
 					element={
-						<ProtectedRoutesGuard>
-							<Bookmarks />
-						</ProtectedRoutesGuard>
+						<AuthProvider>
+							<ProtectedRoutesGuard>
+								<Bookmarks />
+							</ProtectedRoutesGuard>
+						</AuthProvider>
 					}
 				/>
 				<Route
 					path="/:username"
 					element={
-						<ProtectedRoutesGuard>
-							<Profile />
-						</ProtectedRoutesGuard>
+						<AuthProvider>
+							<ProtectedRoutesGuard>
+								<Profile />
+							</ProtectedRoutesGuard>
+						</AuthProvider>
+					}
+				/>
+				<Route
+					path="/post/:postID"
+					element={
+						<AuthProvider>
+							<ProtectedRoutesGuard>
+								<PostDetails />
+							</ProtectedRoutesGuard>
+						</AuthProvider>
 					}
 				/>
 				<Route path="*" element={<NotFound />} />
