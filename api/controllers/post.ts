@@ -8,25 +8,26 @@ import User from "../models/User";
 
 const createPost = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const { text } = req.body;
-		let { image } = req.body;
+		const { postContent } = req.body;
+		let { uploadedImages } = req.body;
 
+		console.log(postContent, uploadedImages);
 		const currUID: string = req.user._id.toString();
 
-		if (!text && !image) {
+		if (!postContent && !uploadedImages) {
 			res.status(400).json({ message: "Please enter either text or image" });
 			return;
 		}
 
-		if (image) {
-			const uploadedImage = await cloudinary.uploader.upload(image);
-			image = uploadedImage.secure_url;
-		}
+		// if (uploadedImages) {
+		// 	const uploadedImage = await cloudinary.uploader.upload(uploadedImages);
+		// 	uploadedImages = uploadedImage.secure_url;
+		// }
 
 		const newPost: IPost = await Post.create({
 			user: currUID,
-			text,
-			image
+			text: postContent,
+			uploadedImages
 		});
 
 		res.status(201).json(newPost);
