@@ -41,3 +41,16 @@ export interface AuthProps {
 export interface ContextData {
 	userData: UserData | null;
 }
+
+export interface Post {
+	_id: string;
+	user: string;
+	text: string;
+	image: string;
+	likes: string[];
+	comments: Comment[];
+	numLikes: number;
+	numComments: number;
+	createdAt: Date;
+	updatedAt: Date;
+}
