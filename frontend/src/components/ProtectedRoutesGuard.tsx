@@ -3,6 +3,7 @@ import SideNavbar from "./pages/navigation/SideNavbar";
 import SideSuggestions from "./pages/feed/suggestions/SideSuggestions";
 import useAuthContext from "../contexts/AuthContext";
 import { useEffect, useState } from "react";
+import SignIn from "./pages/authentication/SignIn";
 
 export default function ProtectedRoutesGuard({
 	children
@@ -10,13 +11,13 @@ export default function ProtectedRoutesGuard({
 	const { userData } = useAuthContext()!;
 	const [isLoading, setIsLoading] = useState(true);
 
-	useEffect(() => {
+	useEffect(() => {		
 		if (userData !== null) {
 			setIsLoading(false);
 		}
-	}, [userData]);
+	}, [userData, isLoading]);
 
-	if (isLoading) return null;
+	if (isLoading) return <SignIn />;
 
 	return userData ? (
 		<div className="w-full h-screen flex">
