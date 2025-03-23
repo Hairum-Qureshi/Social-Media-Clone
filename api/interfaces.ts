@@ -69,4 +69,5 @@ export interface IPost {
 	numComments: number;
 	createdAt: Date;
 	updatedAt: Date;
+	postImages: string[];
 }
