@@ -66,3 +66,9 @@ export interface PostProps {
 	isOwner: boolean;
 	postData: Post;
 }
+
+export interface PostData {
+	postData: Post[];
+	loadingStatus: boolean;
+	currentUserPostData: Post[];
+}
