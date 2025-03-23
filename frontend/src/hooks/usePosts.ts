@@ -1,13 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Post } from "../interfaces";
-
-interface PostData {
-	postData: Post[];
-	loadingStatus: boolean;
-	currentUserPostData: Post[];
-}
+import { Post, PostData } from "../interfaces";
 
 export default function usePosts(feedType?: string): PostData {
 	const [postData, setPostData] = useState<Post[]>([]);
