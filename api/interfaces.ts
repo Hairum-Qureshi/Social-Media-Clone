@@ -62,7 +62,7 @@ export interface IPost {
 	_id: Types.ObjectId;
 	user: Types.ObjectId;
 	text: string;
-	image: string;
+	images: string[];
 	likes: Types.ObjectId[];
 	comments: Comment[];
 	numLikes: number;
