@@ -3,6 +3,9 @@ import EditorOptions from "./EditorOptions";
 import Carousel from "./carousel/Carousel";
 
 // TODO - need to resolve image aspect ratio when uploading images
+// TODO - if the user hasn't typed anything yet, disable the "POST" button too
+// TODO - instead of alerting the user they can only have a max of 4 images, disable the GIF and image icon
+// TODO - move all this logic to a custom hook
 export default function Editor() {
 	const [postContent, setPostContent] = useState("");
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -89,7 +92,7 @@ export default function Editor() {
 							</div>
 						</div>
 						<div className="flex items-center text-xl mt-3 text-sky-400">
-							<EditorOptions handleImage={handleImage} />
+							<EditorOptions handleImage={handleImage} uploadedImages = {uploadedImages} postContent = {postContent} />
 						</div>
 					</div>
 				</div>
