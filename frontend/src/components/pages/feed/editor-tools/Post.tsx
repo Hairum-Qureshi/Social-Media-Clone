@@ -36,7 +36,7 @@ export default function Post({ isOwner, postData }: PostProps) {
 					</span>
 					{postData.text && <span className="ml-3">{postData.text}</span>}
 					<div>
-						{postData.postImages.length > 0 && (
+						{postData.postImages?.length > 0 && (
 							<div className="w-full flex">
 								<Carousel
 									images={postData.postImages}
