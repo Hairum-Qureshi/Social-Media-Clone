@@ -7,16 +7,11 @@ import {
 	faX
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { OptionsProps } from "../../interfaces";
 
 // TODO - make sure that the "follow/unfollow" options are only available depending on whether the user has followed them or not
 
-interface Props {
-	close: () => void;
-	isOwner: boolean;
-	username: string;
-}
-
-export default function Options({ close, isOwner, username }: Props) {
+export default function Options({ close, isOwner, username }: OptionsProps) {
 	return (
 		<div className="bg-black z-10 border-2 font-bold border-white p-2 h-auto absolute right-0 w-2/5 mr-5 mt-2 rounded-md">
 			<div
