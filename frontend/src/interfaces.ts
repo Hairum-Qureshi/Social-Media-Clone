@@ -55,3 +55,9 @@ export interface Post {
 	updatedAt: Date;
 	postImages: string[];
 }
+
+export interface OptionsProps {
+	close: () => void;
+	isOwner: boolean;
+	username: string;
+}
