@@ -11,7 +11,6 @@ const createPost = async (req: Request, res: Response): Promise<void> => {
 		const { postContent } = req.body;
 		let { uploadedImages } = req.body;
 
-		console.log(postContent, uploadedImages);
 		const currUID: string = req.user._id.toString();
 
 		if (!postContent && !uploadedImages) {
@@ -19,10 +18,12 @@ const createPost = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		// if (uploadedImages) {
-		// 	const uploadedImage = await cloudinary.uploader.upload(uploadedImages);
-		// 	uploadedImages = uploadedImage.secure_url;
-		// }
+		if (uploadedImages) {
+			for (let i = 0; i < uploadedImages.length; i++) {
+				const uploadedImage = await cloudinary.uploader.upload(uploadedImages[i]);
+				uploadedImages = uploadedImage.secure_url;
+			}
+		}
 
 		const newPost: IPost = await Post.create({
 			user: currUID,
@@ -57,13 +58,15 @@ const deletePost = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		if (post.image) {
-			const imageID: string | undefined = post.image
-				.split("/")
-				.pop()
-				?.split(".")[0];
-			if (imageID) {
-				await cloudinary.uploader.destroy(imageID);
+		if (post.images) {
+			for (let i = 0; i < post.images.length; i++) {
+				const imageID: string | undefined = post.images[i]
+					.split("/")
+					.pop()
+					?.split(".")[0];
+				if (imageID) {
+					await cloudinary.uploader.destroy(imageID);
+				}
 			}
 		}
 
@@ -407,7 +410,10 @@ const deleteComment = async (req: Request, res: Response) => {
 	}
 };
 
-const getAllCurrUserPosts = async (req: Request, res: Response): Promise<void> => {
+const getAllCurrUserPosts = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
 	try {
 		const currUID: Types.ObjectId = req.user._id;
 		const userPosts: IPost[] = await Post.find({ user: currUID })
