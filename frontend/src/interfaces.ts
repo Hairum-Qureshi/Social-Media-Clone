@@ -53,4 +53,5 @@ export interface Post {
 	numComments: number;
 	createdAt: Date;
 	updatedAt: Date;
+	postImages: string[];
 }
