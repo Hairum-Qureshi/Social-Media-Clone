@@ -406,7 +406,7 @@ const deleteComment = async (req: Request, res: Response) => {
 	}
 };
 
-const getAllYourPosts = async (req: Request, res: Response): Promise<void> => {
+const getAllCurrUserPosts = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const currUID: Types.ObjectId = req.user._id;
 		const userPosts: IPost[] = await Post.find({ user: currUID })
@@ -434,5 +434,5 @@ export {
 	getFollowingUsersPosts,
 	getUserPosts,
 	deleteComment,
-	getAllYourPosts
+	getAllCurrUserPosts
 };
