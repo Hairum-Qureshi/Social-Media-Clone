@@ -10,19 +10,28 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OptionsProps } from "../../interfaces";
 
 // TODO - make sure that the "follow/unfollow" options are only available depending on whether the user has followed them or not
-
 export default function Options({ close, isOwner, username }: OptionsProps) {
 	return (
 		<div className="bg-black z-10 border-2 font-bold border-white p-2 h-auto absolute right-0 w-2/5 mr-5 mt-2 rounded-md">
 			<div
 				className="absolute top-0 right-0 m-3 font-bold text-lg hover:cursor-pointer"
-				onClick={() => close()}
+				onClick={e => {
+					e.stopPropagation();
+					e.preventDefault();
+					close();
+				}}
 			>
 				<FontAwesomeIcon icon={faX} />
 			</div>
 			<div>
 				{isOwner && (
-					<p className="my-4">
+					<p
+						className="my-4"
+						onClick={e => {
+							e.stopPropagation();
+							e.preventDefault();
+						}}
+					>
 						<span className="mx-3">
 							<FontAwesomeIcon icon={faPencil} />
 						</span>
@@ -30,7 +39,13 @@ export default function Options({ close, isOwner, username }: OptionsProps) {
 					</p>
 				)}
 				{isOwner && (
-					<p className="mb-4">
+					<p
+						className="mb-4"
+						onClick={e => {
+							e.stopPropagation();
+							e.preventDefault();
+						}}
+					>
 						<span className="mx-3">
 							<FontAwesomeIcon icon={faTrash} />
 						</span>
@@ -38,7 +53,13 @@ export default function Options({ close, isOwner, username }: OptionsProps) {
 					</p>
 				)}
 				{!isOwner && (
-					<p className="mb-4">
+					<p
+						className="mb-4"
+						onClick={e => {
+							e.stopPropagation();
+							e.preventDefault();
+						}}
+					>
 						<span className="mx-3">
 							<FontAwesomeIcon icon={faUserPlus} />
 						</span>
@@ -46,7 +67,13 @@ export default function Options({ close, isOwner, username }: OptionsProps) {
 					</p>
 				)}
 				{!isOwner && (
-					<p className="mb-4">
+					<p
+						className="mb-4"
+						onClick={e => {
+							e.stopPropagation();
+							e.preventDefault();
+						}}
+					>
 						<span className="mx-3">
 							<FontAwesomeIcon icon={faUserMinus} />
 						</span>
@@ -54,7 +81,13 @@ export default function Options({ close, isOwner, username }: OptionsProps) {
 					</p>
 				)}
 				{!isOwner && (
-					<p className="mb-4">
+					<p
+						className="mb-4"
+						onClick={e => {
+							e.stopPropagation();
+							e.preventDefault();
+						}}
+					>
 						<span className="mx-3">
 							<FontAwesomeIcon icon={faBan} />
 						</span>
