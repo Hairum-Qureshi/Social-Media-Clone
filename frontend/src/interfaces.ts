@@ -16,6 +16,7 @@ export interface EditorOptionsProps {
 	handleImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	uploadedImages: string[];
 	postContent: string;
+	clearTextArea: () => void
 }
 
 export interface UserData {
@@ -73,4 +74,6 @@ export interface PostData {
 	postData: Post[];
 	loadingStatus: boolean;
 	currentUserPostData: Post[];
+	postMutation: (uploadedImages: string[], postContent: string) => void;
+	isPending: boolean;
 }
