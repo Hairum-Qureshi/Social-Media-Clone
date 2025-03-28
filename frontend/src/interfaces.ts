@@ -63,6 +63,7 @@ export interface OptionsProps {
 	close: () => void;
 	isOwner: boolean;
 	username: string;
+	postID: string;
 }
 
 export interface PostProps {
@@ -76,4 +77,5 @@ export interface PostData {
 	currentUserPostData: Post[];
 	postMutation: (uploadedImages: string[], postContent: string) => void;
 	isPending: boolean;
+	deleteMutation: (postID: string) => void;
 }
