@@ -80,13 +80,35 @@ export default function usePosts(feedType?: string): PostData {
 			}
 		},
 		onSuccess: () => {
-			// alert("Successfully posted!");
 			queryClient.invalidateQueries({ queryKey: ["posts"] });
 		}
 	});
 
 	const postMutation = (uploadedImages: string[], postContent: string) => {
 		mutate({ uploadedImages, postContent });
+	};
+
+	const { mutate: deletion } = useMutation({
+		mutationFn: async ({ postID }: { postID: string }) => {
+			try {
+				const response = await axios.delete(
+					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/${postID}`,
+					{ withCredentials: true }
+				);
+
+				return response.data;
+			} catch (error) {
+				console.error("Error posting:", error);
+				throw new Error("Failed to create post");
+			}
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["posts"] });
+		}
+	});
+
+	const deleteMutation = (postID: string) => {
+		deletion({ postID });
 	};
 
 	useEffect(() => {
@@ -98,5 +120,12 @@ export default function usePosts(feedType?: string): PostData {
 		setLoadingStatus(isLoading);
 	}, [data, feedType, isLoading]);
 
-	return { postData, loadingStatus, currentUserPostData, postMutation, isPending };
+	return {
+		postData,
+		loadingStatus,
+		currentUserPostData,
+		postMutation,
+		isPending,
+		deleteMutation
+	};
 }
