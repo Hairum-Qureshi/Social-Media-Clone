@@ -71,12 +71,12 @@ export default function EditorOptions({
 					1
 				</div>
 				<button
-					className="text-base ml-4 px-2 py-1 bg-white rounded-md text-black"
+					className="text-base ml-4 px-2 py-1 bg-white rounded-md text-black disabled:bg-slate-300"
 					onClick={() => {
 						postMutation(uploadedImages, postContent);
 						clearTextArea();
 					}}
-					disabled={isPending}
+					disabled={isPending || !postContent}
 				>
 					{isPending ? "Posting..." : "POST"}
 				</button>
