@@ -55,6 +55,11 @@ export default function Editor() {
 		}
 	}
 
+	function clearTextArea() {
+		setPostContent("");
+		setUploadedImages([]);
+	}
+
 	// TODO - allow users to paste images
 	return (
 		<div className="border-2 border-gray-500">
@@ -92,7 +97,7 @@ export default function Editor() {
 							</div>
 						</div>
 						<div className="flex items-center text-xl mt-3 text-sky-400">
-							<EditorOptions handleImage={handleImage} uploadedImages = {uploadedImages} postContent = {postContent} />
+							<EditorOptions handleImage={handleImage} uploadedImages = {uploadedImages} postContent = {postContent} clearTextArea = {clearTextArea} />
 						</div>
 					</div>
 				</div>
