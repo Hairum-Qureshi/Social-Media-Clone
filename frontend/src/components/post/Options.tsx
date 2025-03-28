@@ -8,9 +8,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OptionsProps } from "../../interfaces";
+import usePosts from "../../hooks/usePosts";
 
 // TODO - make sure that the "follow/unfollow" options are only available depending on whether the user has followed them or not
-export default function Options({ close, isOwner, username }: OptionsProps) {
+export default function Options({
+	close,
+	isOwner,
+	username,
+	postID
+}: OptionsProps) {
+	const { deleteMutation } = usePosts();
+
 	return (
 		<div className="bg-black z-10 border-2 font-bold border-white p-2 h-auto absolute right-0 w-2/5 mr-5 mt-2 rounded-md">
 			<div
@@ -44,6 +52,8 @@ export default function Options({ close, isOwner, username }: OptionsProps) {
 						onClick={e => {
 							e.stopPropagation();
 							e.preventDefault();
+							deleteMutation(postID);
+							close();
 						}}
 					>
 						<span className="mx-3">
