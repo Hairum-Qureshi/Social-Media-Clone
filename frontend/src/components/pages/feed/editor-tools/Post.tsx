@@ -40,7 +40,7 @@ export default function Post({ isOwner, postData }: PostProps) {
 				/>
 				<div className="lg:flex lg:flex-col lg:w-full">
 					<Link
-						to={`/${postData.user._id}`}
+						to={`/${postData.user.username}`}
 						onClick={e => {
 							e.stopPropagation();
 							e.preventDefault();
