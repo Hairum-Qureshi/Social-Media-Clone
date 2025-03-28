@@ -29,6 +29,7 @@ export default function Post({ isOwner, postData }: PostProps) {
 					close={close}
 					isOwner={isOwner}
 					username={postData.user.username}
+					postID={postData._id}
 				/>
 			)}
 			<div className="flex">
@@ -48,7 +49,8 @@ export default function Post({ isOwner, postData }: PostProps) {
 						<span className="text-base font-bold flex items-center ml-3">
 							{postData.user.fullName}&nbsp;
 							<span className="text-gray-500 font-light">
-								@{postData.user.username} · {moment(postData.createdAt.toString()).fromNow()}
+								@{postData.user.username} ·{" "}
+								{moment(postData.createdAt.toString()).fromNow()}
 							</span>
 						</span>
 					</Link>
