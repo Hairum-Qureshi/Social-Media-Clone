@@ -3,6 +3,10 @@ import { IPost } from "../interfaces";
 
 const postSchema = new Schema(
 	{
+		_id: {
+			type: String,
+			required: true
+		},
 		user: {
 			type: Types.ObjectId,
 			ref: "User",
