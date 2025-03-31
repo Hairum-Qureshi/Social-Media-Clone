@@ -206,7 +206,7 @@ const updateProfile = async (req: Request, res: Response): Promise<void> => {
 		) {
 			res
 				.status(400)
-				.json({ message: "Current password is required for password change" });
+				.json({ message: "Please make sure you fill out both password fields to update password" });
 			return;
 		}
 
