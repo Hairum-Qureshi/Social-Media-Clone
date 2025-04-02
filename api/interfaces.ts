@@ -41,7 +41,7 @@ enum NotificationTypes {
 	Like = "LIKE",
 	Comment = "COMMENT",
 	Follow = "FOLLOW",
-	Message = "MeSSAGE"
+	Message = "MESSAGE"
 }
 
 export interface INotification {
