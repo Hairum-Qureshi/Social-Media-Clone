@@ -13,7 +13,7 @@ import {
 	getAllCurrUserPosts
 } from "../controllers/post";
 import multer from "multer";
-import storage from "../config/multer-config";
+import { storage } from "../config/multer-config";
 
 const upload = multer({ storage });
 const router = express.Router();
