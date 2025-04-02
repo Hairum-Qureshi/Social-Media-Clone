@@ -5,30 +5,56 @@ import { v2 as cloudinary } from "cloudinary";
 import { Types } from "mongoose";
 import Notification from "../models/Notification";
 import User from "../models/User";
+import fs from "fs";
+import { FOLDER_PATH } from "../config/multer-config";
 
 const createPost = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { postContent } = req.body;
-		let { uploadedImages } = req.body;
+		const uploadedImages = fs.readdirSync(FOLDER_PATH);
+		const { postID } = req.body;
 
-		const currUID: string = req.user._id.toString();
+		const currUID = req.user._id.toString();
 
 		if (!postContent && !uploadedImages) {
 			res.status(400).json({ message: "Please enter either text or image" });
 			return;
 		}
 
+		const uploadedImagesURLs: string[] = [];
+
 		if (uploadedImages) {
 			for (let i = 0; i < uploadedImages.length; i++) {
-				const uploadedImage = await cloudinary.uploader.upload(uploadedImages[i]);
-				uploadedImages = uploadedImage.secure_url;
+				const uploadedImage = await cloudinary.uploader.upload(
+					`${FOLDER_PATH}/${uploadedImages[i]}`
+				);
+				const uploadedImageURL = uploadedImage.secure_url;
+				uploadedImagesURLs.push(uploadedImageURL);
 			}
 		}
 
 		const newPost: IPost = await Post.create({
+			_id: postID,
 			user: currUID,
 			text: postContent,
-			uploadedImages
+			postImages: uploadedImagesURLs
+		});
+
+		fs.readdir(FOLDER_PATH, (err, files) => {
+			if (err) {
+				console.error("Error reading directory:", err);
+				return;
+			}
+
+			files.forEach(file => {
+				if (file.includes(postID) && file.includes(currUID)) {
+					fs.unlink(`${FOLDER_PATH}/${file}`, err => {
+						if (err) {
+							console.error("Error in createPost function: error deleting file:".red.bold, file, err);
+						}
+					});
+				}
+			});
 		});
 
 		res.status(201).json(newPost);
@@ -41,6 +67,7 @@ const createPost = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+// TODO - make sure you to delete the post's images (if any) that have been saved to Cloudinary
 const deletePost = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const postID: string = req.params.postID;
