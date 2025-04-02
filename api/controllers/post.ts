@@ -50,7 +50,11 @@ const createPost = async (req: Request, res: Response): Promise<void> => {
 				if (file.includes(postID) && file.includes(currUID)) {
 					fs.unlink(`${FOLDER_PATH}/${file}`, err => {
 						if (err) {
-							console.error("Error in createPost function: error deleting file:".red.bold, file, err);
+							console.error(
+								"Error in createPost function: error deleting file:".red.bold,
+								file,
+								err
+							);
 						}
 					});
 				}
@@ -458,6 +462,23 @@ const getAllCurrUserPosts = async (
 	}
 };
 
+const getPostData = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { postID } = req.params;
+		const post: IPost = (await Post.findById(postID)) as IPost;
+		if (!post) {
+			res.status(404).json({ error: "Post not found" });
+		}
+		res.status(200).json(post);
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, getPostData function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
 export {
 	createPost,
 	deletePost,
@@ -468,5 +489,6 @@ export {
 	getFollowingUsersPosts,
 	getUserPosts,
 	deleteComment,
-	getAllCurrUserPosts
+	getAllCurrUserPosts,
+	getPostData
 };
