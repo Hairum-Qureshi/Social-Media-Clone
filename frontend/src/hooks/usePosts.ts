@@ -2,12 +2,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Post, PostData } from "../interfaces";
+import useAuthContext from "../contexts/AuthContext";
 
 export default function usePosts(feedType?: string): PostData {
 	const [postData, setPostData] = useState<Post[]>([]);
 	const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
 	const [currentUserPostData, setCurrentUserPostData] = useState<Post[]>([]);
 	const queryClient = useQueryClient();
+	const { userData } = useAuthContext()!;
 
 	function getFeedTypeEndpoint(): string {
 		switch (feedType) {
@@ -58,6 +60,16 @@ export default function usePosts(feedType?: string): PostData {
 		}
 	});
 
+	async function blobURLToFile(blobURL: string, postID:string): Promise<File> {
+		const response = await axios.get(blobURL, { responseType: "blob" });
+		const blob = response.data;
+		const originalFile = await fetch(blobURL).then(res => res.blob());
+
+		return new File([blob], `${postID}-${userData?._id}-${Math.round(Date.now() * Math.random() * 1e9)}`, {
+			type: originalFile.type
+		});
+	}
+
 	const { mutate, isPending } = useMutation({
 		mutationFn: async ({
 			uploadedImages,
@@ -67,10 +79,26 @@ export default function usePosts(feedType?: string): PostData {
 			postContent: string;
 		}) => {
 			try {
+				const formData = new FormData();
+				const postID = Date.now().toString(36) + Math.random().toString(36).substring(2);
+				formData.append("postID", postID);
+
+				if (uploadedImages.length > 0) {
+					for (let i = 0; i < uploadedImages.length; i++) {
+						const res: File = await blobURLToFile(uploadedImages[i], postID);
+						formData.append("images", res);
+					}
+				}
+
+				formData.append("postContent", postContent);
+
 				const response = await axios.post(
 					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/create`,
-					{ uploadedImages, postContent },
-					{ withCredentials: true }
+					formData,
+					{
+						withCredentials: true,
+						headers: { "Content-Type": "multipart/form-data" }
+					}
 				);
 
 				return response.data;
