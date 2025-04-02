@@ -1,12 +1,16 @@
 import multer from "multer";
 
+const FOLDER_PATH = "./uploads";
 const storage = multer.diskStorage({
 	destination: (req, file, callback) => {
-		callback(null, "./uploads");
+		callback(null, FOLDER_PATH);
 	},
 	filename: (req, file, callback) => {
-		callback(null, `${Date.now()}-${file.originalname}.${file.mimetype.split("/")[1]}`);
+		callback(
+			null,
+			`${req.body.postID}-${req.user._id}.${file.mimetype.split("/")[1]}`
+		);
 	}
 });
 
-export default storage;
+export { storage, FOLDER_PATH };
