@@ -10,7 +10,8 @@ import {
 	getFollowingUsersPosts,
 	getUserPosts,
 	deleteComment,
-	getAllCurrUserPosts
+	getAllCurrUserPosts,
+	getPostData
 } from "../controllers/post";
 import multer from "multer";
 import { storage } from "../config/multer-config";
@@ -20,6 +21,7 @@ const router = express.Router();
 
 router.post("/create", checkAuthStatus, upload.array("images", 4), createPost);
 router.delete("/:postID", checkAuthStatus, deletePost);
+router.get("/:postID", checkAuthStatus, getPostData);
 router.post("/handle-likes/:postID", checkAuthStatus, handleLikes);
 router.post("/comment/:postID", checkAuthStatus, postComment);
 router.get("/all", checkAuthStatus, getAllPosts);
