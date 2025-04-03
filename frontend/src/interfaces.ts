@@ -78,4 +78,5 @@ export interface PostData {
 	postMutation: (uploadedImages: string[], postContent: string) => void;
 	isPending: boolean;
 	deleteMutation: (postID: string) => void;
+	postDataByID: Post;
 }
