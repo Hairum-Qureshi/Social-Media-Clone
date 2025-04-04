@@ -16,7 +16,7 @@ import {
 import multer from "multer";
 import { storage } from "../config/multer-config";
 
-const upload = multer({ storage });
+export const upload = multer({ storage });
 const router = express.Router();
 
 router.post("/create", checkAuthStatus, upload.array("images", 4), createPost);
