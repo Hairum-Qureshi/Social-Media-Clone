@@ -62,6 +62,7 @@ export default function Post({ isOwner, postData }: PostProps) {
 									images={postData.postImages}
 									numImages={postData.postImages.length}
 									allowDelete={isOwner}
+									forPost={true}
 								/>
 							</div>
 						)}
