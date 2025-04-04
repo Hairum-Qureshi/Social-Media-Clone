@@ -16,6 +16,7 @@ export interface IUser {
 	likedPosts: Types.ObjectId[];
 	numFollowers: number;
 	numFollowing: number;
+	isVerified: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -35,6 +36,7 @@ export interface UserData {
 	likedPosts: Types.ObjectId[];
 	numFollowers: number;
 	numFollowing: number;
+	isVerified: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
