@@ -29,6 +29,9 @@ const userSchema = new Schema(
 				default: []
 			}
 		],
+		location: {
+			type: String
+		},
 		following: [
 			{
 				type: Types.ObjectId,
@@ -38,11 +41,13 @@ const userSchema = new Schema(
 		],
 		profilePicture: {
 			type: String,
-			default: "https://i.pinimg.com/236x/75/ae/6e/75ae6eeeeb590c066ec53b277b614ce3.jpg"
+			default:
+				"https://i.pinimg.com/236x/75/ae/6e/75ae6eeeeb590c066ec53b277b614ce3.jpg"
 		},
 		coverImage: {
 			type: String,
-			default: "https://advisorretire.com/wp-content/plugins/pl-platform/engine/ui/images/default-landscape.png"
+			default:
+				"https://advisorretire.com/wp-content/plugins/pl-platform/engine/ui/images/default-landscape.png"
 		},
 		bio: {
 			type: String,
