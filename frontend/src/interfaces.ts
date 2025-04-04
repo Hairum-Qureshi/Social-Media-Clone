@@ -3,6 +3,7 @@ export interface CarouselImageProps {
 	imageIndex: number;
 	removeImage?: (imageIndex: number) => void;
 	allowDelete: boolean;
+	forPost: boolean;
 }
 
 export interface CarouselProps {
@@ -10,13 +11,14 @@ export interface CarouselProps {
 	numImages: number;
 	removeImage?: (imageIndex: number) => void;
 	allowDelete: boolean;
+	forPost: boolean;
 }
 
 export interface EditorOptionsProps {
 	handleImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
 	uploadedImages: string[];
 	postContent: string;
-	clearTextArea: () => void
+	clearTextArea: () => void;
 }
 
 export interface UserData {
