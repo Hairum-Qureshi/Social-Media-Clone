@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 interface ProfileTools {
 	postMutation: (
@@ -16,7 +17,7 @@ interface ProfileTools {
 export default function useProfile(): ProfileTools {
 	const queryClient = useQueryClient();
 
-	const { mutate, isPending } = useMutation({
+	const { mutate } = useMutation({
 		mutationFn: async ({
 			fullName,
 			username,
@@ -37,34 +38,32 @@ export default function useProfile(): ProfileTools {
 			link?: string;
 		}) => {
 			try {
-				console.log(
-					fullName,
-					username,
-					email,
-					currentPassword,
-					newPassword,
-					location,
-					bio,
-					link
+				const response = await axios.post(
+					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/user/update-profile`,
+					{
+						fullName,
+						username,
+						email,
+						currentPassword,
+						newPassword,
+						location,
+						bio,
+						link
+					},
+					{
+						withCredentials: true
+					}
 				);
 
-				// const response = await axios.post(
-				// 	`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/create`,
-				// 	formData,
-				// 	{
-				// 		withCredentials: true,
-				// 		headers: { "Content-Type": "multipart/form-data" }
-				// 	}
-				// );
-
-				// return response.data;
+				return response.data;
 			} catch (error) {
 				console.error("Error posting:", error);
 				throw new Error("Failed to create post");
 			}
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["posts"] });
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+			queryClient.invalidateQueries({ queryKey: ["currentUserPosts"] });
 		}
 	});
 
