@@ -23,7 +23,7 @@ export default function ProtectedRoutesGuard({
 		<div className="w-full h-screen flex">
 			<SideNavbar />
 			<div className="flex-1 flex justify-center">{children}</div>
-			<SideSuggestions />
+			{!window.location.href.includes("/messages") && <SideSuggestions />}
 		</div>
 	) : (
 		<Navigate to="/sign-in" />
