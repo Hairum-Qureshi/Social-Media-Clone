@@ -26,6 +26,7 @@ export interface UserData {
 	username: string;
 	fullName: string;
 	email: string;
+	location: string;
 	followers: string[];
 	following: string[];
 	profilePicture: string;
