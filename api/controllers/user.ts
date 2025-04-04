@@ -191,10 +191,33 @@ const handleFollowStatus = async (
 	}
 };
 
+function correctLocation(location: string): string {
+	if (
+		location.toLowerCase().trim() === "israel" ||
+		location.toLowerCase().trim() === "state of israel" ||
+		location.toLowerCase().trim() === "the state of israel" ||
+		location.includes("israel") ||
+		location.includes("state of israel") ||
+		location.includes("the state of israel")
+	) {
+		return "Palestine";
+	}
+
+	return location;
+}
+
 const updateProfile = async (req: Request, res: Response): Promise<void> => {
-	const { fullName, email, username, currentPassword, newPassword, bio, link } =
-		req.body;
-	let { profileImage, coverImage } = req.body;
+	const {
+		fullName,
+		email,
+		username,
+		currentPassword,
+		newPassword,
+		location,
+		bio,
+		link
+	} = req.body;
+	// let { profileImage, coverImage } = req.body;
 	const currUID: Types.ObjectId = req.user._id;
 
 	try {
@@ -204,9 +227,10 @@ const updateProfile = async (req: Request, res: Response): Promise<void> => {
 			(!newPassword && currentPassword) ||
 			(newPassword && !currentPassword)
 		) {
-			res
-				.status(400)
-				.json({ message: "Please make sure you fill out both password fields to update password" });
+			res.status(400).json({
+				message:
+					"Please make sure you fill out both password fields to update password"
+			});
 			return;
 		}
 
@@ -244,31 +268,31 @@ const updateProfile = async (req: Request, res: Response): Promise<void> => {
 			).select("-password -__v")) as IUser;
 		}
 
-		if (profileImage) {
-			if (user.profilePicture) {
-				// get the image's ID from the URL and delete it
-				const profilePictureID: string = profileImage
-					.split("/")
-					.pop()
-					.split(".")[0];
-				await cloudinary.uploader.destroy(profilePictureID);
-			}
+		// if (profileImage) {
+		// 	if (user.profilePicture) {
+		// 		// get the image's ID from the URL and delete it
+		// 		const profilePictureID: string = profileImage
+		// 			.split("/")
+		// 			.pop()
+		// 			.split(".")[0];
+		// 		await cloudinary.uploader.destroy(profilePictureID);
+		// 	}
 
-			const uploadedProfileImage = await cloudinary.uploader.upload(
-				profileImage
-			);
-			profileImage = uploadedProfileImage.secure_url;
-		}
+		// 	const uploadedProfileImage = await cloudinary.uploader.upload(
+		// 		profileImage
+		// 	);
+		// 	profileImage = uploadedProfileImage.secure_url;
+		// }
 
-		if (coverImage) {
-			if (user.coverImage) {
-				// get the image's ID from the URL and delete it
-				const coverImageID: string = coverImage.split("/").pop().split(".")[0];
-				await cloudinary.uploader.destroy(coverImageID);
-			}
-			const uploadedCoverImage = await cloudinary.uploader.upload(coverImage);
-			coverImage = uploadedCoverImage.secure_url;
-		}
+		// if (coverImage) {
+		// 	if (user.coverImage) {
+		// 		// get the image's ID from the URL and delete it
+		// 		const coverImageID: string = coverImage.split("/").pop().split(".")[0];
+		// 		await cloudinary.uploader.destroy(coverImageID);
+		// 	}
+		// 	const uploadedCoverImage = await cloudinary.uploader.upload(coverImage);
+		// 	coverImage = uploadedCoverImage.secure_url;
+		// }
 
 		if (username) {
 			// check if the username is taken or not
@@ -289,11 +313,12 @@ const updateProfile = async (req: Request, res: Response): Promise<void> => {
 				$set: {
 					fullName: fullName || user.fullName,
 					email: email || user.email,
+					location: correctLocation(location) || user.location,
 					username: username || user.username,
 					bio: bio || user.bio,
-					link: link || user.link,
-					profilePicture: profileImage || user.profilePicture,
-					coverImage: coverImage || user.coverImage
+					link: link || user.link
+					// profilePicture: profileImage || user.profilePicture,
+					// coverImage: coverImage || user.coverImage
 				}
 			},
 			{ new: true }
