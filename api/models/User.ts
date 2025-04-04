@@ -22,6 +22,9 @@ const userSchema = new Schema(
 			required: true,
 			unique: true
 		},
+		location: {
+			type: String
+		},
 		followers: [
 			{
 				type: Types.ObjectId,
@@ -29,9 +32,6 @@ const userSchema = new Schema(
 				default: []
 			}
 		],
-		location: {
-			type: String
-		},
 		following: [
 			{
 				type: Types.ObjectId,
