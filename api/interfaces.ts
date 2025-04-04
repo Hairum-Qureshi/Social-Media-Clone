@@ -6,6 +6,7 @@ export interface IUser {
 	fullName: string;
 	password: string | undefined;
 	email: string;
+	location: string;
 	followers: Types.ObjectId[];
 	following: Types.ObjectId[];
 	profilePicture: string;
@@ -24,6 +25,7 @@ export interface UserData {
 	username: string;
 	fullName: string;
 	email: string;
+	location: string;
 	followers: Types.ObjectId[];
 	following: Types.ObjectId[];
 	profilePicture: string;
