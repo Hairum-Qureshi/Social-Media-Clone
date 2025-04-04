@@ -8,7 +8,8 @@ export default function Carousel({
 	images,
 	numImages,
 	removeImage,
-	allowDelete
+	allowDelete,
+	forPost
 }: CarouselProps) {
 	const [index, setIndex] = useState(0);
 
@@ -26,12 +27,14 @@ export default function Carousel({
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
+						forPost={forPost}
 					/>
 					<CarouselImage
 						image={images[index + 2]}
 						imageIndex={index + 2}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
+						forPost={forPost}
 					/>
 					<div
 						className={`absolute top-28 ${
@@ -58,12 +61,14 @@ export default function Carousel({
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
+						forPost={forPost}
 					/>
 					<CarouselImage
 						image={images[index + 1]}
 						imageIndex={index + 1}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
+						forPost={forPost}
 					/>
 					<div
 						className={`absolute top-28 ${
@@ -90,12 +95,14 @@ export default function Carousel({
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
+						forPost={forPost}
 					/>
 					<CarouselImage
 						image={images[index + 1]}
 						imageIndex={index + 1}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
+						forPost={forPost}
 					/>
 				</>
 			) : (
@@ -105,6 +112,7 @@ export default function Carousel({
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
+						forPost={forPost}
 					/>
 				</div>
 			)}
