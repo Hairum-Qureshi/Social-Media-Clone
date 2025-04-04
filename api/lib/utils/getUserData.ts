@@ -17,6 +17,7 @@ export default function getUserData(user: IUser): UserData {
 		numFollowers: user.numFollowers,
 		numFollowing: user.numFollowing,
 		createdAt: user.createdAt,
-		updatedAt: user.updatedAt
+		updatedAt: user.updatedAt,
+		isVerified: user.isVerified
 	};
 }
