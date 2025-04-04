@@ -465,10 +465,21 @@ const getAllCurrUserPosts = async (
 const getPostData = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { postID } = req.params;
-		const post: IPost = (await Post.findById(postID)) as IPost;
+		const post: IPost | null = await Post.findById({
+			_id: postID
+		})
+			.populate({ path: "user", select: "-password -__v" })
+			.populate({
+				path: "comments.user",
+				select: "-password -__v"
+			})
+			.select("-__v");
+
 		if (!post) {
 			res.status(404).json({ error: "Post not found" });
+			return;
 		}
+
 		res.status(200).json(post);
 	} catch (error) {
 		console.error(
