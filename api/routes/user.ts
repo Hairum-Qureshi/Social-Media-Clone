@@ -3,7 +3,8 @@ import {
 	getProfile,
 	getSuggestedUsers,
 	handleFollowStatus,
-	updateProfile
+	updateProfile,
+	updateProfileImages
 } from "../controllers/user";
 import checkAuthStatus from "../middleware/checkAuthStatus";
 import { upload } from "./post";
@@ -14,6 +15,6 @@ router.get("/profile/:username", checkAuthStatus, getProfile);
 router.get("/suggested", checkAuthStatus, getSuggestedUsers);
 router.post("/follow-status/:uid", checkAuthStatus, handleFollowStatus);
 router.post("/update-profile", checkAuthStatus, updateProfile);
-router.post("/update-profile/images", checkAuthStatus, upload.single("image"), updateProfile);
+router.post("/update-profile/images", checkAuthStatus, upload.single("image"), updateProfileImages);
 
 export default router;
