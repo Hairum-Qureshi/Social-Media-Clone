@@ -11,7 +11,7 @@ export default function ProtectedRoutesGuard({
 	const { userData } = useAuthContext()!;
 	const [isLoading, setIsLoading] = useState(true);
 
-	useEffect(() => {		
+	useEffect(() => {
 		if (userData !== null) {
 			setIsLoading(false);
 		}
@@ -23,7 +23,10 @@ export default function ProtectedRoutesGuard({
 		<div className="w-full h-screen flex">
 			<SideNavbar />
 			<div className="flex-1 flex justify-center">{children}</div>
-			{!window.location.href.includes("/messages") && <SideSuggestions />}
+			{(!window.location.href.includes("/messages") &&
+				!window.location.href.includes("/messages/requests")) && (
+				<SideSuggestions />
+			)}
 		</div>
 	) : (
 		<Navigate to="/sign-in" />
