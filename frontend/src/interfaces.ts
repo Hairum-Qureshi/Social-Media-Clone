@@ -36,6 +36,7 @@ export interface UserData {
 	likedPosts: string[];
 	numFollowers: number;
 	numFollowing: number;
+	isVerified: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
