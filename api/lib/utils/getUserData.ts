@@ -6,6 +6,7 @@ export default function getUserData(user: IUser): UserData {
 		username: user.username,
 		fullName: user.fullName,
 		email: user.email,
+		location: user.location,
 		followers: user.followers,
 		following: user.following,
 		profilePicture: user.profilePicture,
