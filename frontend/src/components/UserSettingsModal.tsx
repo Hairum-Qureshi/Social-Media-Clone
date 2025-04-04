@@ -108,7 +108,7 @@ export default function UserSettingsModal({
 				<div>
 					<button
 						className="w-full p-2 border-blue-300 bg-sky-400 text-white rounded-full"
-						onClick={() =>
+						onClick={() => {
 							postMutation(
 								fullName,
 								username,
@@ -118,8 +118,9 @@ export default function UserSettingsModal({
 								location,
 								bio,
 								link
-							)
-						}
+							);
+							closeModal();
+						}}
 					>
 						Update
 					</button>
