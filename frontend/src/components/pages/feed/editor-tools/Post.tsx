@@ -1,4 +1,8 @@
-import { faEllipsis, faShare } from "@fortawesome/free-solid-svg-icons";
+import {
+	faCertificate,
+	faEllipsis,
+	faShare
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import Options from "../../../post/Options";
@@ -49,8 +53,16 @@ export default function Post({ isOwner, postData }: PostProps) {
 						<span className="text-base font-bold flex items-center ml-3">
 							{postData.user.fullName}&nbsp;
 							<span className="text-gray-500 font-light">
-								@{postData.user.username} ·{" "}
-								{moment(postData.createdAt.toString()).fromNow()}
+								@{postData.user.username}&nbsp;
+								{postData.user.isVerified && (
+									<span
+										className="text-purple-500"
+										title="This is a verified account"
+									>
+										<FontAwesomeIcon icon={faCertificate} />
+									</span>
+								)}{" "}
+								·{moment(postData.createdAt.toString()).fromNow()}
 							</span>
 						</span>
 					</Link>
