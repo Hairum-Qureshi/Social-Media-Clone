@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import ProtectedRoutesGuard from "./ProtectedRoutesGuard";
 import { AuthProvider } from "../contexts/AuthContext";
 import PostDetails from "./post/PostDetails";
+import Requests from "./pages/navigation/messages/Requests";
 
 export default function App() {
 	return (
@@ -54,6 +55,16 @@ export default function App() {
 						<AuthProvider>
 							<ProtectedRoutesGuard>
 								<Messages />
+							</ProtectedRoutesGuard>
+						</AuthProvider>
+					}
+				/>
+				<Route
+					path="/messages/requests"
+					element={
+						<AuthProvider>
+							<ProtectedRoutesGuard>
+								<Requests />
 							</ProtectedRoutesGuard>
 						</AuthProvider>
 					}
