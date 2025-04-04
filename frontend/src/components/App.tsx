@@ -4,7 +4,7 @@ import SignIn from "./pages/authentication/SignIn";
 import SignUp from "./pages/authentication/SignUp";
 import Explore from "./pages/navigation/Explore";
 import Notifications from "./pages/navigation/notification/Notifications";
-import Messages from "./pages/navigation/Messages";
+import Messages from "./pages/navigation/messages/Messages";
 import Bookmarks from "./pages/navigation/Bookmarks";
 import Profile from "./pages/navigation/Profile";
 import NotFound from "./pages/NotFound";
