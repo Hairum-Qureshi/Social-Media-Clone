@@ -2,6 +2,7 @@ import { faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import useProfile from "../hooks/useProfile";
+import useAuthContext from "../contexts/AuthContext";
 
 interface UserSettingsModalProps {
 	closeModal: () => void;
@@ -13,14 +14,15 @@ export default function UserSettingsModal({
 	// TODO - make sure to add logic where if the user enters "Israel"/"State of Israel", it will change to "Palestine"
 	// TODO - consider adding a border shadow around the div
 
-	const [fullName, setFullName] = useState("");
-	const [username, setUsername] = useState("");
-	const [email, setEmail] = useState("");
+	const { userData } = useAuthContext()!;
+	const [fullName, setFullName] = useState(userData?.fullName || "");
+	const [username, setUsername] = useState(userData?.username || "");
+	const [email, setEmail] = useState(userData?.email || "");
 	const [currentPassword, setCurrentPassword] = useState("");
 	const [newPassword, setNewPassword] = useState("");
-	const [location, setLocation] = useState("");
-	const [bio, setBio] = useState("");
-	const [link, setLink] = useState("");
+	const [location, setLocation] = useState(userData?.location || "");
+	const [bio, setBio] = useState(userData?.bio || "");
+	const [link, setLink] = useState(userData?.link || "");
 
 	const { postMutation } = useProfile();
 
