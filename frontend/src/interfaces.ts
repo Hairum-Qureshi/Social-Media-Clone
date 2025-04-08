@@ -88,4 +88,5 @@ export interface PostData {
 export interface UserCardProps {
 	showFollowButton?: boolean;
 	isFollowing?: boolean;
+	showFollowStatus: boolean;
 }
