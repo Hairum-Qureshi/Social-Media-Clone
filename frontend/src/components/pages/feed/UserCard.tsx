@@ -1,6 +1,4 @@
-interface UserCardProps {
-	showFollowButton?: boolean;
-}
+import { UserCardProps } from "../../../interfaces";
 
 export default function UserCard({ showFollowButton }: UserCardProps) {
 	return (
