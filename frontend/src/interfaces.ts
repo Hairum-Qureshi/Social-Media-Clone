@@ -84,3 +84,7 @@ export interface PostData {
 	deleteMutation: (postID: string) => void;
 	postDataByID: Post;
 }
+
+export interface UserCardProps {
+	showFollowButton?: boolean;
+}
