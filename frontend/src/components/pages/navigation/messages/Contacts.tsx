@@ -6,11 +6,17 @@ import { useState } from "react";
 
 export default function Contacts() {
 	const path = window.location.pathname;
-	const [openModal, setOpenModal] = useState(false);
+	const [openModal, setOpenModal] = useState(
+		path.includes("/compose") || false
+	);
+
+	function closeModal() {
+		setOpenModal(false);
+	}
 
 	return (
 		<>
-			{(path.includes("/compose") || openModal) && <UserSearchModal />}
+			{openModal && <UserSearchModal closeModal={closeModal} />}
 			<div>
 				<div className="flex p-2">
 					<h3 className="font-semibold w-full text-white text-xl m-3">
