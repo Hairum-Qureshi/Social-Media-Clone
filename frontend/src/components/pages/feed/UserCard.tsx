@@ -1,6 +1,6 @@
 import { UserCardProps } from "../../../interfaces";
 
-export default function UserCard({ showFollowButton }: UserCardProps) {
+export default function UserCard({ showFollowButton = true }: UserCardProps) {
 	return (
 		<div className="p-2">
 			<div className="flex items-center justify-center">
