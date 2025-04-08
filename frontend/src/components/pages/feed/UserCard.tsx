@@ -1,4 +1,8 @@
-export default function UserCard() {
+interface UserCardProps {
+	showFollowButton?: boolean;
+}
+
+export default function UserCard({ showFollowButton }: UserCardProps) {
 	return (
 		<div className="p-2">
 			<div className="flex items-center justify-center">
@@ -13,7 +17,13 @@ export default function UserCard() {
 					</span>
 					<span className="text-sm text-gray-500 font-light">@username</span>
 				</div>
-				<div><button className = "p-2 w-20 bg-white text-black rounded-full text-sm font-bold">Follow</button></div>
+				{showFollowButton && (
+					<div>
+						<button className="p-2 w-20 bg-white text-black rounded-full text-sm font-bold">
+							Follow
+						</button>
+					</div>
+				)}
 			</div>
 		</div>
 	);
