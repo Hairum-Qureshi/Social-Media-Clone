@@ -1,6 +1,13 @@
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { UserCardProps } from "../../../interfaces";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export default function UserCard({ showFollowButton = true }: UserCardProps) {
+export default function UserCard({
+	showFollowButton = true,
+	isFollowing = false,
+	showFollowStatus
+}: UserCardProps) {
+	// TODO - make sure to render out the verified badges too if the user is verified
 	return (
 		<div className="p-2">
 			<div className="flex items-center justify-center">
@@ -14,6 +21,14 @@ export default function UserCard({ showFollowButton = true }: UserCardProps) {
 						Username
 					</span>
 					<span className="text-sm text-gray-500 font-light">@username</span>
+					{showFollowStatus
+						? isFollowing && (
+								<span className="text-gray-500 text-xs">
+									<FontAwesomeIcon icon={faUser} />
+									&nbsp; Following
+								</span>
+						  )
+						: undefined}
 				</div>
 				{showFollowButton && (
 					<div>
