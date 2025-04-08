@@ -60,6 +60,16 @@ export default function App() {
 					}
 				/>
 				<Route
+					path="/messages/compose"
+					element={
+						<AuthProvider>
+							<ProtectedRoutesGuard>
+								<Messages />
+							</ProtectedRoutesGuard>
+						</AuthProvider>
+					}
+				/>
+				<Route
 					path="/messages/requests"
 					element={
 						<AuthProvider>
