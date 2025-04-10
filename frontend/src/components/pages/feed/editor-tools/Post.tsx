@@ -61,8 +61,8 @@ export default function Post({ isOwner, postData }: PostProps) {
 									>
 										<FontAwesomeIcon icon={faCertificate} />
 									</span>
-								)}{" "}
-								·{moment(postData.createdAt.toString()).fromNow()}
+								)}
+								&nbsp;· {moment(postData.createdAt.toString()).fromNow()}
 							</span>
 						</span>
 					</Link>
