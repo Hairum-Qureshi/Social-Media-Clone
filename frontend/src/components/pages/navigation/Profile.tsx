@@ -58,7 +58,7 @@ export default function Profile() {
 				</div>
 				<div>
 					<h2 className="font-bold ml-5 text-xl">{userData?.username}</h2>
-					<div className="ml-5 text-gray-600">0 posts</div>
+					<div className="ml-5 text-gray-600">{currentUserPostData.length || 0} posts</div>
 				</div>
 			</div>
 			<div className="w-full h-1/4 relative">
