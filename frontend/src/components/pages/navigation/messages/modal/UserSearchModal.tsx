@@ -57,7 +57,7 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 						updateSearchedUser(e);
 					}}
 					onKeyDown={e => handleUserTag(e)}
-					onKeyUp={autosave}
+					onKeyUp={autoSearch}
 					value={searchedUser}
 				/>
 			</div>
@@ -86,7 +86,7 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 			)}
 			<div className="w-full text-white overflow-y-scroll flex-1">
 				<div className="hover:bg-zinc-900 cursor-pointer p-2">
-					{saving ? (
+					{searching ? (
 						<h1 className="text-center">Searching...</h1>
 					) : (
 						<UserCard
