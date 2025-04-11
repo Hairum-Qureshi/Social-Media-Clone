@@ -4,7 +4,7 @@ import { UserSearchTools } from "../interfaces";
 export default function useUserSearch(): UserSearchTools {
 	const [searchedUser, setSearchedUser] = useState("");
 	const [searchedUsers, setSearchedUsers] = useState<string[]>([]);
-    const [saving, setSaving] = useState(false);
+    const [searching, setSearching] = useState(false);
 	const keyUpTimer = useRef<number | null>(null);
 	const path: string = window.location.pathname;
 
@@ -49,15 +49,15 @@ export default function useUserSearch(): UserSearchTools {
 		console.log("Successfully saved data:", searchedUser);
 	}
 
-	function autosave() {
-		setSaving(true);
+	function autoSearch() {
+		setSearching(true);
 		if (keyUpTimer.current) {
 			clearTimeout(keyUpTimer.current);
 		}
 	
     keyUpTimer.current = window.setTimeout(() => {
         saveData();
-        setSaving(false);
+        setSearching(false);
      }, 500); 
 	}
 
@@ -68,7 +68,7 @@ export default function useUserSearch(): UserSearchTools {
 		searchedUsers,
 		path,
 		updateSearchedUser,
-        autosave,
-        saving,
+        autoSearch,
+        searching,
 	};
 }
