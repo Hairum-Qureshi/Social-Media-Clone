@@ -91,6 +91,7 @@ export interface UserCardProps {
 	showFollowButton?: boolean;
 	isFollowing?: boolean;
 	showFollowStatus: boolean;
+	userData: UserData;
 }
 
 export interface UserTagProps {
@@ -112,4 +113,5 @@ export interface UserSearchTools {
 	updateSearchedUser: (e?: ChangeEvent<HTMLInputElement>) => void;
 	autoSearch: () => void;
 	searching: boolean;
+	returnedUsers: UserData[];
 }
