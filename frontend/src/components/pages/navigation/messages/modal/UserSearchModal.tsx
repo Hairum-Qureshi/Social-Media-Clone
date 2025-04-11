@@ -5,50 +5,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import UserCard from "../../../feed/UserCard";
 import UserTag from "./UserTag";
-
-interface UserSearchModalProps {
-	closeModal: () => void;
-}
+import useUserSearch from "../../../../../hooks/useUserSearch";
+import { UserSearchModalProps } from "../../../../../interfaces";
 
 export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
-	const path = window.location.pathname;
-	const [searchedUser, setSearchedUser] = useState("");
-	const [searchedUsers, setSearchedUsers] = useState<string[]>([]);
+	const { deleteUser, handleUserTag, searchedUser, searchedUsers, path, updateSearchedUser } = useUserSearch();
 
 	// TODO - make the search user feature work
 	// TODO - add a border shadow around the modal
-
-	function deleteUser(tagIndex: number) {
-		const filteredSearchedUsers: string[] = searchedUsers.filter(
-			(_, index: number) => tagIndex !== index
-		);
-
-		setSearchedUsers(filteredSearchedUsers);
-	}
-
-	function handleUserTag(e: KeyboardEvent) {
-		if (e.key === "Enter") {
-			if (!path.includes("/group")) {
-				if (searchedUsers.length > 0) return;
-				else setSearchedUsers([searchedUser]);
-			} else {
-				const found: number = searchedUsers.indexOf(searchedUser);
-				if (found === -1 && searchedUsers.length <= 256)
-					setSearchedUsers([...searchedUsers, searchedUser]);
-				else return;
-			}
-
-			setSearchedUser("");
-		}
-	}
-
-	useEffect(() => {
-		if (!path.includes("/group")) setSearchedUsers([]);
-	}, [path]);
 
 	return (
 		<div className="w-2/5 ml-20 border border-slate-700 rounded-xl h-3/4 absolute top-24 bg-black shadow-lg shadow-black flex flex-col">
@@ -78,7 +45,7 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 					className="w-full p-2 placeholder-gray-500 text-base outline-none bg-transparent"
 					placeholder="Search people"
 					onChange={e => {
-						setSearchedUser(e.target.value);
+						updateSearchedUser(e);
 					}}
 					onKeyUp={e => handleUserTag(e)}
 					value={searchedUser}
