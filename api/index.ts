@@ -9,6 +9,7 @@ import user from "./routes/user";
 import { v2 as cloudinary } from "cloudinary";
 import post from "./routes/post";
 import notification from "./routes/notification";
+import message from "./routes/message";
 
 dotenv.config();
 colors.enable();
@@ -36,6 +37,7 @@ app.use("/api/auth", authentication);
 app.use("/api/user", user);
 app.use("/api/posts", post);
 app.use("/api/notifications", notification);
+app.use('/api/messages', message);
 
 const PORT: number = +process.env.PORT! || 3000;
 
