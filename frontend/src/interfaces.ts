@@ -90,3 +90,9 @@ export interface UserCardProps {
 	isFollowing?: boolean;
 	showFollowStatus: boolean;
 }
+
+export interface UserTagProps {
+	userFullName: string;
+    deleteUser: (tagIndex:number) => void;
+	tagIndex: number
+}
