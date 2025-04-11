@@ -55,14 +55,17 @@ export default function Post({ isOwner, postData }: PostProps) {
 							<span className="text-gray-500 font-light">
 								@{postData.user.username}&nbsp;
 								{postData.user.isVerified && (
-									<span
-										className="text-purple-500"
-										title="This is a verified account"
-									>
-										<FontAwesomeIcon icon={faCertificate} />
-									</span>
+									<>
+										<span
+											className="text-purple-500"
+											title="This is a verified account"
+										>
+											<FontAwesomeIcon icon={faCertificate} />
+										</span>
+										&nbsp;
+									</>
 								)}
-								&nbsp;· {moment(postData.createdAt.toString()).fromNow()}
+								· {moment(postData.createdAt.toString()).fromNow()}
 							</span>
 						</span>
 					</Link>
