@@ -12,7 +12,16 @@ import useUserSearch from "../../../../../hooks/useUserSearch";
 import { UserSearchModalProps } from "../../../../../interfaces";
 
 export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
-	const { deleteUser, handleUserTag, searchedUser, searchedUsers, path, updateSearchedUser } = useUserSearch();
+	const {
+		deleteUser,
+		handleUserTag,
+		searchedUser,
+		searchedUsers,
+		path,
+		updateSearchedUser,
+		autoSearch,
+		searching
+	} = useUserSearch();
 
 	// TODO - make the search user feature work
 	// TODO - add a border shadow around the modal
@@ -47,7 +56,8 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 					onChange={e => {
 						updateSearchedUser(e);
 					}}
-					onKeyUp={e => handleUserTag(e)}
+					onKeyDown={e => handleUserTag(e)}
+					onKeyUp={autosave}
 					value={searchedUser}
 				/>
 			</div>
@@ -76,11 +86,15 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 			)}
 			<div className="w-full text-white overflow-y-scroll flex-1">
 				<div className="hover:bg-zinc-900 cursor-pointer p-2">
-					<UserCard
-						showFollowButton={false}
-						isFollowing={false}
-						showFollowStatus={true}
-					/>
+					{saving ? (
+						<h1 className="text-center">Searching...</h1>
+					) : (
+						<UserCard
+							showFollowButton={false}
+							isFollowing={false}
+							showFollowStatus={true}
+						/>
+					)}
 				</div>
 			</div>
 		</div>
