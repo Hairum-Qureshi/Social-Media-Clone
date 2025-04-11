@@ -1,10 +1,13 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { UserSearchTools } from "../interfaces";
+import { UserData, UserSearchTools } from "../interfaces";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 export default function useUserSearch(): UserSearchTools {
 	const [searchedUser, setSearchedUser] = useState("");
 	const [searchedUsers, setSearchedUsers] = useState<string[]>([]);
-    const [searching, setSearching] = useState(false);
+	const [searching, setSearching] = useState(false);
+    const [returnedUsers, setReturnedUsers] = useState<UserData[]>([]); 
 	const keyUpTimer = useRef<number | null>(null);
 	const path: string = window.location.pathname;
 
@@ -17,7 +20,7 @@ export default function useUserSearch(): UserSearchTools {
 	}
 
 	function handleUserTag(e: KeyboardEvent) {
-        // TODO you *might* want to add a character limit restriction here
+		// TODO you *might* want to add a character limit restriction here
 		if (e.key === "Enter" && searchedUser.trim()) {
 			if (!path.includes("/group")) {
 				if (searchedUsers.length > 0) return;
@@ -41,24 +44,48 @@ export default function useUserSearch(): UserSearchTools {
 		}
 	}
 
-    useEffect(() => {
+	useEffect(() => {
 		if (!path.includes("/group")) updateSearchedUser();
 	}, [path]);
 
-	function saveData() {
-		console.log("Successfully saved data:", searchedUser);
-	}
+	const { mutate } = useMutation({
+		mutationFn: async ({ searchedUser }: { searchedUser: string }) => {
+			try {
+				const response = await axios.post(
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/messages/searched-users`,
+					{
+						searchedUser
+					},
+					{
+						withCredentials: true
+					}
+				);
+
+                setReturnedUsers(response.data);
+				return response.data;
+			} catch (error) {
+				console.error("Error posting:", error);
+				throw new Error("Failed to create post");
+			}
+		}
+	});
+
+	const postMutation = () => {
+		mutate({ searchedUser });
+	};
 
 	function autoSearch() {
 		setSearching(true);
 		if (keyUpTimer.current) {
 			clearTimeout(keyUpTimer.current);
 		}
-	
-    keyUpTimer.current = window.setTimeout(() => {
-        saveData();
-        setSearching(false);
-     }, 500); 
+
+		keyUpTimer.current = window.setTimeout(() => {
+			postMutation();
+			setSearching(false);
+		}, 500);
 	}
 
 	return {
@@ -68,7 +95,8 @@ export default function useUserSearch(): UserSearchTools {
 		searchedUsers,
 		path,
 		updateSearchedUser,
-        autoSearch,
-        searching,
+		autoSearch,
+		searching,
+        returnedUsers
 	};
 }
