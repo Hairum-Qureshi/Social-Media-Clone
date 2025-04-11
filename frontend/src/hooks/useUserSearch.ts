@@ -16,7 +16,7 @@ export default function useUserSearch(): UserSearchTools {
 
 	function handleUserTag(e: KeyboardEvent) {
         // TODO you *might* want to add a character limit restriction here
-		if (e.key === "Enter" && searchedUser) {
+		if (e.key === "Enter" && searchedUser.trim()) {
 			if (!path.includes("/group")) {
 				if (searchedUsers.length > 0) return;
 				else setSearchedUsers([searchedUser]);
@@ -42,7 +42,6 @@ export default function useUserSearch(): UserSearchTools {
     useEffect(() => {
 		if (!path.includes("/group")) updateSearchedUser();
 	}, [path]);
-
 
 	return {
 		deleteUser,
