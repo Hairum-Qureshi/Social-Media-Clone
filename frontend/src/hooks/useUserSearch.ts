@@ -1,9 +1,11 @@
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { UserSearchTools } from "../interfaces";
 
 export default function useUserSearch(): UserSearchTools {
 	const [searchedUser, setSearchedUser] = useState("");
 	const [searchedUsers, setSearchedUsers] = useState<string[]>([]);
+    const [saving, setSaving] = useState(false);
+	const keyUpTimer = useRef<number | null>(null);
 	const path: string = window.location.pathname;
 
 	function deleteUser(tagIndex: number) {
@@ -43,12 +45,30 @@ export default function useUserSearch(): UserSearchTools {
 		if (!path.includes("/group")) updateSearchedUser();
 	}, [path]);
 
+	function saveData() {
+		console.log("Successfully saved data:", searchedUser);
+	}
+
+	function autosave() {
+		setSaving(true);
+		if (keyUpTimer.current) {
+			clearTimeout(keyUpTimer.current);
+		}
+	
+    keyUpTimer.current = window.setTimeout(() => {
+        saveData();
+        setSaving(false);
+     }, 500); 
+	}
+
 	return {
 		deleteUser,
 		handleUserTag,
 		searchedUser,
 		searchedUsers,
 		path,
-		updateSearchedUser
+		updateSearchedUser,
+        autosave,
+        saving,
 	};
 }
