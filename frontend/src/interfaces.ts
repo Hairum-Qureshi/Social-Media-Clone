@@ -110,4 +110,6 @@ export interface UserSearchTools {
 	searchedUsers: string[];
 	path: string;
 	updateSearchedUser: (e?: ChangeEvent<HTMLInputElement>) => void;
+	autosave: () => void;
+	saving: boolean;
 }
