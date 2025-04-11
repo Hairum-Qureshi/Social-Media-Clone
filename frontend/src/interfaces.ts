@@ -1,3 +1,5 @@
+import { ChangeEvent } from "react";
+
 export interface CarouselImageProps {
 	image: string;
 	imageIndex: number;
@@ -95,4 +97,17 @@ export interface UserTagProps {
 	userFullName: string;
     deleteUser: (tagIndex:number) => void;
 	tagIndex: number
+}
+
+export interface UserSearchModalProps {
+	closeModal: () => void;
+}
+
+export interface UserSearchTools {
+	deleteUser: (tagIndex: number) => void;
+	handleUserTag: (e: KeyboardEvent) => void;
+	searchedUser: string;
+	searchedUsers: string[];
+	path: string;
+	updateSearchedUser: (e?: ChangeEvent<HTMLInputElement>) => void;
 }
