@@ -2,13 +2,13 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UserTagProps } from "../../../../../interfaces";
 
-export default function UserTag({ userFullName, deleteUser, tagIndex }: UserTagProps) {
+export default function UserTag({ profilePicture, userFullName, deleteUser, tagIndex }: UserTagProps) {
 	return (
 		<div className="p-1">
 			<div className="flex items-center border-2 border-zinc-800 p-1 rounded-full">
 				<div className="w-5 h-5 object-cover">
 					<img
-						src="https://i.pinimg.com/736x/9f/16/72/9f1672710cba6bcb0dfd93201c6d4c00.jpg"
+						src={profilePicture}
 						alt="User Pfp"
 						className="w-5 h-5 rounded-full"
 					/>
