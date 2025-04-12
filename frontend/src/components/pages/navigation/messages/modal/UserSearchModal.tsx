@@ -9,21 +9,25 @@ import { Link } from "react-router-dom";
 import UserCard from "../../../feed/UserCard";
 import UserTag from "./UserTag";
 import useUserSearch from "../../../../../hooks/useUserSearch";
-import { UserSearchModalProps } from "../../../../../interfaces";
+import {
+	UserData,
+	UserSearchModalProps,
+	UserTagData
+} from "../../../../../interfaces";
 
 export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 	const {
 		deleteUser,
-		handleUserTag,
 		searchedUser,
 		searchedUsers,
 		path,
 		updateSearchedUser,
 		autoSearch,
-		searching
+		searching,
+		returnedUsers,
+		addUserTag
 	} = useUserSearch();
 
-	// TODO - make the search user feature work
 	// TODO - add a border shadow around the modal
 
 	return (
@@ -41,7 +45,14 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 				<span className="font-semibold ml-10 text-xl">
 					{path.includes("/group") ? "Create a group" : "New Message"}
 				</span>
-				<button className="ml-auto px-5 py-1 rounded-full bg-white text-black disabled:bg-gray-500 hover:cursor-pointer">
+				<button
+					className="ml-auto px-5 py-1 rounded-full bg-white text-black disabled:bg-gray-500 hover:cursor-pointer"
+					disabled={
+						path.includes("/group")
+							? searchedUsers.length < 2
+							: searchedUsers.length !== 1
+					}
+				>
 					Next
 				</button>
 			</div>
@@ -56,17 +67,17 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 					onChange={e => {
 						updateSearchedUser(e);
 					}}
-					onKeyDown={e => handleUserTag(e)}
 					onKeyUp={autoSearch}
 					value={searchedUser}
 				/>
 			</div>
 			{searchedUsers.length > 0 && (
 				<div className="text-white p-1 flex flex-wrap items-center w-full border-b-2 border-b-slate-700 overflow-y-auto">
-					{searchedUsers.map((searchedUser: string, index: number) => {
+					{searchedUsers.map((searchedUser: UserTagData, index: number) => {
 						return (
 							<UserTag
-								userFullName={searchedUser}
+								profilePicture={searchedUser.pfp}
+								userFullName={searchedUser.fullName}
 								deleteUser={deleteUser}
 								tagIndex={index}
 							/>
@@ -85,17 +96,28 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 				</Link>
 			)}
 			<div className="w-full text-white overflow-y-scroll flex-1">
-				<div className="hover:bg-zinc-900 cursor-pointer p-2">
-					{searching ? (
-						<h1 className="text-center">Searching...</h1>
-					) : (
-						<UserCard
-							showFollowButton={false}
-							isFollowing={false}
-							showFollowStatus={true}
-						/>
-					)}
-				</div>
+				{searching || (returnedUsers.length !== 0 && searchedUser) ? (
+					<>
+						{searching ? (
+							<h1 className="text-center">Searching...</h1>
+						) : (
+							returnedUsers.map((user: UserData) => (
+								<div
+									className="hover:bg-zinc-900 cursor-pointer p-2"
+									onClick={() => addUserTag(user)}
+								>
+									<UserCard
+										key={user._id}
+										showFollowButton={false}
+										isFollowing={false}
+										showFollowStatus={true}
+										userData={user}
+									/>
+								</div>
+							))
+						)}
+					</>
+				) : null}
 			</div>
 		</div>
 	);
