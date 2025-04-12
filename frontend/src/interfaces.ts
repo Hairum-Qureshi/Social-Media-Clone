@@ -95,23 +95,29 @@ export interface UserCardProps {
 }
 
 export interface UserTagProps {
+	profilePicture: string;
 	userFullName: string;
-    deleteUser: (tagIndex:number) => void;
-	tagIndex: number
+	deleteUser: (tagIndex: number) => void;
+	tagIndex: number;
 }
 
 export interface UserSearchModalProps {
 	closeModal: () => void;
 }
 
+export interface UserTagData {
+	pfp: string;
+	fullName: string;
+}
+
 export interface UserSearchTools {
 	deleteUser: (tagIndex: number) => void;
-	handleUserTag: (e: KeyboardEvent) => void;
 	searchedUser: string;
-	searchedUsers: string[];
+	searchedUsers: UserTagData[];
 	path: string;
 	updateSearchedUser: (e?: ChangeEvent<HTMLInputElement>) => void;
 	autoSearch: () => void;
 	searching: boolean;
 	returnedUsers: UserData[];
+	addUserTag: (user: UserData) => void;
 }
