@@ -35,7 +35,9 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 			<div className="w-full p-2 text-white flex items-center my-2">
 				<span className="text-xl ml-2 hover:cursor-pointer">
 					{!path.includes("/group") ? (
-						<FontAwesomeIcon icon={faXmark} onClick={() => closeModal()} />
+						<Link to="/messages">
+							<FontAwesomeIcon icon={faXmark} onClick={() => closeModal()} />
+						</Link>
 					) : (
 						<Link to="/messages/compose">
 							<FontAwesomeIcon icon={faArrowLeft} />
