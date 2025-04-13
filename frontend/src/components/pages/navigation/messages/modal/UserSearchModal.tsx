@@ -51,7 +51,7 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 					className="ml-auto px-5 py-1 rounded-full bg-white text-black disabled:bg-gray-500 hover:cursor-pointer"
 					disabled={
 						path.includes("/group")
-							? searchedUsers.length < 2
+							? searchedUsers.length < 3
 							: searchedUsers.length !== 1
 					}
 				>
