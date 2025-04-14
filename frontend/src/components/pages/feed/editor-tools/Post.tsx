@@ -11,7 +11,6 @@ import { faRetweet } from "@fortawesome/free-solid-svg-icons/faRetweet";
 import { faBookmark } from "@fortawesome/free-regular-svg-icons/faBookmark";
 import Carousel from "./carousel/Carousel";
 import { PostProps } from "../../../../interfaces";
-import { Link } from "react-router-dom";
 import moment from "moment";
 
 export default function Post({ isOwner, postData }: PostProps) {
@@ -25,6 +24,7 @@ export default function Post({ isOwner, postData }: PostProps) {
 	// TODO - make sure to replace the hard-coded 'false' for the 'allowDelete' prop being passed into Carousel component
 	// TODO - need to add 'numReposts', 'numSaves' (to the Post database schema), and consider adding a number of shares too to be displayed
 	// TODO - make the redirect work for when the user clicks on a username, it should take the user to that user's profile page
+	// TODO - if the user includes any hashtags or @s any user, make that blue
 
 	return (
 		<div className="w-full p-2 border-t-2 border-b-2 border-t-gray-700 border-b-gray-700 relative">
@@ -41,34 +41,38 @@ export default function Post({ isOwner, postData }: PostProps) {
 					src={postData.user.profilePicture}
 					alt="User pfp"
 					className="lg:w-10 lg:h-10 w-12 h-12 rounded-full"
+					onClick={e => {
+						e.stopPropagation();
+						e.preventDefault();
+						window.location.href = `/${postData.user.username}`;
+					}}
 				/>
-				<div className="lg:flex lg:flex-col lg:w-full">
-					<Link
-						to={`/${postData.user.username}`}
-						onClick={e => {
-							e.stopPropagation();
-							e.preventDefault();
-						}}
-					>
-						<span className="text-base font-bold flex items-center ml-3">
-							{postData.user.fullName}&nbsp;
-							<span className="text-gray-500 font-light">
-								@{postData.user.username}&nbsp;
-								{postData.user.isVerified && (
-									<>
-										<span
-											className="text-purple-500"
-											title="This is a verified account"
-										>
-											<FontAwesomeIcon icon={faCertificate} />
-										</span>
-										&nbsp;
-									</>
-								)}
-								· {moment(postData.createdAt.toString()).fromNow()}
-							</span>
+				<div
+					className="lg:flex lg:flex-col lg:w-full"
+					onClick={e => {
+						e.stopPropagation();
+						e.preventDefault();
+						window.location.href = `/${postData.user.username}`;
+					}}
+				>
+					<span className="text-base font-bold flex items-center ml-3">
+						{postData.user.fullName}&nbsp;
+						<span className="text-gray-500 font-light">
+							@{postData.user.username}&nbsp;
+							{postData.user.isVerified && (
+								<>
+									<span
+										className="text-purple-500"
+										title="This is a verified account"
+									>
+										<FontAwesomeIcon icon={faCertificate} />
+									</span>
+									&nbsp;
+								</>
+							)}
+							· {moment(postData.createdAt.toString()).fromNow()}
 						</span>
-					</Link>
+					</span>
 					{postData.text && <span className="ml-3">{postData.text}</span>}
 					<div>
 						{postData.postImages?.length > 0 && (
