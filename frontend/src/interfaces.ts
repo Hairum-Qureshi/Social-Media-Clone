@@ -160,4 +160,5 @@ export interface ProfileTools {
 		link: string
 	) => void;
 	profileData: UserData | undefined;
+	handleFollowing: (userID: string | undefined) => void;
 }
