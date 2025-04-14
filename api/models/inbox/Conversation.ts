@@ -18,6 +18,17 @@ const conversationSchema = new Schema(
 		},
 		lastMessage: {
 			type: String
+		},
+		isDMRequest: {
+			type: Boolean
+		},
+		requestedBy: {
+			type: Types.ObjectId,
+			ref: "User"
+		},
+		requestedTo: {
+			type: Types.ObjectId,
+			ref: "User"
 		}
 	},
 	{
