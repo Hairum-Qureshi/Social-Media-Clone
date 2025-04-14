@@ -35,6 +35,7 @@ export interface Conversation {
 	];
 	isGroupchat: boolean;
 	groupName: string;
+	latestMessage: string;
 }
 
 export interface UserData {
@@ -61,7 +62,6 @@ export interface UserData {
 export interface Message {
 	message: string;
 	sender: UserData;
-	receiver:UserData;
 	attachments: string[];
 	conversationID: Conversation;
 }
