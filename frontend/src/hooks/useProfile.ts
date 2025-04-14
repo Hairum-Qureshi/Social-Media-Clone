@@ -125,5 +125,35 @@ export default function useProfile(): ProfileTools {
 		queryClient.invalidateQueries({ queryKey: ["profile"] });
 	}, [location]);
 
-	return { postMutation, profileData };
+	const { mutate: handleFollowingMutation } = useMutation({
+		mutationFn: async ({ userID }: { userID: string | undefined }) => {
+			try {
+				if (userID) {
+					const response = await axios.post(
+						`${
+							import.meta.env.VITE_BACKEND_BASE_URL
+						}/api/user/follow-status/${userID}`,
+						{},
+						{
+							withCredentials: true
+						}
+					);
+
+					return response.data;
+				}
+			} catch (error) {
+				console.error("Error posting:", error);
+				throw new Error("Failed to create post");
+			}
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["profile"] });
+		}
+	});
+
+	const handleFollowing = (userID: string | undefined) => {
+		handleFollowingMutation({ userID });
+	};
+
+	return { postMutation, profileData, handleFollowing };
 }
