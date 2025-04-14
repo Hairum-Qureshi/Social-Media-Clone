@@ -23,19 +23,22 @@ export interface EditorOptionsProps {
 	clearTextArea: () => void;
 }
 
+interface UserData_Conversation {
+	_id: string;
+	username: string;
+	fullName: string;
+	profilePicture: string;
+	isVerified: boolean;
+}
+
 export interface Conversation {
-	users: [
-		{
-			_id: string;
-			username: string;
-			fullName: string;
-			profilePicture: string;
-			isVerified: boolean;
-		}
-	];
+	users: UserData_Conversation[];
 	isGroupchat: boolean;
 	groupName: string;
 	latestMessage: string;
+	isDMRequest: boolean;
+	requestedBy: UserData_Conversation;
+	requestedTo: UserData_Conversation;
 }
 
 export interface UserData {
@@ -44,8 +47,8 @@ export interface UserData {
 	fullName: string;
 	email: string;
 	location: string;
-	followers: string[];
-	following: string[];
+	followers: UserData[];
+	following: UserData[];
 	profilePicture: string;
 	coverImage: string;
 	bio: string;
