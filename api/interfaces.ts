@@ -1,5 +1,11 @@
 import { Types } from "mongoose";
 
+export interface IConversation {
+	users: Types.ObjectId[];
+	isGroupchat: boolean;
+	groupName: string;
+}
+
 export interface IUser {
 	_id: Types.ObjectId;
 	username: string;
@@ -17,6 +23,7 @@ export interface IUser {
 	numFollowers: number;
 	numFollowing: number;
 	isVerified: boolean;
+	conversations: IConversation[];
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -37,6 +44,7 @@ export interface UserData {
 	numFollowers: number;
 	numFollowing: number;
 	isVerified: boolean;
+	conversations: IConversation[];
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -74,4 +82,12 @@ export interface IPost {
 	createdAt: Date;
 	updatedAt: Date;
 	postImages: string[];
+}
+
+export interface IMessage {
+	message: string;
+	sender: Types.ObjectId;
+	receiver: Types.ObjectId;
+	attachments: string[];
+	conversationID: Types.ObjectId;
 }
