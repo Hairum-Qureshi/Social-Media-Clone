@@ -23,6 +23,20 @@ export interface EditorOptionsProps {
 	clearTextArea: () => void;
 }
 
+export interface Conversation {
+	users: [
+		{
+			_id: string;
+			username: string;
+			fullName: string;
+			profilePicture: string;
+			isVerified: boolean;
+		}
+	];
+	isGroupchat: boolean;
+	groupName: string;
+}
+
 export interface UserData {
 	_id: string;
 	username: string;
@@ -39,8 +53,17 @@ export interface UserData {
 	numFollowers: number;
 	numFollowing: number;
 	isVerified: boolean;
+	conversations: Conversation;
 	createdAt: Date;
 	updatedAt: Date;
+}
+
+export interface Message {
+	message: string;
+	sender: UserData;
+	receiver:UserData;
+	attachments: string[];
+	conversationID: Conversation;
 }
 
 export interface AuthProps {
