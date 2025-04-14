@@ -15,6 +15,9 @@ const conversationSchema = new Schema(
 		},
 		groupName: {
 			type: String
+		},
+		lastMessage: {
+			type: String
 		}
 	},
 	{
