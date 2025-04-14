@@ -147,3 +147,17 @@ export interface UserSearchTools {
 	returnedUsers: UserData[];
 	addUserTag: (user: UserData) => void;
 }
+
+export interface ProfileTools {
+	postMutation: (
+		fullName: string,
+		username: string,
+		email: string,
+		currentPassword: string,
+		newPassword: string,
+		location: string,
+		bio: string,
+		link: string
+	) => void;
+	profileData: UserData | undefined;
+}
