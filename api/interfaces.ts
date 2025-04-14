@@ -4,6 +4,7 @@ export interface IConversation {
 	users: Types.ObjectId[];
 	isGroupchat: boolean;
 	groupName: string;
+	latestMessage: string;
 }
 
 export interface IUser {
@@ -87,7 +88,6 @@ export interface IPost {
 export interface IMessage {
 	message: string;
 	sender: Types.ObjectId;
-	receiver: Types.ObjectId;
 	attachments: string[];
 	conversationID: Types.ObjectId;
 }
