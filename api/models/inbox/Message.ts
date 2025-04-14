@@ -11,10 +11,6 @@ const messageSchema = new Schema(
 			type: Types.ObjectId,
 			ref: "User"
 		},
-		receiver: {
-			type: Types.ObjectId,
-			ref: "User"
-		},
 		attachments: {
 			type: [String],
 			default: []
