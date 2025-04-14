@@ -77,6 +77,11 @@ const userSchema = new Schema(
 		isVerified: {
 			type: Boolean,
 			default: false
+		},
+		conversations: {
+			type: [Types.ObjectId],
+			ref: "Conversation",
+			default: []
 		}
 	},
 	{
