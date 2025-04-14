@@ -4,14 +4,14 @@ import User from "../models/User";
 import Notification from "../models/Notification";
 import mongoose, { Types } from "mongoose";
 import bcrypt from "bcrypt";
-import { v2 as cloudinary } from "cloudinary";
 
 const getProfile = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { username } = req.params;
-		const user: IUser = (await User.findOne({ username }).select(
-			"-password -__v"
-		)) as IUser;
+		const user: IUser = (await User.findOne({ username })
+			.select("-password -__v")
+			.populate("followers")
+			.populate("following")) as IUser;
 
 		res.status(200).json(user);
 	} catch (error) {
@@ -79,10 +79,13 @@ const handleFollowStatus = async (
 ): Promise<void> => {
 	try {
 		const { uid } = req.params;
+
 		const userToModify: IUser = (await User.findById({
 			_id: uid
 		})) as IUser;
+
 		const currUID: string = req.user._id.toString();
+
 		const currentUser: IUser = (await User.findById({
 			_id: currUID
 		})) as IUser;
@@ -142,7 +145,6 @@ const handleFollowStatus = async (
 			return;
 		} else {
 			// follow the user
-
 			await User.findByIdAndUpdate(
 				{
 					_id: uid
@@ -338,4 +340,25 @@ const updateProfile = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-export { getProfile, getSuggestedUsers, handleFollowStatus, updateProfile };
+const updateProfileImages = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		return;
+	} catch (error) {
+		console.error(
+			"Error in user.ts file, updateProfileImages function controller".red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
+export {
+	getProfile,
+	getSuggestedUsers,
+	handleFollowStatus,
+	updateProfile,
+	updateProfileImages
+};
