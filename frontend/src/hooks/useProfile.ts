@@ -1,21 +1,14 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-
-interface ProfileTools {
-	postMutation: (
-		fullName: string,
-		username: string,
-		email: string,
-		currentPassword: string,
-		newPassword: string,
-		location: string,
-		bio: string,
-		link: string
-	) => void;
-}
+import { useEffect, useState } from "react";
+import { ProfileTools, UserData } from "../interfaces";
+import { useLocation } from "react-router-dom";
 
 export default function useProfile(): ProfileTools {
 	const queryClient = useQueryClient();
+	const [profileData, setProfileData] = useState<UserData>();
+	const username = window.location.pathname.split("/").pop();
+	const location = useLocation();
 
 	const { mutate } = useMutation({
 		mutationFn: async ({
@@ -106,5 +99,31 @@ export default function useProfile(): ProfileTools {
 		});
 	};
 
-	return { postMutation };
+	const { data } = useQuery({
+		queryKey: ["profile"],
+		queryFn: async () => {
+			try {
+				const response = await axios.get(
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/user/profile/${username}`,
+					{
+						withCredentials: true
+					}
+				);
+
+				setProfileData(response.data);
+				return response.data;
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	});
+
+	useEffect(() => {
+		setProfileData(data);
+		queryClient.invalidateQueries({ queryKey: ["profile"] });
+	}, [location]);
+
+	return { postMutation, profileData };
 }
