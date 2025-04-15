@@ -1,10 +1,14 @@
 import { Types } from "mongoose";
 
 export interface IConversation {
+	_id: Types.ObjectId;
 	users: Types.ObjectId[];
 	isGroupchat: boolean;
 	groupName: string;
 	latestMessage: string;
+	isDMRequest: boolean;
+	requestedBy: Types.ObjectId;
+	requestedTo: Types.ObjectId;
 }
 
 export interface IUser {
