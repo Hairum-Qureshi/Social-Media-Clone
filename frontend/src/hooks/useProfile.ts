@@ -3,12 +3,14 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { ProfileTools, UserData } from "../interfaces";
 import { useLocation } from "react-router-dom";
+import useAuthContext from "../contexts/AuthContext";
 
 export default function useProfile(): ProfileTools {
 	const queryClient = useQueryClient();
 	const [profileData, setProfileData] = useState<UserData>();
 	const username = window.location.pathname.split("/").pop();
 	const location = useLocation();
+	const { userData } = useAuthContext()!;
 
 	const { mutate } = useMutation({
 		mutationFn: async ({
@@ -124,6 +126,10 @@ export default function useProfile(): ProfileTools {
 		setProfileData(data);
 		queryClient.invalidateQueries({ queryKey: ["profile"] });
 	}, [location]);
+
+	useEffect(() => {
+		window.history.pushState({}, "", encodeURI(`/${userData?.username}`));
+	}, [userData]);
 
 	const { mutate: handleFollowingMutation } = useMutation({
 		mutationFn: async ({ userID }: { userID: string | undefined }) => {
