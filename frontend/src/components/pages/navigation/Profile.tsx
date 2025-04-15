@@ -15,10 +15,13 @@ import { Link } from "react-router-dom";
 import { Post as IPost } from "../../../interfaces";
 import Post from "../feed/editor-tools/Post";
 import useProfile from "../../../hooks/useProfile";
+import isFollowing from "../../../utils/checkFollowingStatus";
+import getMonthAndYear from "../../../utils/getMonthAndYear";
 
 // TODO - get the number of posts the user has (currently it only works for the current user and not other users)
 // TODO - need to get other users' posts too to display on their profile pages
 // TODO - add a kebab button to allow users to block profiles too
+// TODO - create follow/unfollow feature and add logic to render 'Unfollow' if the user is following another user; 'follow' otherwise
 // ! FIX: the kebab buttons are not shifted to the right in mobile view for the posts
 export default function Profile() {
 	const [showModal, setShowModal] = useState(false);
@@ -28,7 +31,7 @@ export default function Profile() {
 	const fileBackgroundImageInputRef = useRef<HTMLInputElement>(null);
 	const { userData } = useAuthContext()!;
 	const { currentUserPostData } = usePosts();
-	const { profileData } = useProfile();
+	const { profileData, handleFollowing } = useProfile();
 
 	// const [pfpBlob, setPfpBlob] = useState("");
 	// const [backgroundBlob, setBackgroundBlob] = useState("");
@@ -46,15 +49,6 @@ export default function Profile() {
 		setShowModal(false);
 	}
 
-	function getMonthAndYear(isoString: Date | undefined) {
-		if (isoString) {
-			const date = new Date(isoString);
-			const year = date.getFullYear();
-			const month = date.toLocaleString("default", { month: "long" });
-			return { month, year };
-		}
-	}
-
 	return (
 		<div className="bg-black w-full text-white min-h-screen overflow-auto relative">
 			{showModal && <UserSettingsModal closeModal={closeModal} />}
@@ -63,7 +57,11 @@ export default function Profile() {
 					<FontAwesomeIcon icon={faArrowLeft} />
 				</div>
 				<div>
-					<h2 className="font-bold ml-5 text-xl">{profileData?.username}</h2>
+					<h2 className="font-bold ml-5 text-xl">
+						{userData?._id !== profileData?._id
+							? profileData?.username
+							: userData?.username}
+					</h2>
 					<div className="ml-5 text-gray-600">
 						{currentUserPostData?.length || 0} posts
 					</div>
@@ -126,9 +124,21 @@ export default function Profile() {
 					</button>
 				) : (
 					<>
-						<button className="ml-auto mr-10 border-2 bg-white text-black font-semibold w-20 text-base rounded-full p-2">
-							Follow
-						</button>
+						{isFollowing(profileData, userData?._id) ? (
+							<button
+								className="ml-auto mr-10 border-2 bg-white text-black font-semibold w-25 text-base rounded-full p-2"
+								onClick={() => handleFollowing(profileData?._id)}
+							>
+								Unfollow
+							</button>
+						) : (
+							<button
+								className="ml-auto mr-10 border-2 bg-white text-black font-semibold w-20 text-base rounded-full p-2"
+								onClick={() => handleFollowing(profileData?._id)}
+							>
+								Follow
+							</button>
+						)}
 					</>
 				)}
 			</div>
@@ -136,7 +146,9 @@ export default function Profile() {
 			<div className="w-full border-b-2 border-b-gray-700">
 				<div className="mt-5">
 					<h3 className="font-bold ml-5 text-xl">
-						{profileData?.fullName}{" "}
+						{userData?._id !== profileData?._id
+							? profileData?.fullName
+							: userData?.fullName}
 						{profileData?.isVerified && (
 							<span
 								className="text-purple-500"
@@ -147,10 +159,17 @@ export default function Profile() {
 						)}
 					</h3>
 					<p className="text-gray-500 text-base ml-5">
-						@{profileData?.username}
+						@
+						{userData?._id !== profileData?._id
+							? profileData?.username
+							: userData?.username}
 					</p>
 					<div className="mx-5 my-2">
-						<div>{profileData?.bio}</div>
+						<div>
+							{userData?._id !== profileData?._id
+								? profileData?.bio
+								: userData?.bio}
+						</div>
 						<div className="mt-3 text-gray-500">
 							<span>
 								<FontAwesomeIcon icon={faLocationDot} />
