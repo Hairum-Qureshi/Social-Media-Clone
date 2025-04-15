@@ -128,7 +128,9 @@ export default function useProfile(): ProfileTools {
 	}, [location]);
 
 	useEffect(() => {
-		window.history.pushState({}, "", encodeURI(`/${userData?.username}`));
+		if (userData?._id === profileData?._id) {
+			window.history.pushState({}, "", encodeURI(`/${userData?.username}`));
+		}
 	}, [userData]);
 
 	const { mutate: handleFollowingMutation } = useMutation({
