@@ -1,11 +1,6 @@
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-interface ContactProps {
-	username: string;
-	pfp: string;
-	fullName: string;
-}
+import { ContactProps } from "../../../../interfaces";
 
 export default function Contact({ username, pfp, fullName }: ContactProps) {
 	return (
