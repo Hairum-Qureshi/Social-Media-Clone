@@ -37,7 +37,7 @@ export default function Contacts({ setConvo }: ContactsProps) {
 						Messages
 					</h3>
 					<div className="text-white inline-flex items-center text-lg">
-						<span className="mr-3">
+						<span className="mr-3 hover:cursor-pointer">
 							<FontAwesomeIcon icon={faGear} />
 						</span>
 						<span
