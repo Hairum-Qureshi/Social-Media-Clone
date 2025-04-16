@@ -5,6 +5,8 @@ export interface IConversation {
 	users: Types.ObjectId[];
 	isGroupchat: boolean;
 	groupName: string;
+	groupPhoto: string;
+	media: string[];
 	latestMessage: string;
 	isDMRequest: boolean;
 	requestedBy: Types.ObjectId;
