@@ -2,7 +2,7 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ContactProps } from "../../../../interfaces";
 
-export default function Contact({ username, pfp, fullName }: ContactProps) {
+export default function Contact({ username, pfp, fullName, latestMessage }: ContactProps) {
 	return (
 		<div className="w-full p-3 bg-zinc-800 border-r-2 border-r-sky-600 hover:bg-zinc-900 hover:cursor-pointer">
 			<div className="flex items-center">
@@ -20,7 +20,7 @@ export default function Contact({ username, pfp, fullName }: ContactProps) {
 							<FontAwesomeIcon icon={faEllipsis} />
 						</div>
 					</div>
-					<div className="ml-3 text-gray-500">Text</div>
+					<div className="ml-3 text-gray-500">{latestMessage}</div>
 				</div>
 			</div>
 		</div>
