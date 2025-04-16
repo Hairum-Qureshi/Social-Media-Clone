@@ -29,6 +29,8 @@ export interface UserData_Conversation {
 	fullName: string;
 	profilePicture: string;
 	isVerified: boolean;
+	createdAt: Date;
+	bio: string;
 }
 
 export interface Conversation {
@@ -36,6 +38,8 @@ export interface Conversation {
 	users: UserData_Conversation[];
 	isGroupchat: boolean;
 	groupName: string;
+	groupPhoto: string;
+	media: string[];
 	latestMessage: string;
 	isDMRequest: boolean;
 	requestedBy: UserData_Conversation;
