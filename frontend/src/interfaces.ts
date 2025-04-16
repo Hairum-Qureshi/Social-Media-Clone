@@ -23,7 +23,7 @@ export interface EditorOptionsProps {
 	clearTextArea: () => void;
 }
 
-interface UserData_Conversation {
+export interface UserData_Conversation {
 	_id: string;
 	username: string;
 	fullName: string;
@@ -32,6 +32,7 @@ interface UserData_Conversation {
 }
 
 export interface Conversation {
+	_id: string;
 	users: UserData_Conversation[];
 	isGroupchat: boolean;
 	groupName: string;
