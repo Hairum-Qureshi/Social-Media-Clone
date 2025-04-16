@@ -174,3 +174,9 @@ export interface ContactProps {
 	fullName: string;
 	latestMessage: string;
 }
+
+export interface ConversationProps {
+	defaultSubtext: string;
+	showHeaderText: boolean;
+	conversation: Conversation | undefined;
+}
