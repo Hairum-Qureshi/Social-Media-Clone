@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import UserCard from "../../../feed/UserCard";
 import UserTag from "./UserTag";
 import useUserSearch from "../../../../../hooks/useUserSearch";
@@ -14,6 +14,7 @@ import {
 	UserSearchModalProps,
 	UserTagData
 } from "../../../../../interfaces";
+import useDM from "../../../../../hooks/useDM";
 
 export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 	const {
@@ -28,6 +29,10 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 		addUserTag
 	} = useUserSearch();
 
+	const navigate = useNavigate();
+
+	const { createDM } = useDM();
+
 	// TODO - add a border shadow around the modal
 
 	return (
@@ -36,7 +41,13 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 				<span className="text-xl ml-2 hover:cursor-pointer">
 					{!path.includes("/group") ? (
 						<Link to="/messages">
-							<FontAwesomeIcon icon={faXmark} onClick={() => closeModal()} />
+							<FontAwesomeIcon
+								icon={faXmark}
+								onClick={() => {
+									closeModal();
+									navigate(-1);
+								}}
+							/>
 						</Link>
 					) : (
 						<Link to="/messages/compose">
@@ -54,6 +65,10 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 							? searchedUsers.length < 3
 							: searchedUsers.length !== 1
 					}
+					onClick={() => {
+						createDM(searchedUsers);
+						closeModal();
+					}}
 				>
 					Next
 				</button>
