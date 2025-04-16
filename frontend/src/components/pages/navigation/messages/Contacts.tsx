@@ -9,8 +9,13 @@ import { Conversation, UserData_Conversation } from "../../../../interfaces";
 import useAuthContext from "../../../../contexts/AuthContext";
 
 // TODO - may need to add specific logic for displaying group chats
+// TODO - remove hardcoded "3 pending requests" and add logic so it only displays the number of requests if the user has any requests
 
-export default function Contacts() {
+interface ContactsProps {
+	setConvo: (conversation: Conversation) => void;
+}
+
+export default function Contacts({ setConvo }: ContactsProps) {
 	const path = window.location.pathname;
 	const [openModal, setOpenModal] = useState(
 		path.includes("/compose") || false
@@ -50,7 +55,10 @@ export default function Contacts() {
 								<FontAwesomeIcon icon={faEnvelope} />
 							</span>
 						</div>
-						<p className="flex items-center">Message Requests</p>
+						<div>
+							<p className="flex items-center">Message Requests</p>
+							<p className="text-sm text-zinc-500">3 pending requests</p>
+						</div>
 					</div>
 				</Link>
 				<div className="text-white">
@@ -77,6 +85,7 @@ export default function Contacts() {
 									return (
 										<Link
 											to={`/messages/conversation/${conversation._id}/${userData?._id}-${user._id}`}
+											onClick={() => setConvo(conversation)}
 										>
 											<DM
 												username={user.username}
