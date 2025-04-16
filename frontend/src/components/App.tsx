@@ -70,6 +70,16 @@ export default function App() {
 					}
 				/>
 				<Route
+					path="/messages/conversation/:conversationID/:userIDs"
+					element={
+						<AuthProvider>
+							<ProtectedRoutesGuard>
+								<Messages />
+							</ProtectedRoutesGuard>
+						</AuthProvider>
+					}
+				/>
+				<Route
 					path="/messages/compose/group"
 					element={
 						<AuthProvider>
