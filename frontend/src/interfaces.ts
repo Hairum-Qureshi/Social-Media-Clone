@@ -163,3 +163,9 @@ export interface ProfileTools {
 	profileData: UserData | undefined;
 	handleFollowing: (userID: string | undefined) => void;
 }
+
+export interface ContactProps {
+	username: string;
+	pfp: string;
+	fullName: string;
+}
