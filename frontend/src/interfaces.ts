@@ -172,4 +172,5 @@ export interface ContactProps {
 	username: string;
 	pfp: string;
 	fullName: string;
+	latestMessage: string;
 }
