@@ -16,6 +16,13 @@ const conversationSchema = new Schema(
 		groupName: {
 			type: String
 		},
+		groupPhoto: {
+			type: String
+		},
+		media: {
+			type: [String],
+			default: []
+		},
 		lastMessage: {
 			type: String
 		},
