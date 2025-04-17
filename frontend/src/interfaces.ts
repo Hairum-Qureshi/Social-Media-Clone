@@ -31,6 +31,8 @@ export interface UserData_Conversation {
 	isVerified: boolean;
 	createdAt: Date;
 	bio: string;
+	numFollowers: number;
+	followers: UserData[];
 }
 
 export interface Conversation {
