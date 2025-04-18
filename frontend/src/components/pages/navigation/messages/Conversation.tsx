@@ -1,16 +1,12 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useAuthContext from "../../../../contexts/AuthContext";
 import getFriend from "../../../../utils/getFriend";
-import {
-	faCircleInfo,
-	faFaceSmile,
-	faFilm,
-	faImage,
-	faPaperPlane
-} from "@fortawesome/free-solid-svg-icons";
-import getMonthAndYear from "../../../../utils/getMonthAndYear";
 import { Link, useLocation } from "react-router-dom";
 import { ConversationProps } from "../../../../interfaces";
+import { useRef, useState } from "react";
+import ChatBubble from "./ChatBubble";
+import InboxHeader from "./inbox/InboxHeader";
+import ProfilePreview from "./inbox/ProfilePreview";
+import InboxFooter from "./inbox/InboxFooter";
 
 export default function Conversation({
 	defaultSubtext,
@@ -19,6 +15,39 @@ export default function Conversation({
 }: ConversationProps) {
 	const { userData } = useAuthContext()!;
 	const location = useLocation();
+	const [uploadedImage, setUploadedImage] = useState<string>("");
+	const contentEditableDivRef = useRef<HTMLDivElement>(null);
+
+	// TODO - add delete button on pasted image image
+	// TODO - add GIF functionality
+	// TODO - add emoji functionality
+	// TODO - add an activity status
+	// TODO - add a message functionality
+	// TODO - add an upload image functionality
+	// TODO - add logic to render out 'M', 'K', etc. if the user has millions or thousands of followers
+
+	function handlePaste(e: React.ClipboardEvent<HTMLDivElement>) {
+		const image = e.clipboardData || window.Clipboard;
+		const file = image.files[0];
+		if (file) {
+			const reader = new FileReader();
+
+			reader.onloadend = () => {
+				const blob = new Blob([file], { type: file.type });
+				const imageURL = URL.createObjectURL(blob);
+				if (!uploadedImage) {
+					setUploadedImage(imageURL);
+				} else {
+					alert("You cannot attach more than 1 image per message");
+				}
+			};
+			reader.readAsDataURL(file);
+		}
+	}
+
+	function deleteImage() {
+		setUploadedImage("");
+	}
 
 	return (
 		<div
@@ -40,121 +69,38 @@ export default function Conversation({
 				conversation &&
 				userData && (
 					<div className="w-full h-full overflow-y-auto">
-						<div className="w-full p-2 font-semibold">
-							{conversation?.isGroupchat ? (
-								<>
-									<img
-										src={conversation?.groupPhoto}
-										alt="User pfp"
-										className="w-8 h-8 rounded-full object-cover mr-3"
-									/>
-									<p>{conversation.groupName}</p>
-								</>
-							) : (
-								<div className="flex items-center">
-									<img
-										src={
-											getFriend(conversation?.users, userData?._id)
-												.profilePicture
-										}
-										alt="User pfp"
-										className="w-8 h-8 rounded-full object-cover mr-3"
-									/>
-									<p>
-										{getFriend(conversation?.users, userData?._id).fullName}
-									</p>
-									<span className="ml-auto text-lg hover:cursor-pointer">
-										<FontAwesomeIcon icon={faCircleInfo} />
-									</span>
-								</div>
-							)}
-						</div>
-						<div className="p-3 border-2 border-white w-full min-h-1/3 h-auto">
-							<div className="mt-5">
-								<div className="w-full justify-center">
-									<div className="flex items-center justify-center">
-										<img
-											src={
-												getFriend(conversation?.users, userData?._id)
-													.profilePicture
-											}
-											alt="User pfp"
-											className="w-20 h-20 rounded-full object-cover"
-										/>
-									</div>
-									<Link
-										to={`/${
-											getFriend(conversation?.users, userData?._id).username
-										}`}
-									>
-										<div className="text-base text-center mt-2 hover:cursor-pointer">
-											<p className="font-semibold">
-												{getFriend(conversation?.users, userData?._id).fullName}
-											</p>
-											<p className="text-zinc-500">
-												@
-												{getFriend(conversation?.users, userData?._id).username}
-											</p>
-											<p className="my-3">
-												{getFriend(conversation?.users, userData?._id).bio}
-											</p>
-											<p className="text-sm text-zinc-500 mt-2">
-												Joined&nbsp;
-												{
-													getMonthAndYear(
-														getFriend(conversation?.users, userData?._id)
-															.createdAt
-													)?.month
-												}
-												&nbsp;
-												{
-													getMonthAndYear(
-														getFriend(conversation?.users, userData?._id)
-															.createdAt
-													)?.year
-												}
-											</p>
-										</div>
-									</Link>
-								</div>
-							</div>
+						<InboxHeader conversation={conversation} currUID={userData?._id} />
+						<Link
+							to={`/${getFriend(conversation?.users, userData?._id).username}`}
+						>
+							<ProfilePreview
+								conversation={conversation}
+								currUID={userData?._id}
+							/>
+						</Link>
+						<div className="overflow-y-auto pb-14">
+							<ChatBubble
+								you={false}
+								message={"Hello!"}
+								timestamp={"1:04 AM"}
+							/>
+							<ChatBubble
+								you={true}
+								message={"Hey! How are you doing?"}
+								timestamp={"1:05 AM"}
+							/>
 						</div>
 					</div>
 				)}
 			{location.pathname.split("/").length !== 2 &&
 				conversation &&
 				userData && (
-					<div className="w-full relative">
-						<div className="absolute bottom-0 border-t-2 border-t-slate-600 w-full p-2">
-							<div className="flex mx-1 p-2 bg-zinc-900 rounded-md items-center">
-								<div className="text-base text-sky-400 w-24">
-									<span className="mr-3 hover:cursor-pointer">
-										<FontAwesomeIcon icon={faImage} />
-									</span>
-									<span className="mr-3 hover:cursor-pointer">
-										<FontAwesomeIcon icon={faFilm} />
-									</span>
-									<span className="hover:cursor-pointer">
-										<FontAwesomeIcon icon={faFaceSmile} />
-									</span>
-								</div>
-								<div
-									contentEditable="plaintext-only"
-									className="w-full ml-2 mr-2 px-2 py-1 min-h-[2rem] break-words resize-none overflow-hidden outline-none rounded"
-									onInput={e => {
-										const target = e.currentTarget;
-										target.style.height = "auto";
-										target.style.height =
-											Math.min(target.scrollHeight, 160) + "px";
-									}}
-									data-placeholder="Write a new message"
-								/>
-								<div className="ml-auto text-sky-500 hover:cursor-pointer">
-									<FontAwesomeIcon icon={faPaperPlane} />
-								</div>
-							</div>
-						</div>
-					</div>
+					<InboxFooter
+						uploadedImage={uploadedImage}
+						deleteImage={deleteImage}
+						contentEditableDivRef={contentEditableDivRef}
+						handlePaste={handlePaste}
+					/>
 				)}
 		</div>
 	);
