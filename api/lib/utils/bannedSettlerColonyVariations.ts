@@ -147,5 +147,7 @@ export const bannedSettlerColonyVariations = [
 	"i5raeeel",
 	"izrrrael",
 	"ezzrael",
-	"isrrreel"
+	"isrrreel",
+	"יִשְׂרָאֵל",
+	"اسرائيل"
 ];
