@@ -46,6 +46,7 @@ export interface Conversation {
 	isDMRequest: boolean;
 	requestedBy: UserData_Conversation;
 	requestedTo: UserData_Conversation;
+	messages: Message[];
 }
 
 export interface UserData {
@@ -77,7 +78,7 @@ export interface Message {
 		profilePicture: string;
 	};
 	attachments: string[];
-	conversationID: Conversation;
+	conversationID: string;
 	createdAt: Date;
 }
 
@@ -203,4 +204,15 @@ export interface InboxHeaderProps {
 export interface ProfilePreviewProps {
 	conversation: Conversation;
 	currUID: string;
+}
+
+export interface DMTools {
+	createDM: (searchedUsers: UserTagData[]) => void;
+	conversations: Conversation[];
+	sendMessage: (
+		message: string | undefined,
+		uploadedImage: string,
+		conversationID: string
+	) => void;
+	messages: Message[];
 }
