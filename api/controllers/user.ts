@@ -110,6 +110,8 @@ const handleFollowStatus = async (
 		const isFollowing = currentUser.following.includes(uidToObjectID);
 
 		if (isFollowing) {
+			const userToFollow = await User.findById({ _id: uid });
+
 			// unfollow the user
 			await User.findByIdAndUpdate(
 				{
@@ -204,6 +206,8 @@ function correctLocation(location: string): string {
 	) {
 		return "Palestine";
 	}
+
+	if (location === "🇮🇱") return "🇵🇸";
 
 	return location;
 }
