@@ -7,6 +7,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InboxFooterProps } from "../../../../../interfaces";
+import { useState } from "react";
+import EmojiPicker from "emoji-picker-react";
 
 export default function InboxFooter({
 	uploadedImage,
@@ -14,6 +16,9 @@ export default function InboxFooter({
 	contentEditableDivRef,
 	handlePaste
 }: InboxFooterProps) {
+
+	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
 	return (
 		<div className="w-full relative">
 			<div className="absolute bottom-0 w-full">
@@ -35,7 +40,7 @@ export default function InboxFooter({
 						</div>
 					</div>
 				)}
-
+				{showEmojiPicker && <EmojiPicker />}
 				<div className="w-full">
 					<div className="flex mx-1 p-2 bg-zinc-900 rounded-md items-center">
 						{!uploadedImage && (
@@ -46,7 +51,7 @@ export default function InboxFooter({
 								<span className="mr-3 hover:cursor-pointer">
 									<FontAwesomeIcon icon={faFilm} />
 								</span>
-								<span className="hover:cursor-pointer">
+								<span className="hover:cursor-pointer" onClick = {() => setShowEmojiPicker(!showEmojiPicker)}>
 									<FontAwesomeIcon icon={faFaceSmile} />
 								</span>
 							</div>
