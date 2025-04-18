@@ -1,12 +1,13 @@
 import useAuthContext from "../../../../contexts/AuthContext";
 import getFriend from "../../../../utils/getFriend";
 import { Link, useLocation } from "react-router-dom";
-import { ConversationProps } from "../../../../interfaces";
-import { useRef, useState } from "react";
+import { ConversationProps, Message } from "../../../../interfaces";
+import { useEffect, useRef, useState } from "react";
 import ChatBubble from "./ChatBubble";
 import InboxHeader from "./inbox/InboxHeader";
 import ProfilePreview from "./inbox/ProfilePreview";
 import InboxFooter from "./inbox/InboxFooter";
+import useDM from "../../../../hooks/useDM";
 
 export default function Conversation({
 	defaultSubtext,
@@ -25,6 +26,9 @@ export default function Conversation({
 	// TODO - add a message functionality
 	// TODO - add an upload image functionality
 	// TODO - add logic to render out 'M', 'K', etc. if the user has millions or thousands of followers
+	// TODO - have it autoscroll to the bottom as new messages are added
+	// TODO - clear input on message send
+	// TODO - add logic to render out the appropriate convos per chat ID
 
 	function handlePaste(e: React.ClipboardEvent<HTMLDivElement>) {
 		const image = e.clipboardData || window.Clipboard;
@@ -45,9 +49,17 @@ export default function Conversation({
 		}
 	}
 
+	const { messages } = useDM();
+
 	function deleteImage() {
 		setUploadedImage("");
 	}
+
+	const bottomDivRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		bottomDivRef?.current?.scrollIntoView({ behavior: "smooth" });
+	}, [messages]);
 
 	return (
 		<div
@@ -79,16 +91,17 @@ export default function Conversation({
 							/>
 						</Link>
 						<div className="overflow-y-auto pb-14">
-							<ChatBubble
-								you={false}
-								message={"Hello!"}
-								timestamp={"1:04 AM"}
-							/>
-							<ChatBubble
-								you={true}
-								message={"Hey! How are you doing?"}
-								timestamp={"1:05 AM"}
-							/>
+							{messages &&
+								messages?.map((message: Message) => {
+									return (
+										<ChatBubble
+											you={message.sender._id === userData?._id}
+											message={message.message}
+											timestamp={"1:04 AM"}
+										/>
+									);
+								})}
+							<div ref={bottomDivRef}></div>
 						</div>
 					</div>
 				)}
