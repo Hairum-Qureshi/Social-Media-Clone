@@ -96,4 +96,5 @@ export interface IMessage {
 	sender: Types.ObjectId;
 	attachments: string[];
 	conversationID: Types.ObjectId;
+	createdAt: Date;
 }
