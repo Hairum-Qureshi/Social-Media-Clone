@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent, RefObject } from "react";
 
 export interface CarouselImageProps {
 	image: string;
@@ -74,6 +74,7 @@ export interface Message {
 	sender: UserData;
 	attachments: string[];
 	conversationID: Conversation;
+	createdAt: Date;
 }
 
 export interface AuthProps {
@@ -181,4 +182,21 @@ export interface ConversationProps {
 	defaultSubtext: string;
 	showHeaderText: boolean;
 	conversation: Conversation | undefined;
+}
+
+export interface InboxFooterProps {
+	uploadedImage: string;
+	deleteImage: () => void;
+	contentEditableDivRef: RefObject<HTMLDivElement> | null;
+	handlePaste: (e: React.ClipboardEvent<HTMLDivElement>) => void;
+}
+
+export interface InboxHeaderProps {
+	conversation: Conversation;
+	currUID: string;
+}
+
+export interface ProfilePreviewProps {
+	conversation: Conversation;
+	currUID: string;
 }
