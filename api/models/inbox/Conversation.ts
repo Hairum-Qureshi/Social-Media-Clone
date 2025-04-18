@@ -23,7 +23,7 @@ const conversationSchema = new Schema(
 			type: [String],
 			default: []
 		},
-		lastMessage: {
+		latestMessage: {
 			type: String
 		},
 		isDMRequest: {
