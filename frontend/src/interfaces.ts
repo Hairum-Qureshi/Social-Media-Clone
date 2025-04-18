@@ -71,7 +71,11 @@ export interface UserData {
 
 export interface Message {
 	message: string;
-	sender: UserData;
+	sender: {
+		_id: string;
+		username: string;
+		profilePicture: string;
+	};
 	attachments: string[];
 	conversationID: Conversation;
 	createdAt: Date;
