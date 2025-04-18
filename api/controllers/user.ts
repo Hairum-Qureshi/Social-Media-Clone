@@ -4,6 +4,7 @@ import User from "../models/User";
 import Notification from "../models/Notification";
 import mongoose, { Types } from "mongoose";
 import bcrypt from "bcrypt";
+import { bannedSettlerColonyVariations } from "../lib/utils/bannedSettlerColonyVariations";
 
 const getProfile = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -196,18 +197,17 @@ const handleFollowStatus = async (
 };
 
 function correctLocation(location: string): string {
-	if (
-		location.toLowerCase().trim() === "israel" ||
-		location.toLowerCase().trim() === "state of israel" ||
-		location.toLowerCase().trim() === "the state of israel" ||
-		location.includes("israel") ||
-		location.includes("state of israel") ||
-		location.includes("the state of israel")
-	) {
-		return "Palestine";
+	for (const bannedWord of bannedSettlerColonyVariations) {
+		if (
+			location
+				.normalize("NFKD")
+				.replace(/[^\p{L}]/gu, "")
+				.toLowerCase()
+				.includes(bannedWord)
+		) {
+			return "Palestine";
+		}
 	}
-
-	if (location === "🇮🇱") return "🇵🇸";
 
 	return location;
 }
