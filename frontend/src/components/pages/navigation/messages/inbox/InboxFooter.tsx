@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { InboxFooterProps } from "../../../../../interfaces";
 import { useState } from "react";
 import EmojiPicker from "emoji-picker-react";
+import useDM from "../../../../../hooks/useDM";
 
 export default function InboxFooter({
 	uploadedImage,
@@ -16,8 +17,24 @@ export default function InboxFooter({
 	contentEditableDivRef,
 	handlePaste
 }: InboxFooterProps) {
-
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+	const { sendMessage } = useDM();
+	const pathname = window.location.pathname.split("/");
+	const [messageContent, setMessageContent] = useState("");
+
+	function handleInput() {
+		setMessageContent(contentEditableDivRef?.current?.textContent || "");
+	}
+
+	function clearMessageContent() {
+		if (contentEditableDivRef && contentEditableDivRef.current) {
+			contentEditableDivRef.current.textContent = "";
+		}
+
+		setMessageContent("");
+	}
+
+	// TODO - need to clear input on message send
 
 	return (
 		<div className="w-full relative">
@@ -51,18 +68,30 @@ export default function InboxFooter({
 								<span className="mr-3 hover:cursor-pointer">
 									<FontAwesomeIcon icon={faFilm} />
 								</span>
-								<span className="hover:cursor-pointer" onClick = {() => setShowEmojiPicker(!showEmojiPicker)}>
+								<span
+									className="hover:cursor-pointer"
+									onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+								>
 									<FontAwesomeIcon icon={faFaceSmile} />
 								</span>
 							</div>
 						)}
 						<div
 							contentEditable="plaintext-only"
-							className="w-full ml-2 mr-2 px-2 py-1 min-h-[2rem] break-words resize-none overflow-hidden outline-none rounded"
+							className="w-full ml-2 mr-2 px-2 py-1 min-h-[2rem] max-h-40 overflow-y-auto break-words resize-none outline-none rounded"
 							onInput={e => {
-								const target = e.currentTarget;
+								const target = e.currentTarget as HTMLDivElement;
 								target.style.height = "auto";
 								target.style.height = Math.min(target.scrollHeight, 160) + "px";
+								handleInput();
+							}}
+							onKeyDown={e => {
+								if (e.key === "Enter" && !e.shiftKey) {
+									sendMessage(messageContent, uploadedImage, pathname[3]);
+									e.preventDefault();
+									deleteImage();
+									clearMessageContent();
+								}
 							}}
 							data-placeholder="Write a new message"
 							ref={contentEditableDivRef}
