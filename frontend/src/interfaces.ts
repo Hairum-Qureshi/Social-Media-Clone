@@ -196,9 +196,15 @@ export interface InboxFooterProps {
 	handlePaste: (e: React.ClipboardEvent<HTMLDivElement>) => void;
 }
 
+export enum Status {
+	Online = "ONLINE",
+	Offline = "OFFLINE"
+}
+
 export interface InboxHeaderProps {
 	conversation: Conversation;
 	currUID: string;
+	status: Status;
 }
 
 export interface ProfilePreviewProps {
