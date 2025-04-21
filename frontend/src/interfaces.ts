@@ -82,7 +82,7 @@ export interface Message {
 	createdAt: Date;
 }
 
-export interface AuthProps {
+export interface ContextProps {
 	children: React.ReactNode;
 }
 
