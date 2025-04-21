@@ -17,150 +17,103 @@ import Requests from "./pages/navigation/messages/Requests";
 export default function App() {
 	return (
 		<BrowserRouter>
-			<Routes>
-				<Route
-					path="/sign-in"
-					element={
-						<SocketProvider>
-							<SignIn />
-						</SocketProvider>
-					}
-				/>
-				<Route path="/sign-up" element={<SignUp />} />
-				<Route
-					path="/"
-					element={
-						<AuthProvider>
-							<SocketProvider>
+			<AuthProvider>
+				<SocketProvider>
+					<Routes>
+						<Route path="/sign-in" element={<SignIn />} />
+						<Route path="/sign-up" element={<SignUp />} />
+						<Route
+							path="/"
+							element={
 								<ProtectedRoutesGuard>
 									<Feed />
 								</ProtectedRoutesGuard>
-							</SocketProvider>
-						</AuthProvider>
-					}
-				/>
-				<Route
-					path="/explore"
-					element={
-						<AuthProvider>
-							<SocketProvider>
+							}
+						/>
+						<Route
+							path="/explore"
+							element={
 								<ProtectedRoutesGuard>
 									<Explore />
 								</ProtectedRoutesGuard>
-							</SocketProvider>
-						</AuthProvider>
-					}
-				/>
-				<Route
-					path="/notifications"
-					element={
-						<AuthProvider>
-							<SocketProvider>
+							}
+						/>
+						<Route
+							path="/notifications"
+							element={
 								<ProtectedRoutesGuard>
 									<Notifications />
 								</ProtectedRoutesGuard>
-							</SocketProvider>
-						</AuthProvider>
-					}
-				/>
-				<Route
-					path="/messages"
-					element={
-						<AuthProvider>
-							<SocketProvider>
+							}
+						/>
+						<Route
+							path="/messages"
+							element={
 								<ProtectedRoutesGuard>
 									<Messages />
 								</ProtectedRoutesGuard>
-							</SocketProvider>
-						</AuthProvider>
-					}
-				/>
-				<Route
-					path="/messages/compose"
-					element={
-						<AuthProvider>
-							<SocketProvider>
+							}
+						/>
+						<Route
+							path="/messages/compose"
+							element={
 								<ProtectedRoutesGuard>
 									<Messages />
 								</ProtectedRoutesGuard>
-							</SocketProvider>
-						</AuthProvider>
-					}
-				/>
-				<Route
-					path="/messages/conversation/:conversationID/:userIDs"
-					element={
-						<AuthProvider>
-							<SocketProvider>
+							}
+						/>
+						<Route
+							path="/messages/conversation/:conversationID/:userIDs"
+							element={
 								<ProtectedRoutesGuard>
 									<Messages />
 								</ProtectedRoutesGuard>
-							</SocketProvider>
-						</AuthProvider>
-					}
-				/>
-				<Route
-					path="/messages/compose/group"
-					element={
-						<AuthProvider>
-							<SocketProvider>
+							}
+						/>
+						<Route
+							path="/messages/compose/group"
+							element={
 								<ProtectedRoutesGuard>
 									<Messages />
 								</ProtectedRoutesGuard>
-							</SocketProvider>
-						</AuthProvider>
-					}
-				/>
-				<Route
-					path="/messages/requests"
-					element={
-						<AuthProvider>
-							<SocketProvider>
+							}
+						/>
+						<Route
+							path="/messages/requests"
+							element={
 								<ProtectedRoutesGuard>
 									<Requests />
 								</ProtectedRoutesGuard>
-							</SocketProvider>
-						</AuthProvider>
-					}
-				/>
-				<Route
-					path="/bookmarks"
-					element={
-						<AuthProvider>
-							<SocketProvider>
+							}
+						/>
+						<Route
+							path="/bookmarks"
+							element={
 								<ProtectedRoutesGuard>
 									<Bookmarks />
 								</ProtectedRoutesGuard>
-							</SocketProvider>
-						</AuthProvider>
-					}
-				/>
-				<Route
-					path="/:username"
-					element={
-						<AuthProvider>
-							<SocketProvider>
+							}
+						/>
+						<Route
+							path="/:username"
+							element={
 								<ProtectedRoutesGuard>
 									<Profile />
 								</ProtectedRoutesGuard>
-							</SocketProvider>
-						</AuthProvider>
-					}
-				/>
-				<Route
-					path="/post/:postID"
-					element={
-						<AuthProvider>
-							<SocketProvider>
+							}
+						/>
+						<Route
+							path="/post/:postID"
+							element={
 								<ProtectedRoutesGuard>
 									<PostDetails />
 								</ProtectedRoutesGuard>
-							</SocketProvider>
-						</AuthProvider>
-					}
-				/>
-				<Route path="*" element={<NotFound />} />
-			</Routes>
+							}
+						/>
+						<Route path="*" element={<NotFound />} />
+					</Routes>
+				</SocketProvider>
+			</AuthProvider>
 		</BrowserRouter>
 	);
 }
