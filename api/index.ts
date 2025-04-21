@@ -10,6 +10,7 @@ import { v2 as cloudinary } from "cloudinary";
 import post from "./routes/post";
 import notification from "./routes/notification";
 import message from "./routes/message";
+import { app, server } from "./socket";
 
 dotenv.config();
 colors.enable();
@@ -20,7 +21,7 @@ cloudinary.config({
 	api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-const app = express();
+// const app = express();
 
 const corsOptions = {
 	origin: ["http://localhost:5174", "http://localhost:5173"],
@@ -41,7 +42,7 @@ app.use('/api/messages', message);
 
 const PORT: number = +process.env.PORT! || 3000;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
 	const connectToMongoDB = async () => {
 		try {
 			const conn = await mongoose.connect(process.env.MONGO_URI!);
