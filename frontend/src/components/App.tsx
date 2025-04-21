@@ -10,6 +10,7 @@ import Profile from "./pages/navigation/Profile";
 import NotFound from "./pages/NotFound";
 import ProtectedRoutesGuard from "./ProtectedRoutesGuard";
 import { AuthProvider } from "../contexts/AuthContext";
+import { SocketProvider } from "../contexts/SocketIOContext";
 import PostDetails from "./post/PostDetails";
 import Requests from "./pages/navigation/messages/Requests";
 
@@ -23,9 +24,11 @@ export default function App() {
 					path="/"
 					element={
 						<AuthProvider>
-							<ProtectedRoutesGuard>
-								<Feed />
-							</ProtectedRoutesGuard>
+							<SocketProvider>
+								<ProtectedRoutesGuard>
+									<Feed />
+								</ProtectedRoutesGuard>
+							</SocketProvider>
 						</AuthProvider>
 					}
 				/>
@@ -33,9 +36,11 @@ export default function App() {
 					path="/explore"
 					element={
 						<AuthProvider>
-							<ProtectedRoutesGuard>
-								<Explore />
-							</ProtectedRoutesGuard>
+							<SocketProvider>
+								<ProtectedRoutesGuard>
+									<Explore />
+								</ProtectedRoutesGuard>
+							</SocketProvider>
 						</AuthProvider>
 					}
 				/>
@@ -43,9 +48,11 @@ export default function App() {
 					path="/notifications"
 					element={
 						<AuthProvider>
-							<ProtectedRoutesGuard>
-								<Notifications />
-							</ProtectedRoutesGuard>
+							<SocketProvider>
+								<ProtectedRoutesGuard>
+									<Notifications />
+								</ProtectedRoutesGuard>
+							</SocketProvider>
 						</AuthProvider>
 					}
 				/>
@@ -53,9 +60,11 @@ export default function App() {
 					path="/messages"
 					element={
 						<AuthProvider>
-							<ProtectedRoutesGuard>
-								<Messages />
-							</ProtectedRoutesGuard>
+							<SocketProvider>
+								<ProtectedRoutesGuard>
+									<Messages />
+								</ProtectedRoutesGuard>
+							</SocketProvider>
 						</AuthProvider>
 					}
 				/>
@@ -63,9 +72,11 @@ export default function App() {
 					path="/messages/compose"
 					element={
 						<AuthProvider>
-							<ProtectedRoutesGuard>
-								<Messages />
-							</ProtectedRoutesGuard>
+							<SocketProvider>
+								<ProtectedRoutesGuard>
+									<Messages />
+								</ProtectedRoutesGuard>
+							</SocketProvider>
 						</AuthProvider>
 					}
 				/>
@@ -73,9 +84,11 @@ export default function App() {
 					path="/messages/conversation/:conversationID/:userIDs"
 					element={
 						<AuthProvider>
-							<ProtectedRoutesGuard>
-								<Messages />
-							</ProtectedRoutesGuard>
+							<SocketProvider>
+								<ProtectedRoutesGuard>
+									<Messages />
+								</ProtectedRoutesGuard>
+							</SocketProvider>
 						</AuthProvider>
 					}
 				/>
@@ -83,9 +96,11 @@ export default function App() {
 					path="/messages/compose/group"
 					element={
 						<AuthProvider>
-							<ProtectedRoutesGuard>
-								<Messages />
-							</ProtectedRoutesGuard>
+							<SocketProvider>
+								<ProtectedRoutesGuard>
+									<Messages />
+								</ProtectedRoutesGuard>
+							</SocketProvider>
 						</AuthProvider>
 					}
 				/>
@@ -93,9 +108,11 @@ export default function App() {
 					path="/messages/requests"
 					element={
 						<AuthProvider>
-							<ProtectedRoutesGuard>
-								<Requests />
-							</ProtectedRoutesGuard>
+							<SocketProvider>
+								<ProtectedRoutesGuard>
+									<Requests />
+								</ProtectedRoutesGuard>
+							</SocketProvider>
 						</AuthProvider>
 					}
 				/>
@@ -103,9 +120,11 @@ export default function App() {
 					path="/bookmarks"
 					element={
 						<AuthProvider>
-							<ProtectedRoutesGuard>
-								<Bookmarks />
-							</ProtectedRoutesGuard>
+							<SocketProvider>
+								<ProtectedRoutesGuard>
+									<Bookmarks />
+								</ProtectedRoutesGuard>
+							</SocketProvider>
 						</AuthProvider>
 					}
 				/>
@@ -113,9 +132,11 @@ export default function App() {
 					path="/:username"
 					element={
 						<AuthProvider>
-							<ProtectedRoutesGuard>
-								<Profile />
-							</ProtectedRoutesGuard>
+							<SocketProvider>
+								<ProtectedRoutesGuard>
+									<Profile />
+								</ProtectedRoutesGuard>
+							</SocketProvider>
 						</AuthProvider>
 					}
 				/>
@@ -123,9 +144,11 @@ export default function App() {
 					path="/post/:postID"
 					element={
 						<AuthProvider>
-							<ProtectedRoutesGuard>
-								<PostDetails />
-							</ProtectedRoutesGuard>
+							<SocketProvider>
+								<ProtectedRoutesGuard>
+									<PostDetails />
+								</ProtectedRoutesGuard>
+							</SocketProvider>
 						</AuthProvider>
 					}
 				/>
