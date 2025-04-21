@@ -2,11 +2,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserData, UserTagData, DMTools } from "../interfaces";
 import axios from "axios";
 import useAuthContext from "../contexts/AuthContext";
+import useSocketContext from "../contexts/SocketIOContext";
+import { useEffect } from "react";
 
 export default function useDM(): DMTools {
 	const queryClient = useQueryClient();
 	const { userData } = useAuthContext()!;
 	const convoID: string = window.location.pathname.split("/")[3];
+	const { receivedMessage } = useSocketContext()!;
 
 	const { data: conversations = [] } = useQuery({
 		queryKey: ["conversations"],
@@ -50,6 +53,18 @@ export default function useDM(): DMTools {
 		}
 	});
 
+	useEffect(() => {
+		if (receivedMessage) {
+			messages.push(receivedMessage);
+			queryClient.invalidateQueries({
+				queryKey: ["messages"]
+			});
+			queryClient.invalidateQueries({
+				queryKey: ["conversations"]
+			});
+		}
+	}, [receivedMessage]);
+
 	const { mutate: sendMessageMutate } = useMutation({
 		mutationFn: async ({
 			message,
@@ -80,6 +95,7 @@ export default function useDM(): DMTools {
 			queryClient.invalidateQueries({
 				queryKey: ["messages"]
 			});
+			queryClient.invalidateQueries({ queryKey: ["conversations"] });
 		}
 	});
 
@@ -89,8 +105,16 @@ export default function useDM(): DMTools {
 		conversationID: string
 	) {
 		if (message && userData) {
+			if (message.length > 280) {
+				return alert(
+					"Message is too long. Please shorten it to 280 characters or less."
+				);
+			}
+
 			sendMessageMutate({ message, userData, uploadedImage, conversationID });
 		}
+
+		if (!message) alert("Please provide a message");
 	}
 
 	return { createDM, conversations, sendMessage, messages };
