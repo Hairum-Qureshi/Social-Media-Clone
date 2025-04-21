@@ -18,7 +18,14 @@ export default function App() {
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/sign-in" element={<SignIn />} />
+				<Route
+					path="/sign-in"
+					element={
+						<SocketProvider>
+							<SignIn />
+						</SocketProvider>
+					}
+				/>
 				<Route path="/sign-up" element={<SignUp />} />
 				<Route
 					path="/"
