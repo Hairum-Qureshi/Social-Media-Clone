@@ -1,8 +1,12 @@
+import moment from "moment";
+
 interface ChatBubbleProps {
 	you: boolean;
 	message: string;
-	timestamp: string;
+	timestamp: Date;
 }
+
+// TODO - design the chat bubble so it looks like a bubble
 
 export default function ChatBubble({
 	you,
@@ -18,7 +22,9 @@ export default function ChatBubble({
 			<div className="bg-sky-500 p-2 rounded-md">
 				<p>{message}</p>
 			</div>
-			<p className="text-xs text-gray-400 mt-1">{timestamp}</p>
+			<p className="text-xs text-gray-400 mt-1" title = {moment(timestamp).fromNow()}>
+				{moment(timestamp).format("ddd h:mm A")}
+			</p>
 		</div>
 	);
 }
