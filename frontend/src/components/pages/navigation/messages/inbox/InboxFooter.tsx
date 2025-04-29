@@ -6,21 +6,49 @@ import {
 	faX
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { InboxFooterProps } from "../../../../../interfaces";
-import { useState } from "react";
+import {
+	InboxFooterProps,
+	UserData_Conversation
+} from "../../../../../interfaces";
+import { useEffect, useState } from "react";
 import EmojiPicker from "emoji-picker-react";
 import useDM from "../../../../../hooks/useDM";
+import useSocketContext from "../../../../../contexts/SocketIOContext";
+import useAuthContext from "../../../../../contexts/AuthContext";
+
+// ! RESOLVE ISSUE involving typing indicator only showing when the user has the contenteditable div focused/click into it; it should also show when the user hasn't clicked in it too
+
+// ! Consider showing "user is typing..." in the side contact bar latest message preview too, maybe even a notification bubble too
 
 export default function InboxFooter({
 	uploadedImage,
 	deleteImage,
 	contentEditableDivRef,
-	handlePaste
+	handlePaste,
+	members
 }: InboxFooterProps) {
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 	const { sendMessage } = useDM();
 	const pathname = window.location.pathname.split("/");
 	const [messageContent, setMessageContent] = useState("");
+	const { typingIndicatorHandler, typingUser, typing } = useSocketContext()!;
+	const { userData } = useAuthContext()!;
+	const [uuids, setUUIDs] = useState<string[]>([]);
+
+	useEffect(() => {
+		// TODO - figure out why duplicate IDs are being added
+		if (members) {
+			const filteredUUIDs = members.filter(
+				(member: UserData_Conversation) => member._id !== userData?._id
+			);
+
+			for (let i = 0; i < filteredUUIDs.length; i++) {
+				if (!uuids.includes(filteredUUIDs[i]._id)) {
+					setUUIDs(prevUUIDs => [...prevUUIDs, filteredUUIDs[i]._id]);
+				}
+			}
+		}
+	}, []);
 
 	function handleInput() {
 		setMessageContent(contentEditableDivRef?.current?.textContent || "");
@@ -34,11 +62,19 @@ export default function InboxFooter({
 		setMessageContent("");
 	}
 
-	// TODO - need to clear input on message send
+	useEffect(() => {
+		if (typing && typingUser) {
+			console.log("ran");
+			typingIndicatorHandler(uuids);
+		}
+	}, [typing]);
 
 	return (
 		<div className="w-full relative">
 			<div className="absolute bottom-0 w-full">
+				{typing && typingUser && (
+					<p className="text-white text-lg">@{typingUser} is typing...</p>
+				)}
 				{uploadedImage && (
 					<div className="w-full bg-zinc-900">
 						<div className="relative w-fit p-2 rounded">
@@ -83,6 +119,7 @@ export default function InboxFooter({
 								const target = e.currentTarget as HTMLDivElement;
 								target.style.height = "auto";
 								target.style.height = Math.min(target.scrollHeight, 160) + "px";
+								typingIndicatorHandler(uuids);
 								handleInput();
 							}}
 							onKeyDown={e => {
@@ -91,6 +128,7 @@ export default function InboxFooter({
 									e.preventDefault();
 									deleteImage();
 									clearMessageContent();
+									(e.currentTarget as HTMLDivElement).style.height = "auto";
 								}
 							}}
 							data-placeholder="Write a new message"
