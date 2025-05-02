@@ -16,10 +16,6 @@ import useDM from "../../../../../hooks/useDM";
 import useSocketContext from "../../../../../contexts/SocketIOContext";
 import useAuthContext from "../../../../../contexts/AuthContext";
 
-// ! RESOLVE ISSUE involving typing indicator only showing when the user has the contenteditable div focused/click into it; it should also show when the user hasn't clicked in it too
-
-// ! Consider showing "user is typing..." in the side contact bar latest message preview too, maybe even a notification bubble too
-
 export default function InboxFooter({
 	uploadedImage,
 	deleteImage,
@@ -115,6 +111,7 @@ export default function InboxFooter({
 								target.style.height = Math.min(target.scrollHeight, 160) + "px";
 								handleInput();
 								handleTypingIndicator(
+									pathname[3],
 									members.map((user: UserData_Conversation) => user._id),
 									userData?._id
 								);
