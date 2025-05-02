@@ -10,6 +10,7 @@ import useAuthContext from "../../../../contexts/AuthContext";
 
 // TODO - may need to add specific logic for displaying group chats
 // TODO - remove hardcoded "3 pending requests" and add logic so it only displays the number of requests if the user has any requests
+// !BUG - message stuff is still appearing when you go view DM requests
 
 interface ContactsProps {
 	setConvo: (conversation: Conversation) => void;
@@ -40,12 +41,14 @@ export default function Contacts({ setConvo }: ContactsProps) {
 						<span className="mr-3 hover:cursor-pointer">
 							<FontAwesomeIcon icon={faGear} />
 						</span>
-						<span
-							className="mr-3 hover:cursor-pointer"
-							onClick={() => setOpenModal(true)}
-						>
-							<FontAwesomeIcon icon={faEnvelope} />
-						</span>
+						<Link to="/messages/compose">
+							<span
+								className="mr-3 hover:cursor-pointer"
+								onClick={() => setOpenModal(true)}
+							>
+								<FontAwesomeIcon icon={faEnvelope} />
+							</span>
+						</Link>
 					</div>
 				</div>
 				<Link to="/messages/requests">
@@ -91,6 +94,8 @@ export default function Contacts({ setConvo }: ContactsProps) {
 												username={user.username}
 												pfp={user.profilePicture}
 												fullName={user.fullName}
+												latestMessage={conversation.latestMessage}
+												conversationID={conversation._id}
 											/>
 										</Link>
 									);
