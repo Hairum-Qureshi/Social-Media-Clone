@@ -234,6 +234,7 @@ export interface SocketContextData {
 		members: string[],
 		senderUID: string | undefined
 	) => void;
+	typingIndicatorChatID: string;
 	userIsTyping: boolean;
 	typingUser: string;
 }
