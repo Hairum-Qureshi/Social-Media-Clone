@@ -194,6 +194,7 @@ export interface InboxFooterProps {
 	deleteImage: () => void;
 	contentEditableDivRef: RefObject<HTMLDivElement> | null;
 	handlePaste: (e: React.ClipboardEvent<HTMLDivElement>) => void;
+	members: UserData_Conversation[];
 }
 
 export enum Status {
@@ -221,4 +222,17 @@ export interface DMTools {
 		conversationID: string
 	) => void;
 	messages: Message[];
+}
+
+export interface SocketContextData {
+	connectSocket: () => void;
+	disconnectSocket: () => void;
+	activeUsers: string[];
+	receivedMessage: Message | undefined;
+	handleTypingIndicator: (
+		members: string[],
+		senderUID: string | undefined
+	) => void;
+	userIsTyping: boolean;
+	typingUser: string;
 }
