@@ -144,7 +144,13 @@ export default function InboxFooter({
 							ref={contentEditableDivRef}
 							onPaste={e => handlePaste(e)}
 						/>
-						<div className="ml-auto text-sky-500 hover:cursor-pointer">
+						<div
+							className="ml-auto text-sky-500 hover:cursor-pointer"
+							onClick={() => {
+								sendMessage(messageContent, uploadedImage, pathname[3]);
+								clearMessageContent();
+							}}
+						>
 							<FontAwesomeIcon icon={faPaperPlane} />
 						</div>
 					</div>
