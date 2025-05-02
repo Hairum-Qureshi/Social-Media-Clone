@@ -11,7 +11,7 @@ import {
 	UserData_Conversation
 } from "../../../../../interfaces";
 import { useEffect, useState } from "react";
-import EmojiPicker from "emoji-picker-react";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import useDM from "../../../../../hooks/useDM";
 import useSocketContext from "../../../../../contexts/SocketIOContext";
 import useAuthContext from "../../../../../contexts/AuthContext";
@@ -62,12 +62,16 @@ export default function InboxFooter({
 		setMessageContent("");
 	}
 
-	useEffect(() => {
-		if (typing && typingUser) {
-			console.log("ran");
-			typingIndicatorHandler(uuids);
+	function addEmoji(emojiData: EmojiClickData) {
+		const messageWithEmojis = !messageContent
+			? emojiData.emoji
+			: `${messageContent} ${emojiData.emoji}`;
+		setMessageContent(messageWithEmojis);
+
+		if (contentEditableDivRef?.current) {
+			contentEditableDivRef.current.innerText = messageWithEmojis;
 		}
-	}, [typing]);
+	}
 
 	return (
 		<div className="w-full relative">
@@ -93,7 +97,12 @@ export default function InboxFooter({
 						</div>
 					</div>
 				)}
-				{showEmojiPicker && <EmojiPicker />}
+				{showEmojiPicker && (
+					<EmojiPicker
+						theme={"dark"}
+						onEmojiClick={emojiData => addEmoji(emojiData)}
+					/>
+				)}
 				<div className="w-full">
 					<div className="flex mx-1 p-2 bg-zinc-900 rounded-md items-center">
 						{!uploadedImage && (
