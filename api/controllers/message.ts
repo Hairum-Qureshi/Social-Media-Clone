@@ -4,6 +4,8 @@ import User from "../models/User";
 import { Types } from "mongoose";
 import Conversation from "../models/inbox/Conversation";
 import Message from "../models/inbox/Message";
+// import * as crypto from "crypto-js";
+import { getSocketIDbyUID, io } from "../socket";
 
 const getSearchedUsers = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -193,7 +195,7 @@ const getConversationChat = async (
 			.select("-__v -createdAt -updatedAt")
 			.populate({
 				path: "messages",
-				select: "-__v -createdAt -updatedAt",
+				select: "-__v -updatedAt",
 				populate: {
 					path: "sender",
 					select: "_id username profilePicture"
@@ -236,6 +238,19 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 			}
 		);
 
+		// TODO - this code handles the case if it's a 2-person DM, but it doesn't handle if it's a group chat:
+		const participants: IConversation = (await Conversation.findById({
+			_id: conversationID
+		})) as IConversation;
+
+		const participants_filtered = participants.users.filter(
+			user => !user._id.equals(req.user._id)
+		);
+
+		const receiverSocketID: string = getSocketIDbyUID(
+			participants_filtered[0]._id.toString()
+		);
+
 		const foundPostedMessage = await Message.findById({
 			_id: postedMessage._id
 		})
@@ -244,6 +259,9 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 				path: "sender",
 				select: "_id username profilePicture"
 			});
+
+		if (receiverSocketID)
+			io.to(receiverSocketID).emit("newMessage", foundPostedMessage);
 
 		res.status(201).json(foundPostedMessage);
 	} catch (error) {
