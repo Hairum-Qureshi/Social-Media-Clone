@@ -230,6 +230,7 @@ export interface SocketContextData {
 	activeUsers: string[];
 	receivedMessage: Message | undefined;
 	handleTypingIndicator: (
+		chatID: string,
 		members: string[],
 		senderUID: string | undefined
 	) => void;
