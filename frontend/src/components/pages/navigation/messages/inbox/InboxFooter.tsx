@@ -10,7 +10,7 @@ import {
 	InboxFooterProps,
 	UserData_Conversation
 } from "../../../../../interfaces";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import useDM from "../../../../../hooks/useDM";
 import useSocketContext from "../../../../../contexts/SocketIOContext";
@@ -31,24 +31,9 @@ export default function InboxFooter({
 	const { sendMessage } = useDM();
 	const pathname = window.location.pathname.split("/");
 	const [messageContent, setMessageContent] = useState("");
-	const { typingIndicatorHandler, typingUser, typing } = useSocketContext()!;
 	const { userData } = useAuthContext()!;
-	const [uuids, setUUIDs] = useState<string[]>([]);
-
-	useEffect(() => {
-		// TODO - figure out why duplicate IDs are being added
-		if (members) {
-			const filteredUUIDs = members.filter(
-				(member: UserData_Conversation) => member._id !== userData?._id
-			);
-
-			for (let i = 0; i < filteredUUIDs.length; i++) {
-				if (!uuids.includes(filteredUUIDs[i]._id)) {
-					setUUIDs(prevUUIDs => [...prevUUIDs, filteredUUIDs[i]._id]);
-				}
-			}
-		}
-	}, []);
+	const { handleTypingIndicator, userIsTyping, typingUser } =
+		useSocketContext()!;
 
 	function handleInput() {
 		setMessageContent(contentEditableDivRef?.current?.textContent || "");
@@ -76,7 +61,7 @@ export default function InboxFooter({
 	return (
 		<div className="w-full relative">
 			<div className="absolute bottom-0 w-full">
-				{typing && typingUser && (
+				{userIsTyping && typingUser && (
 					<p className="text-white text-lg">@{typingUser} is typing...</p>
 				)}
 				{uploadedImage && (
@@ -128,8 +113,11 @@ export default function InboxFooter({
 								const target = e.currentTarget as HTMLDivElement;
 								target.style.height = "auto";
 								target.style.height = Math.min(target.scrollHeight, 160) + "px";
-								typingIndicatorHandler(uuids);
 								handleInput();
+								handleTypingIndicator(
+									members.map((user: UserData_Conversation) => user._id),
+									userData?._id
+								);
 							}}
 							onKeyDown={e => {
 								if (e.key === "Enter" && !e.shiftKey) {
