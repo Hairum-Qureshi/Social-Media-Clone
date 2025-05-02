@@ -177,6 +177,7 @@ export interface ProfileTools {
 }
 
 export interface ContactProps {
+	conversationID: string;
 	username: string;
 	pfp: string;
 	fullName: string;
