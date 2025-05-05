@@ -250,11 +250,11 @@ enum NotificationTypes {
 export interface Notification {
 	from: {
 		username: string;
-		userPfp: string;
+		profilePicture: string;
 	};
 	to: {
 		username: string;
-		userPfp: string;
+		profilePicture: string;
 	};
 	notifType: NotificationTypes;
 	read: boolean;
