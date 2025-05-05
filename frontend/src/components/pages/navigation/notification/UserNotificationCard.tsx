@@ -7,14 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
-
-interface UserNotificationCardProps {
-	username: string;
-	userPfp: string;
-	notifType: string;
-	notifDescription: string;
-	notifDate: string;
-}
+import { UserNotificationCardProps } from "../../../../interfaces";
 
 export default function UserNotificationCard({
 	username,
