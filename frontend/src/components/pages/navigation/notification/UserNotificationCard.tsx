@@ -3,31 +3,38 @@ import {
 	faHeart,
 	faMessage,
 	faTrash,
-	faUser
+	faUserPlus
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import moment from "moment";
 
 interface UserNotificationCardProps {
+	username: string;
+	userPfp: string;
 	notifType: string;
 	notifDescription: string;
+	notifDate: string;
 }
 
 export default function UserNotificationCard({
+	username,
+	userPfp,
 	notifType,
-	notifDescription
+	notifDescription,
+	notifDate
 }: UserNotificationCardProps) {
 	return (
 		<div className="w-full border-2 border-gray-700 lg:text-2xl text-xl">
 			<div className="p-4 flex items-center">
-				{notifType === "follow" ? (
+				{notifType === "FOLLOW" ? (
 					<span className="text-sky-400 mr-4">
-						<FontAwesomeIcon icon={faUser} />
+						<FontAwesomeIcon icon={faUserPlus} />
 					</span>
-				) : notifType === "like" ? (
+				) : notifType === "LIKE" ? (
 					<span className="text-red-500 mr-4">
 						<FontAwesomeIcon icon={faHeart} />
 					</span>
-				) : notifType === "comment" ? (
+				) : notifType === "COMMENT" ? (
 					<span className="text-white mr-4">
 						<FontAwesomeIcon icon={faComment} />
 					</span>
@@ -37,16 +44,20 @@ export default function UserNotificationCard({
 					</span>
 				)}
 				<img
-					src="https://i.pinimg.com/474x/2c/47/d5/2c47d5dd5b532f83bb55c4cd6f5bd1ef.jpg"
+					src={userPfp}
 					alt="User pfp"
 					className="lg:w-9 lg:h-9 w-8 h-8 rounded-full"
 				/>
 				<div className="flex justify-center flex-col w-full text-left ml-3">
 					<span className="lg:text-base text-sm flex justify-between items-center w-full">
-						<strong>Username</strong>&nbsp;{notifDescription}
+						<strong>{username}</strong>&nbsp;{notifDescription}
 						<div className="ml-auto text-gray-600 hover:text-red-600 hover:cursor-pointer">
-							<span className="text-gray-600 mr-3 lg:text-base text-sm">7 hrs ago</span>
-							<span className = "text-lg"><FontAwesomeIcon icon={faTrash} /></span>
+							<span className="text-gray-600 mr-3 lg:text-base text-sm">
+								{moment(notifDate).fromNow()}
+							</span>
+							<span className="text-lg">
+								<FontAwesomeIcon icon={faTrash} />
+							</span>
 						</div>
 					</span>
 				</div>
