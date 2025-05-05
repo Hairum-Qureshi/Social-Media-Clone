@@ -31,7 +31,7 @@ export default function Messages() {
 			<div className="border border-slate-600 w-5/12">
 				<Contacts setConvo={setConvo} />
 			</div>
-			<div className="text-white border border-slate-600 flex-grow">
+			<div className="text-white border border-slate-600 w-[670px]">
 				<Conversation
 					defaultSubtext={
 						!conversation
