@@ -248,8 +248,14 @@ enum NotificationTypes {
 }
 
 export interface Notification {
-	from: UserData;
-	to: UserData;
+	from: {
+		username: string;
+		userPfp: string;
+	};
+	to: {
+		username: string;
+		userPfp: string;
+	};
 	notifType: NotificationTypes;
 	read: boolean;
 	createdAt: Date;
