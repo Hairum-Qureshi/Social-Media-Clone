@@ -239,3 +239,27 @@ export interface SocketContextData {
 	userIsTyping: boolean;
 	typingUser: string;
 }
+
+enum NotificationTypes {
+	Like = "LIKE",
+	Comment = "COMMENT",
+	Follow = "FOLLOW",
+	Message = "MESSAGE"
+}
+
+export interface Notification {
+	from: UserData;
+	to: UserData;
+	notifType: NotificationTypes;
+	read: boolean;
+	createdAt: Date;
+	updatedAt: Date;
+}
+
+export interface UserNotificationCardProps {
+	username: string;
+	userPfp: string;
+	notifType: string;
+	notifDescription: string;
+	notifDate: string;
+}
