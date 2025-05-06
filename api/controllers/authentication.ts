@@ -4,11 +4,13 @@ import bcrypt from "bcrypt";
 import { IUser } from "../interfaces";
 import generateAndSetCookie from "../lib/utils/generateCookie";
 import getUserData from "../lib/utils/getUserData";
+import { generateKeyPair } from "../lib/utils/generateKeyPair";
 
 const signUp = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { fullName, username, email, password } = req.body;
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		const { publicKeyPem, privateKeyPem } = generateKeyPair();
 
 		if (!emailRegex.test(email)) {
 			res.status(400).json({ error: "Invalid email" });
@@ -41,11 +43,12 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
 			username,
 			fullName,
 			password: hashedPassword,
-			email
+			email,
+			publicKey: publicKeyPem
 		});
 
 		generateAndSetCookie(user._id, res);
-		res.status(200).json(getUserData(user));
+		res.status(200).json({ userData: getUserData(user), privateKey: privateKeyPem });
 	} catch (error) {
 		console.error(
 			"Error in authentication.ts file, signUp function controller".red.bold,
@@ -72,7 +75,7 @@ const signIn = async (req: Request, res: Response): Promise<void> => {
 
 		generateAndSetCookie(user._id, res);
 
-		res.status(200).json(getUserData(user));
+		res.status(200).json({ userData: getUserData(user), privateKey: user.privateKey });
 	} catch (error) {
 		console.error(
 			"Error in authentication.ts file, signIn function controller".red.bold,
