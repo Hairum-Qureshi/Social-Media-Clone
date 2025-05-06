@@ -8,14 +8,18 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import moment from "moment";
 import { UserNotificationCardProps } from "../../../../interfaces";
+import useNotifications from "../../../../hooks/useNotifications";
 
 export default function UserNotificationCard({
 	username,
 	userPfp,
 	notifType,
 	notifDescription,
-	notifDate
+	notifDate,
+	notifID
 }: UserNotificationCardProps) {
+	const {  deleteNotification } = useNotifications();
+
 	return (
 		<div className="w-full border-2 border-gray-700 lg:text-2xl text-xl">
 			<div className="p-4 flex items-center">
@@ -49,7 +53,7 @@ export default function UserNotificationCard({
 								{moment(notifDate).fromNow()}
 							</span>
 							<span className="text-lg">
-								<FontAwesomeIcon icon={faTrash} />
+								<FontAwesomeIcon icon={faTrash} onClick = {() => deleteNotification(notifID)} />
 							</span>
 						</div>
 					</span>
