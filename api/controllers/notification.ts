@@ -40,12 +40,13 @@ const deleteNotification = async (
 	res: Response
 ): Promise<void> => {
 	try {
-		const notificationID = req.params.id;
+		const notificationID = req.params.notificationID;
 		const currUID: Types.ObjectId = req.user._id;
 
-		const [notification]: INotification[] = (await Notification.findById(
-			notificationID
-		)) as INotification[];
+		const notification: INotification = (await Notification.findById({
+			_id: notificationID
+		})) as INotification;
+
 		if (!notification) {
 			res.status(404).json({ message: "Notification not found" });
 			return;
@@ -58,7 +59,7 @@ const deleteNotification = async (
 			return;
 		}
 
-		await Notification.findByIdAndDelete(notificationID);
+		await Notification.findByIdAndDelete({ _id: notificationID });
 
 		res.status(200).json({ message: "Notification deleted successfully" });
 	} catch (error) {
