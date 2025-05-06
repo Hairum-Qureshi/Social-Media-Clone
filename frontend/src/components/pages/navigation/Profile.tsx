@@ -21,7 +21,7 @@ import getMonthAndYear from "../../../utils/getMonthAndYear";
 // TODO - get the number of posts the user has (currently it only works for the current user and not other users)
 // TODO - need to get other users' posts too to display on their profile pages
 // TODO - add a kebab button to allow users to block profiles too
-// TODO - create follow/unfollow feature and add logic to render 'Unfollow' if the user is following another user; 'follow' otherwise
+// TODO - if the user visits a profile of a non-existent user, it should lead to a 404 page
 // ! FIX: the kebab buttons are not shifted to the right in mobile view for the posts
 export default function Profile() {
 	const [showModal, setShowModal] = useState(false);
@@ -63,7 +63,8 @@ export default function Profile() {
 							: userData?.username}
 					</h2>
 					<div className="ml-5 text-gray-600">
-						{currentUserPostData?.length || 0} posts
+						{currentUserPostData?.length || 0} post
+						{currentUserPostData.length === 1 ? "" : "s"}
 					</div>
 				</div>
 			</div>
@@ -126,7 +127,7 @@ export default function Profile() {
 					<>
 						{isFollowing(profileData, userData?._id) ? (
 							<button
-								className="ml-auto mr-10 border-2 bg-white text-black font-semibold w-25 text-base rounded-full p-2"
+								className="ml-auto mr-10 border-2 hover:border-red-900 hover:text-red-600 font-semibold w-25 text-base rounded-full p-2"
 								onClick={() => handleFollowing(profileData?._id)}
 							>
 								Unfollow
