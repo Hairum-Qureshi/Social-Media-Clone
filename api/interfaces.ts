@@ -11,9 +11,17 @@ export interface IConversation {
 	isDMRequest: boolean;
 	requestedBy: Types.ObjectId;
 	requestedTo: Types.ObjectId;
+	messages: [
+		{
+			_id: Types.ObjectId;
+			username: string;
+			profilePicture: string;
+		}
+	];
 }
 
 export interface IUser {
+	privateKey: any;
 	_id: Types.ObjectId;
 	username: string;
 	fullName: string;
@@ -33,6 +41,7 @@ export interface IUser {
 	conversations: IConversation[];
 	createdAt: Date;
 	updatedAt: Date;
+	publicKey: string;
 }
 
 export interface UserData {
@@ -64,6 +73,7 @@ enum NotificationTypes {
 }
 
 export interface INotification {
+	_id: Types.ObjectId;
 	from: Types.ObjectId;
 	to: Types.ObjectId;
 	notifType: NotificationTypes;
@@ -92,9 +102,11 @@ export interface IPost {
 }
 
 export interface IMessage {
+	_id: Types.ObjectId;
 	message: string;
 	sender: Types.ObjectId;
 	attachments: string[];
 	conversationID: Types.ObjectId;
 	createdAt: Date;
+	encryptedAESKey: string;
 }
