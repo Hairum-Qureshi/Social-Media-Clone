@@ -110,3 +110,8 @@ export interface IMessage {
 	createdAt: Date;
 	encryptedAESKey: string;
 }
+
+export interface KeyPair {
+	publicKeyPem: string;
+	privateKeyPem: string 
+}
