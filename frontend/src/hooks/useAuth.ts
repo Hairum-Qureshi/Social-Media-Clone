@@ -2,6 +2,9 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import useSocketContext from "../contexts/SocketIOContext";
+import { useNavigate } from "react-router-dom";
+import { set, del } from 'idb-keyval';
 
 interface AuthTools {
 	signUp: (
@@ -34,6 +37,10 @@ export default function useAuth(): AuthTools {
 		for: ""
 	});
 
+	const { connectSocket, disconnectSocket } = useSocketContext()!;
+	const navigate = useNavigate();
+	const STORAGE_KEY = 'private-key';
+
 	const {
 		mutate: signUpMutate,
 		isError: isSignUpError,
@@ -50,6 +57,7 @@ export default function useAuth(): AuthTools {
 					}
 				);
 
+				await set(STORAGE_KEY, response.data.privateKey);
 				return response;
 			} catch (error) {
 				if (axios.isAxiosError(error)) {
@@ -91,88 +99,6 @@ export default function useAuth(): AuthTools {
 
 			signUpMutate(data);
 		}
-
-		// axios
-		// 	.post(
-		// 		"http://localhost:2000/api/auth/sign-up",
-		// 		{
-		// 			username: username.toLowerCase(),
-		// 			fullName,
-		// 			email,
-		// 			password
-		// 		},
-		// 		{
-		// 			withCredentials: true
-		// 		}
-		// 	)
-		// 	.then(() => {
-		//         // console.log(response.data);
-		// 		// TODO - save user data
-		// 		// window.location.href = "/";
-		// 	})
-		// 	.catch(error => {
-		// 		console.log(error);
-		// 	});
-
-		// let error = {
-		// 	message: "",
-		// 	for: ""
-		// };
-
-		// if (!username || !fullName || !email || !password) {
-		// 	// error = {
-		// 	// 	message: "Please fill in all fields",
-		// 	// 	for: "all"
-		// 	// };
-
-		// } else {
-		// 	const usernameRegex: RegExp =
-		// 		/^[a-z](?:_?[a-z0-9]|(?:\.[a-z0-9])){5,20}$/;
-		// 	if (!usernameRegex.test(username)) {
-		// 		// error = {
-		// 		// 	message:
-		// 		// 		"Username must be between 6 and 20 characters, can only contain letters, numbers, periods, and underscores",
-		// 		// 	for: "username"
-		// 		// };
-		// 	}
-
-		// 	const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z]/;
-		// 	if (!emailRegex.test(email)) {
-		// 		// error = {
-		// 		// 	message: "Invalid email",
-		// 		// 	for: "email"
-		// 		// };
-		// 	}
-
-		// 	if (password.length < 6) {
-		// 		// error = {
-		// 		// 	message: "Password must be at least 6 characters long",
-		// 		// 	for: "password"
-		// 		// };
-		// 	}
-
-		// 	setErrorMessage({
-		// 		message: "",
-		// 		for: ""
-		// 	});
-
-		// 	axios
-		// 		.post("http://localhost:2000/api/auth/sign-up", {
-		// 			username,
-		// 			fullName,
-		// 			email,
-		// 			password
-		// 		})
-		// 		.then(response => {
-		// 			console.log(response.data);
-		// 		})
-		// 		.catch(error => {
-		// 			console.log(error);
-		// 		});
-
-		// }
-
-		// setErrorMessage(error);
 	}
 
 	const {
@@ -190,8 +116,10 @@ export default function useAuth(): AuthTools {
 						withCredentials: true
 					}
 				);
-
-				window.location.href = `/${response.data.username}`;
+				
+				await set(STORAGE_KEY, response.data.privateKey);
+				navigate(`/${response.data.userData.username}`);
+				connectSocket();
 			} catch (error) {
 				if (axios.isAxiosError(error)) {
 					toast(error.response?.data.error, {
@@ -235,6 +163,8 @@ export default function useAuth(): AuthTools {
 						withCredentials: true
 					}
 				);
+
+				await del(STORAGE_KEY);
 			} catch (error) {
 				if (axios.isAxiosError(error)) {
 					toast(error.response?.data.error, {
@@ -248,6 +178,9 @@ export default function useAuth(): AuthTools {
 					});
 				}
 			}
+		},
+		onSuccess: () => {
+			disconnectSocket();
 		}
 	});
 
