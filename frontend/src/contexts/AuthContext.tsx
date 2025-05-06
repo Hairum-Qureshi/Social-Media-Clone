@@ -1,12 +1,12 @@
 import { useState, createContext, useContext, useEffect } from "react";
 import axios from "axios";
-import { AuthProps, ContextData, UserData } from "../interfaces";
+import { ContextProps, ContextData, UserData } from "../interfaces";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 
 export const AuthContext = createContext<ContextData | null>(null);
 
-export const AuthProvider = ({ children }: AuthProps) => {
+export const AuthProvider = ({ children }: ContextProps) => {
 	const [userData, setUserData] = useState<UserData | null>(null);
 
 	const { data } = useQuery({
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }: AuthProps) => {
 						withCredentials: true
 					}
 				);
-				return response.data.userData;
+				return response.data;
 			} catch (error) {
 				if (axios.isAxiosError(error)) {
 					toast(error.response?.data.error, {
