@@ -16,7 +16,7 @@ export default function Notifications() {
 					<FontAwesomeIcon icon={faGear} />
 				</span>
 			</div>
-			{!notificationData ? (
+			{!notificationData || notificationData.length === 0 ? (
 				<h3 className="text-xl font-semibold text-center mt-10">
 					You currently don't have any notifications
 				</h3>
@@ -28,6 +28,7 @@ export default function Notifications() {
 						notifType={notification.notifType}
 						notifDescription={getDescription(notification.notifType)}
 						notifDate={notification.createdAt.toString()}
+						notifID={notification._id}
 					/>
 				))
 			)}
