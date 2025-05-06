@@ -248,6 +248,7 @@ enum NotificationTypes {
 }
 
 export interface Notification {
+	_id: string;
 	from: {
 		username: string;
 		profilePicture: string;
@@ -268,4 +269,5 @@ export interface UserNotificationCardProps {
 	notifType: string;
 	notifDescription: string;
 	notifDate: string;
+	notifID: string;
 }
