@@ -8,7 +8,8 @@ const getAllNotifications = async (req: Request, res: Response) => {
 		const currUID: Types.ObjectId = req.user._id;
 
 		const notifications: INotification[] = (await Notification.find({
-			to: currUID
+			to: currUID,
+			from: { $ne: currUID }
 		})
 			.populate({
 				path: "from",
@@ -18,10 +19,10 @@ const getAllNotifications = async (req: Request, res: Response) => {
 				createdAt: -1
 			})) as INotification[];
 
-		await Notification.updateMany({
-			to: currUID,
-			read: true
-		});
+		await Notification.updateMany(
+			{ to: currUID, read: false },
+			{ $set: { read: true } }
+		);
 
 		res.status(200).json(notifications);
 	} catch (error) {
