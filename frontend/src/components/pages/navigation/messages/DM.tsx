@@ -33,8 +33,8 @@ export default function DM({
 					<div className="ml-3 text-gray-500">
 						{userIsTyping && typingIndicatorChatID === conversationID ? (
 							<span className="text-sky-600">@{typingUser} is typing...</span>
-						) : latestMessage.length > 40 ? (
-							latestMessage.slice(0, 40) + "..."
+						) : latestMessage?.length > 40 ? (
+							latestMessage?.slice(0, 40) + "..."
 						) : (
 							latestMessage
 						)}
