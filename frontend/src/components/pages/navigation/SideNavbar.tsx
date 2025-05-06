@@ -19,8 +19,8 @@ export default function SideNavbar() {
 	// TODO - need to replace hardcoded '/username' param for profile route with the authenticated user's username
 	// TODO - need to make the icons centered
 	return (
-		<div className="bg-black border-r-2 border-r-gray-700 text-white h-screen w-32 lg:w-[280px] shrink-0 overflow-hidden">
-			<div className="h-full lg:w-2/3 w-full ml-auto lg:relative lg:block flex flex-col items-center justify-center">
+		<div className="bg-black border-r-2 border-r-gray-700 text-white h-screen lg:w-1/4 w-20 overflow-hidden flex">
+			<div className="h-ful w-full lg:relative items-center justify-center">
 				<Link to="/">
 					<img
 						src={TwitterXSVG}
@@ -28,7 +28,7 @@ export default function SideNavbar() {
 						className="w-10 h-10 mt-3"
 					/>
 				</Link>
-				<div className="text-xl p-2">
+				<div className="text-2xl p-2">
 					<Link to="/">
 						<div className="ml-3">
 							<div className="my-6 -ml-4 hover:bg-gray-800 p-2 rounded-full">
@@ -98,11 +98,11 @@ export default function SideNavbar() {
 							POST
 						</div>
 					</div>
-					<div className="w-full lg:rounded-md text-lg font-bold text-center my-8 break-all">
+					<div className="w-full lg:rounded-md text-base font-bold text-center my-8 break-all">
 						<div className="hover:bg-gray-800 p-2 rounded-md lg:mx-2 hover:cursor-pointer">
 							<div className="flex items-center">
 								<img
-									src="https://i.pinimg.com/474x/2c/47/d5/2c47d5dd5b532f83bb55c4cd6f5bd1ef.jpg"
+									src={userData?.profilePicture}
 									alt="User pfp"
 									className="lg:w-10 lg:h-10 w-12 h-12 rounded-full"
 								/>
