@@ -64,7 +64,7 @@ export default function Profile() {
 					</h2>
 					<div className="ml-5 text-gray-600">
 						{currentUserPostData?.length || 0} post
-						{currentUserPostData.length === 1 ? "" : "s"}
+						{currentUserPostData?.length === 1 ? "" : "s"}
 					</div>
 				</div>
 			</div>
