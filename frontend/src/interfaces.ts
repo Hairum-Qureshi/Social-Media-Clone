@@ -80,6 +80,7 @@ export interface Message {
 	attachments: string[];
 	conversationID: string;
 	createdAt: Date;
+	encryptedAESKey: string;
 }
 
 export interface ContextProps {
