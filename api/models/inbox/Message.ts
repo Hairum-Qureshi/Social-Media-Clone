@@ -18,6 +18,11 @@ const messageSchema = new Schema(
 		conversationID: {
 			type: Types.ObjectId,
 			ref: "Conversation"
+		},
+		encryptedAESKey: {
+			type: String,
+			required: true,
+			isUnique: true
 		}
 	},
 	{
