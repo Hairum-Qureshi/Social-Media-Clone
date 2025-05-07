@@ -58,6 +58,7 @@ export default function useAuth(): AuthTools {
 				);
 
 				await set(STORAGE_KEY, response.data.privateKey);
+				navigate(`/${response.data.userData.username}`);
 				return response;
 			} catch (error) {
 				if (axios.isAxiosError(error)) {
@@ -117,7 +118,6 @@ export default function useAuth(): AuthTools {
 					}
 				);
 
-				await set(STORAGE_KEY, response.data.privateKey);
 				navigate(`/${response.data.userData.username}`);
 				connectSocket();
 			} catch (error) {
