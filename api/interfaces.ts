@@ -21,7 +21,6 @@ export interface IConversation {
 }
 
 export interface IUser {
-	privateKey: any;
 	_id: Types.ObjectId;
 	username: string;
 	fullName: string;
@@ -39,9 +38,9 @@ export interface IUser {
 	numFollowing: number;
 	isVerified: boolean;
 	conversations: IConversation[];
+	publicKey: string;
 	createdAt: Date;
 	updatedAt: Date;
-	publicKey: string;
 }
 
 export interface UserData {
@@ -61,6 +60,7 @@ export interface UserData {
 	numFollowing: number;
 	isVerified: boolean;
 	conversations: IConversation[];
+	publicKey: string;
 	createdAt: Date;
 	updatedAt: Date;
 }
