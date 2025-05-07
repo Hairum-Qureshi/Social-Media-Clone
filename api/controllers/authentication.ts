@@ -48,7 +48,9 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
 		});
 
 		generateAndSetCookie(user._id, res);
-		res.status(200).json({ userData: getUserData(user), privateKey: privateKeyPem });
+		res
+			.status(200)
+			.json({ userData: getUserData(user), privateKey: privateKeyPem });
 	} catch (error) {
 		console.error(
 			"Error in authentication.ts file, signUp function controller".red.bold,
@@ -75,7 +77,7 @@ const signIn = async (req: Request, res: Response): Promise<void> => {
 
 		generateAndSetCookie(user._id, res);
 
-		res.status(200).json({ userData: getUserData(user), privateKey: user.privateKey });
+		res.status(200).json({ userData: getUserData(user) });
 	} catch (error) {
 		console.error(
 			"Error in authentication.ts file, signIn function controller".red.bold,
