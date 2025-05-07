@@ -16,6 +16,7 @@ export default function getUserData(user: IUser): UserData {
 		likedPosts: user.likedPosts,
 		numFollowers: user.numFollowers,
 		numFollowing: user.numFollowing,
+		publicKey: user.publicKey,
 		createdAt: user.createdAt,
 		updatedAt: user.updatedAt,
 		isVerified: user.isVerified,
