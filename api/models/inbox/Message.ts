@@ -19,10 +19,9 @@ const messageSchema = new Schema(
 			type: Types.ObjectId,
 			ref: "Conversation"
 		},
-		encryptedAESKey: {
-			type: String,
-			required: true,
-			isUnique: true
+		encryptedAESKeys: {
+			type: Map,
+			of: String
 		}
 	},
 	{
