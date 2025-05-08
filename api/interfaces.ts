@@ -1,8 +1,14 @@
 import { Types } from "mongoose";
 
+export interface UserKeyData {
+	_id: Types.ObjectId;
+	publicKey: string;
+}
+
+
 export interface IConversation {
 	_id: Types.ObjectId;
-	users: Types.ObjectId[];
+	users: Types.ObjectId[] | UserKeyData[];
 	isGroupchat: boolean;
 	groupName: string;
 	groupPhoto: string;
@@ -26,7 +32,7 @@ export interface IUser {
 	fullName: string;
 	password: string | undefined;
 	email: string;
-	location: string;
+	location?: string;
 	followers: Types.ObjectId[];
 	following: Types.ObjectId[];
 	profilePicture: string;
@@ -48,7 +54,7 @@ export interface UserData {
 	username: string;
 	fullName: string;
 	email: string;
-	location: string;
+	location?: string;
 	followers: Types.ObjectId[];
 	following: Types.ObjectId[];
 	profilePicture: string;
