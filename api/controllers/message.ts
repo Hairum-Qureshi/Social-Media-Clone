@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
-import { IConversation, IMessage, IUser } from "../interfaces";
+import { UserKeyData, IConversation, IMessage, IUser } from "../interfaces";
 import User from "../models/User";
 import { Types } from "mongoose";
 import Conversation from "../models/inbox/Conversation";
 import Message from "../models/inbox/Message";
-// import * as crypto from "crypto-js";
 import { getSocketIDbyUID, io } from "../socket";
+import CryptoJS from "crypto-js";
+import forge from "node-forge";
 
 const getSearchedUsers = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -219,11 +220,46 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 		const { message, sender, attachments } = req.body;
 		const { conversationID } = req.params;
 
+		// TODO - will need to also update the 'latestMessage' so that it's also encrypted too
+
+		// TODO - this code handles the case if it's a 2-person DM, but it doesn't handle if it's a group chat:
+		const participants: IConversation = (await Conversation.findById({
+			_id: conversationID
+		})
+			.populate("users")
+			.select("-__v -password -conversations")
+			.lean()) as IConversation;
+
+		const participants_filtered = participants.users.filter(
+			user => !user._id.equals(req.user._id)
+		);
+
+		const receiverSocketID: string = getSocketIDbyUID(
+			participants_filtered[0]._id.toString()
+		);
+
+		const aesKey = CryptoJS.lib.WordArray.random(32).toString(); // Generate AES key
+		const encryptedMessage = CryptoJS.AES.encrypt(message, aesKey).toString();
+
+		const encryptedAESKeys: Map<string, string> = new Map<string, string>();
+
+		(participants.users as UserKeyData[]).forEach((user: UserKeyData) => {
+			const publicKeyPem = user.publicKey;
+			const recipientPublicKey = forge.pki.publicKeyFromPem(publicKeyPem);
+
+			const encryptedAESKey = recipientPublicKey.encrypt(aesKey, "RSA-OAEP");
+			encryptedAESKeys.set(
+				user._id.toString(),
+				forge.util.encode64(encryptedAESKey)
+			);
+		});
+
 		// TODO - handle case if the user uploads any images too!
 		const postedMessage: IMessage = await Message.create({
-			message,
+			message: encryptedMessage,
 			sender,
-			conversationID
+			conversationID,
+			encryptedAESKeys
 		});
 
 		await Conversation.findByIdAndUpdate(
@@ -236,19 +272,6 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 					latestMessage: message
 				}
 			}
-		);
-
-		// TODO - this code handles the case if it's a 2-person DM, but it doesn't handle if it's a group chat:
-		const participants: IConversation = (await Conversation.findById({
-			_id: conversationID
-		})) as IConversation;
-
-		const participants_filtered = participants.users.filter(
-			user => !user._id.equals(req.user._id)
-		);
-
-		const receiverSocketID: string = getSocketIDbyUID(
-			participants_filtered[0]._id.toString()
 		);
 
 		const foundPostedMessage = await Message.findById({
