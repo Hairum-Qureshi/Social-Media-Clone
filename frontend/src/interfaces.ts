@@ -80,7 +80,7 @@ export interface Message {
 	attachments: string[];
 	conversationID: string;
 	createdAt: Date;
-	encryptedAESKeys: Map<string, string>;
+	encryptedAESKeys: Record<string, string>;
 }
 
 export interface ContextProps {
@@ -186,7 +186,7 @@ export interface ContactProps {
 }
 
 export interface ConversationProps {
-	defaultSubtext: string;
+	defaultSubtext: string; 
 	showHeaderText: boolean;
 	conversation: Conversation | undefined;
 }
@@ -271,4 +271,8 @@ export interface UserNotificationCardProps {
 	notifDescription: string;
 	notifDate: string;
 	notifID: string;
+}
+
+export interface EditorProps {
+	showBorder?: boolean;
 }
