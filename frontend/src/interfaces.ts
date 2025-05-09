@@ -276,3 +276,7 @@ export interface UserNotificationCardProps {
 export interface EditorProps {
 	showBorder?: boolean;
 }
+
+export interface PostModalComponentProp {
+	children: React.ReactNode;
+}
