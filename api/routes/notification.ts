@@ -5,7 +5,7 @@ import { getAllNotifications, deleteNotification, deleteNotifications } from "..
 const router = express.Router();
 
 router.get('/all', checkAuthStatus, getAllNotifications);
-router.delete("/:notificationID", checkAuthStatus, deleteNotification);
 router.delete('/all', checkAuthStatus, deleteNotifications);
+router.delete("/:notificationID", checkAuthStatus, deleteNotification);
 
 export default router;
