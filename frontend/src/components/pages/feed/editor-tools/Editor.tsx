@@ -1,12 +1,14 @@
 import { useRef, useState } from "react";
 import EditorOptions from "./EditorOptions";
 import Carousel from "./carousel/Carousel";
+import { EditorProps } from "../../../../interfaces";
 
 // TODO - need to resolve image aspect ratio when uploading images
 // TODO - if the user hasn't typed anything yet, disable the "POST" button too
 // TODO - instead of alerting the user they can only have a max of 4 images, disable the GIF and image icon
 // TODO - move all this logic to a custom hook
-export default function Editor() {
+
+export default function Editor({ showBorder = true }: EditorProps) {
 	const [postContent, setPostContent] = useState("");
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
 	const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -62,7 +64,7 @@ export default function Editor() {
 
 	// TODO - allow users to paste images
 	return (
-		<div className="border-2 border-gray-500">
+		<div className={`${showBorder && "border-2 border-gray-500"}`}>
 			<div className="w-full rounded-md text-center h-auto">
 				<div className="rounded-md ml-3 h-full">
 					<div className="flex flex-col my-5">
@@ -91,13 +93,19 @@ export default function Editor() {
 											numImages={uploadedImages.length}
 											removeImage={removeImage}
 											allowDelete={true}
+											forPost={false}
 										/>
 									</div>
 								)}
 							</div>
 						</div>
 						<div className="flex items-center text-xl mt-3 text-sky-400">
-							<EditorOptions handleImage={handleImage} uploadedImages = {uploadedImages} postContent = {postContent} clearTextArea = {clearTextArea} />
+							<EditorOptions
+								handleImage={handleImage}
+								uploadedImages={uploadedImages}
+								postContent={postContent}
+								clearTextArea={clearTextArea}
+							/>
 						</div>
 					</div>
 				</div>
