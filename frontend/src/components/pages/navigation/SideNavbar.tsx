@@ -9,10 +9,10 @@ import {
 	faRightFromBracket,
 	faUser
 } from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import useAuthContext from "../../../contexts/AuthContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PostModal from "../../post/PostModal";
 import Editor from "../feed/editor-tools/Editor";
 
@@ -21,7 +21,12 @@ export default function SideNavbar() {
 	const { userData } = useAuthContext()!;
 	const [showPostModal, setShowPostModal] = useState(false);
 	const isFeed: boolean = window.location.pathname === "/";
-	// TODO - need to replace hardcoded '/username' param for profile route with the authenticated user's username
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		setShowPostModal(false);
+	}, [navigate]);
+
 	// TODO - need to make the icons centered
 	return (
 		<>
