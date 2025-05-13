@@ -33,7 +33,7 @@ export default function useProfile(): ProfileTools {
 			link?: string;
 		}) => {
 			try {
-				const response = await axios.post(
+				const response = await axios.put(
 					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/user/update-profile`,
 					{
 						fullName,
