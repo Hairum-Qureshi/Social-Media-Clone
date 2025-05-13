@@ -125,6 +125,8 @@ export interface PostData {
 	isPending: boolean;
 	deleteMutation: (postID: string) => void;
 	postDataByID: Post;
+	showPostModal: boolean;
+	showThePostModal: (bool:boolean) => void;
 }
 
 export interface UserCardProps {
@@ -175,6 +177,7 @@ export interface ProfileTools {
 	) => void;
 	profileData: UserData | undefined;
 	handleFollowing: (userID: string | undefined) => void;
+	handleImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface ContactProps {
