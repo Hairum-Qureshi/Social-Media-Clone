@@ -1,15 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Post, PostData } from "../interfaces";
 import useAuthContext from "../contexts/AuthContext";
+import { useLocation } from "react-router-dom";
+import { blobURLToFile } from "../utils/blobURLToFile";
 
 export default function usePosts(feedType?: string): PostData {
 	const [postData, setPostData] = useState<Post[]>([]);
 	const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
 	const [currentUserPostData, setCurrentUserPostData] = useState<Post[]>([]);
+	const [showPostModal, setShowPostModal] = useState(false);
 	const queryClient = useQueryClient();
 	const { userData } = useAuthContext()!;
+	const location = useLocation();
+	const urlPostID = useMemo(
+		() => location.pathname.split("/").pop() || "",
+		[location]
+	);
 
 	function getFeedTypeEndpoint(): string {
 		switch (feedType) {
@@ -60,16 +68,6 @@ export default function usePosts(feedType?: string): PostData {
 		}
 	});
 
-	async function blobURLToFile(blobURL: string, postID:string): Promise<File> {
-		const response = await axios.get(blobURL, { responseType: "blob" });
-		const blob = response.data;
-		const originalFile = await fetch(blobURL).then(res => res.blob());
-
-		return new File([blob], `${postID}-${userData?._id}-${Math.round(Date.now() * Math.random() * 1e9)}`, {
-			type: originalFile.type
-		});
-	}
-
 	const { mutate, isPending } = useMutation({
 		mutationFn: async ({
 			uploadedImages,
@@ -80,12 +78,18 @@ export default function usePosts(feedType?: string): PostData {
 		}) => {
 			try {
 				const formData = new FormData();
-				const postID = Date.now().toString(36) + Math.random().toString(36).substring(2);
+				const postID =
+					Date.now().toString(36) + Math.random().toString(36).substring(2);
 				formData.append("postID", postID);
 
-				if (uploadedImages.length > 0) {
+				if (uploadedImages.length > 0 && userData) {
 					for (let i = 0; i < uploadedImages.length; i++) {
-						const res: File = await blobURLToFile(uploadedImages[i], postID);
+						const res: File = await blobURLToFile(
+							uploadedImages[i],
+							userData,
+							"post",
+							postID
+						);
 						formData.append("images", res);
 					}
 				}
@@ -126,8 +130,8 @@ export default function usePosts(feedType?: string): PostData {
 
 				return response.data;
 			} catch (error) {
-				console.error("Error posting:", error);
-				throw new Error("Failed to create post");
+				console.error("Error deleting:", error);
+				throw new Error("Failed to delete post");
 			}
 		},
 		onSuccess: () => {
@@ -140,13 +144,38 @@ export default function usePosts(feedType?: string): PostData {
 	};
 
 	useEffect(() => {
+		setPostData(data);
+		setLoadingStatus(isLoading);
+	}, [data, feedType, isLoading]);
+
+	const { data: postDataByID } = useQuery({
+		queryKey: ["postData", urlPostID],
+		queryFn: async () => {
+			try {
+				const response = await axios.get(
+					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/${urlPostID}`,
+					{
+						withCredentials: true
+					}
+				);
+				return response.data || [];
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	});
+
+	useEffect(() => {
 		setCurrentUserPostData(currUserPostData);
 	}, [currUserPostData, loading]);
 
 	useEffect(() => {
-		setPostData(data);
-		setLoadingStatus(isLoading);
-	}, [data, feedType, isLoading]);
+		setShowPostModal(false);
+	}, [location.pathname]);
+
+	function showThePostModal(bool: boolean) {
+		setShowPostModal(bool);
+	}
 
 	return {
 		postData,
@@ -154,6 +183,9 @@ export default function usePosts(feedType?: string): PostData {
 		currentUserPostData,
 		postMutation,
 		isPending,
-		deleteMutation
+		deleteMutation,
+		postDataByID,
+		showPostModal,
+		showThePostModal
 	};
 }
