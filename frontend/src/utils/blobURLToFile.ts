@@ -1,9 +1,8 @@
 import axios from "axios";
-import { UserData } from "../interfaces";
 
 export async function blobURLToFile(
 	blobURL: string,
-	userData: UserData,
+	userID: string,
 	uploadType: string,
 	postID?: string
 ): Promise<File> {
@@ -14,7 +13,7 @@ export async function blobURLToFile(
 	if (postID && uploadType === "post") {
 		return new File(
 			[blob],
-			`${postID}-${userData?._id}-${Math.round(
+			`${postID}-${userID}-${Math.round(
 				Date.now() * Math.random() * 1e9
 			)}`,
 			{
@@ -24,12 +23,12 @@ export async function blobURLToFile(
 	}
 
 	if (uploadType === "profile-picture") {
-		return new File([blob], `${userData?._id}-profile-picture`, {
+		return new File([blob], `${userID}-profile-picture`, {
 			type: originalFile.type
 		});
 	}
 
-	return new File([blob], `${userData?._id}-profile-backdrop`, {
+	return new File([blob], `${userID}-profile-backdrop`, {
 		type: originalFile.type
 	});
 }
