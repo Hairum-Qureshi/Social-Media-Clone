@@ -86,7 +86,7 @@ export default function usePosts(feedType?: string): PostData {
 					for (let i = 0; i < uploadedImages.length; i++) {
 						const res: File = await blobURLToFile(
 							uploadedImages[i],
-							userData,
+							userData?._id,
 							"post",
 							postID
 						);
