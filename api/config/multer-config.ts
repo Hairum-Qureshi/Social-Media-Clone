@@ -9,8 +9,10 @@ const storage = multer.diskStorage({
 		const isPfp: boolean = req.body.isPfp === "true" || false;
 		const ext: string = file.mimetype.split("/").pop()!;
 		const filename = isPfp
-			? `${req.user._id}-pfp.${ext}` : req.body.imageType === "backdrop" && !isPfp ? `${req.user._id}-backdrop.${ext}` :
-			`${req.body.postID}-${req.user._id}.${ext}`;
+			? `${req.user._id}-pfp.${ext}`
+			: req.body.imageType === "backdrop" && !isPfp
+			? `${req.user._id}-backdrop.${ext}`
+			: `${req.body.postID}-${req.user._id}-${crypto.randomUUID()}.${ext}`;
 		callback(null, filename);
 	}
 });
