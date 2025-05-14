@@ -1,7 +1,7 @@
 import { ChangeEvent, RefObject } from "react";
 
 export interface CarouselImageProps {
-	image: string;
+	children: React.ReactNode;
 	imageIndex: number;
 	removeImage?: (imageIndex: number) => void;
 	allowDelete: boolean;
@@ -127,6 +127,7 @@ export interface PostData {
 	postDataByID: Post;
 	showPostModal: boolean;
 	showThePostModal: (bool: boolean) => void;
+	getPostDataOnHover: () => void;
 }
 
 export interface UserCardProps {
@@ -287,6 +288,6 @@ export interface PostModalComponentProp {
 	children: React.ReactNode;
 }
 
-export interface SideSuggestionsProps {
+export interface SideSuggestionsComponentProps {
 	showFollowerSuggestions: boolean;
 }
