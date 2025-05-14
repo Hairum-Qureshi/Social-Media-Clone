@@ -1,17 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { ProfileTools, UserData } from "../interfaces";
-import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { ProfileTools } from "../interfaces";
 import useAuthContext from "../contexts/AuthContext";
 import { blobURLToFile } from "../utils/blobURLToFile";
+import { useLocation } from "react-router-dom";
 
 export default function useProfile(): ProfileTools {
 	const queryClient = useQueryClient();
 	// const [profileData, setProfileData] = useState<UserData>();
 	const username = window.location.pathname.split("/").pop();
-	// const location = useLocation();
 	const { userData } = useAuthContext()!;
+	const location = useLocation();
 
 	const { mutate } = useMutation({
 		mutationFn: async ({
@@ -123,14 +123,8 @@ export default function useProfile(): ProfileTools {
 
 	useEffect(() => {
 		queryClient.invalidateQueries({ queryKey: ["profile"] });
-	}, [username]); // you can also do "location.pathname";
-
-	// useEffect(() => {
-	// 	if (userData?._id === profileData?._id) {
-	// 		window.history.pushState({}, "", encodeURI(`/${userData?.username}`));
-	// 	}
-	// }, [userData]);
-
+	}, [location.pathname]);
+	
 	const { mutate: handleFollowingMutation } = useMutation({
 		mutationFn: async ({ userID }: { userID: string | undefined }) => {
 			try {
