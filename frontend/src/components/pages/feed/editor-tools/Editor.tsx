@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import EditorOptions from "./EditorOptions";
 import Carousel from "./carousel/Carousel";
 import { EditorProps } from "../../../../interfaces";
+import useAuthContext from "../../../../contexts/AuthContext";
 
 // TODO - need to resolve image aspect ratio when uploading images
 // TODO - if the user hasn't typed anything yet, disable the "POST" button too
@@ -12,6 +13,7 @@ export default function Editor({ showBorder = true }: EditorProps) {
 	const [postContent, setPostContent] = useState("");
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
 	const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+	const { userData } = useAuthContext()!;
 
 	const handleInput = () => {
 		const textarea = textAreaRef.current;
@@ -70,7 +72,7 @@ export default function Editor({ showBorder = true }: EditorProps) {
 					<div className="flex flex-col my-5">
 						<div className="flex items-start w-full">
 							<img
-								src="https://i.pinimg.com/474x/2c/47/d5/2c47d5dd5b532f83bb55c4cd6f5bd1ef.jpg"
+								src={userData?.profilePicture}
 								alt="User pfp"
 								className="lg:w-10 lg:h-10 w-12 h-12 rounded-full"
 							/>
