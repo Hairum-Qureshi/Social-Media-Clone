@@ -23,7 +23,6 @@ export default function Carousel({
 			{numImages === 4 ? (
 				<>
 					<CarouselImage
-						// image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
@@ -32,7 +31,6 @@ export default function Carousel({
 						{images[index]}
 					</CarouselImage>
 					<CarouselImage
-						// image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
@@ -61,7 +59,6 @@ export default function Carousel({
 			) : numImages === 3 ? (
 				<>
 					<CarouselImage
-						// image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
@@ -70,7 +67,6 @@ export default function Carousel({
 						{images[index]}
 					</CarouselImage>
 					<CarouselImage
-						// image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
@@ -99,7 +95,6 @@ export default function Carousel({
 			) : numImages === 2 ? (
 				<>
 					<CarouselImage
-						// image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
@@ -108,7 +103,6 @@ export default function Carousel({
 						{images[index]}
 					</CarouselImage>
 					<CarouselImage
-						// image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
@@ -120,7 +114,6 @@ export default function Carousel({
 			) : (
 				<div className="w-full flex items-center mt-4 justify-center">
 					<CarouselImage
-						// image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
