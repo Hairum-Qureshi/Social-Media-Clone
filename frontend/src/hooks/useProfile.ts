@@ -34,7 +34,7 @@ export default function useProfile(): ProfileTools {
 			link?: string;
 		}) => {
 			try {
-				const response = await axios.put(
+				const response = await axios.patch(
 					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/user/update-profile`,
 					{
 						fullName,
@@ -164,7 +164,7 @@ export default function useProfile(): ProfileTools {
 		handleFollowingMutation({ userID });
 	};
 
-	const { mutate: uploadImagesMutate } = useMutation({
+	const { mutate: uploadPfpImageMutate } = useMutation({
 		mutationFn: async ({
 			blobURL,
 			userID
@@ -183,7 +183,7 @@ export default function useProfile(): ProfileTools {
 				formData.append("isPfp", "true"); // needs to come first because in the backend, if this comes after, it'll be undefined in the multer config!
 				formData.append("profile-picture", res);
 
-				const response = await axios.put(
+				const response = await axios.patch(
 					`${
 						import.meta.env.VITE_BACKEND_BASE_URL
 					}/api/user/update-profile/images/profile-picture`,
@@ -194,10 +194,11 @@ export default function useProfile(): ProfileTools {
 					}
 				);
 
+				setProfileData(response.data.userData);
 				return response.data;
 			} catch (error) {
-				console.error("Error posting:", error);
-				throw new Error("Failed to create post");
+				console.error("Error in updating profile picture:", error);
+				throw new Error("Failed to update profile picture");
 			}
 		},
 		onSuccess: () => {
@@ -206,11 +207,59 @@ export default function useProfile(): ProfileTools {
 		}
 	});
 
-	function handleImage(event: React.ChangeEvent<HTMLInputElement>) {
+	const { mutate: uploadBackdropImageMutate } = useMutation({
+		mutationFn: async ({
+			blobURL,
+			userID
+		}: {
+			blobURL: string;
+			userID: string;
+		}) => {
+			try {
+				const formData = new FormData();
+				const res: File = await blobURLToFile(blobURL, userID, "backdrop");
+
+				formData.append("isPfp", "false"); // needs to come first because in the backend, if this comes after, it'll be undefined in the multer config!
+				formData.append("imageType", "backdrop");
+				formData.append("backdrop", res);
+
+				const response = await axios.patch(
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/user/update-profile/images/backdrop`,
+					formData,
+					{
+						withCredentials: true,
+						headers: { "Content-Type": "multipart/form-data" }
+					}
+				);
+
+				setProfileData(response.data.userData);
+				return response.data;
+			} catch (error) {
+				console.error("Error in updating profile backdrop:", error);
+				throw new Error("Failed to update profile backdrop");
+			}
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["profile"] });
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+		}
+	});
+
+	// ! For some reason when you update your pfp, you have to refresh the page to see the new pfp
+	function handleImage(
+		event: React.ChangeEvent<HTMLInputElement>,
+		isPfp: boolean
+	) {
 		const files: FileList | null = event.target.files;
 		if (files && files.length > 0 && userData) {
 			const blobURL = window.URL.createObjectURL(files[0]);
-			uploadImagesMutate({ blobURL, userID: userData?._id });
+			if (isPfp) {
+				uploadPfpImageMutate({ blobURL, userID: userData?._id });
+			} else {
+				uploadBackdropImageMutate({ blobURL, userID: userData?._id });
+			}
 		}
 	}
 
