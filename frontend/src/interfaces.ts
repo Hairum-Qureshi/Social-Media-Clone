@@ -126,7 +126,7 @@ export interface PostData {
 	deleteMutation: (postID: string) => void;
 	postDataByID: Post;
 	showPostModal: boolean;
-	showThePostModal: (bool:boolean) => void;
+	showThePostModal: (bool: boolean) => void;
 }
 
 export interface UserCardProps {
@@ -177,7 +177,10 @@ export interface ProfileTools {
 	) => void;
 	profileData: UserData | undefined;
 	handleFollowing: (userID: string | undefined) => void;
-	handleImage: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	handleImage: (
+		event: React.ChangeEvent<HTMLInputElement>,
+		isPfp: boolean
+	) => void;
 }
 
 export interface ContactProps {
@@ -189,7 +192,7 @@ export interface ContactProps {
 }
 
 export interface ConversationProps {
-	defaultSubtext: string; 
+	defaultSubtext: string;
 	showHeaderText: boolean;
 	conversation: Conversation | undefined;
 }
