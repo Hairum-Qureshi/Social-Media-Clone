@@ -4,7 +4,6 @@ import Post from "./editor-tools/Post";
 import useAuthContext from "../../../contexts/AuthContext";
 import usePosts from "../../../hooks/usePosts";
 import { Post as IPost } from "../../../interfaces";
-import { Link } from "react-router-dom";
 
 export default function Landing() {
 	const [isForYou, setIsForYou] = useState(true);
@@ -51,18 +50,21 @@ export default function Landing() {
 				<div>
 					<Editor />
 				</div>
-				{loadingStatus
-					? "Loading..."
-					: postData.map((post: IPost) => {
-							return (
-								<Link to={`/post/${post._id}`}>
-									<Post
-										isOwner={post.user._id === userData?._id}
-										postData={post}
-									/>
-								</Link>
-							);
-					  })}
+				{loadingStatus ? (
+					<p className="text-white text-xl">Loading...</p>
+				) : postData?.length === 0 ? (
+					<p className="text-slate-400 m-10 text-lg font-semibold text-center">
+						{isForYou
+							? "There are currently no posts"
+							: "Follow people to see their posts here!"}
+					</p>
+				) : (
+					postData?.map((post: IPost) => {
+						return (
+							<Post isOwner={post.user._id === userData?._id} postData={post} />
+						);
+					})
+				)}
 			</div>
 		</div>
 	);
