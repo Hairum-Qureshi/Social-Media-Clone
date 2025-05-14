@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ProfileTools, UserData } from "../interfaces";
 import { useLocation } from "react-router-dom";
 import useAuthContext from "../contexts/AuthContext";
+import { blobURLToFile } from "../utils/blobURLToFile";
 
 export default function useProfile(): ProfileTools {
 	const queryClient = useQueryClient();
@@ -163,5 +164,55 @@ export default function useProfile(): ProfileTools {
 		handleFollowingMutation({ userID });
 	};
 
-	return { postMutation, profileData, handleFollowing };
+	const { mutate: uploadImagesMutate } = useMutation({
+		mutationFn: async ({
+			blobURL,
+			userID
+		}: {
+			blobURL: string;
+			userID: string;
+		}) => {
+			try {
+				const formData = new FormData();
+				const res: File = await blobURLToFile(
+					blobURL,
+					userID,
+					"profile-picture"
+				);
+
+				formData.append("isPfp", "true"); // needs to come first because in the backend, if this comes after, it'll be undefined in the multer config!
+				formData.append("profile-picture", res);
+
+				const response = await axios.put(
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/user/update-profile/images/profile-picture`,
+					formData,
+					{
+						withCredentials: true,
+						headers: { "Content-Type": "multipart/form-data" }
+					}
+				);
+
+				return response.data;
+			} catch (error) {
+				console.error("Error posting:", error);
+				throw new Error("Failed to create post");
+			}
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["profile"] });
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+		}
+	});
+
+	function handleImage(event: React.ChangeEvent<HTMLInputElement>) {
+		const files: FileList | null = event.target.files;
+		if (files && files.length > 0 && userData) {
+			const blobURL = window.URL.createObjectURL(files[0]);
+			uploadImagesMutate({ blobURL, userID: userData?._id });
+		}
+	}
+
+	return { postMutation, profileData, handleFollowing, handleImage };
 }
