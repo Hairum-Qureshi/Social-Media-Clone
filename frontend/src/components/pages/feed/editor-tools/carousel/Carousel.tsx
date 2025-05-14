@@ -23,19 +23,23 @@ export default function Carousel({
 			{numImages === 4 ? (
 				<>
 					<CarouselImage
-						image={images[index]}
+						// image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
-					/>
+					>
+						{images[index]}
+					</CarouselImage>
 					<CarouselImage
-						image={images[index + 2]}
-						imageIndex={index + 2}
+						// image={images[index]}
+						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
-					/>
+					>
+						{images[index + 2]}
+					</CarouselImage>
 					<div
 						className={`absolute top-28 ${
 							index === 1 && index + 1 === 2 ? "ml-5 left-0" : "mr-5 right-0"
@@ -57,19 +61,23 @@ export default function Carousel({
 			) : numImages === 3 ? (
 				<>
 					<CarouselImage
-						image={images[index]}
+						// image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
-					/>
+					>
+						{images[index]}
+					</CarouselImage>
 					<CarouselImage
-						image={images[index + 1]}
-						imageIndex={index + 1}
+						// image={images[index]}
+						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
-					/>
+					>
+						{images[index + 1]}
+					</CarouselImage>
 					<div
 						className={`absolute top-28 ${
 							index === 1 && index + 1 === 2 ? "ml-5 left-0" : "mr-5 right-0"
@@ -91,29 +99,35 @@ export default function Carousel({
 			) : numImages === 2 ? (
 				<>
 					<CarouselImage
-						image={images[index]}
+						// image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
-					/>
+					>
+						{images[index]}
+					</CarouselImage>
 					<CarouselImage
-						image={images[index + 1]}
-						imageIndex={index + 1}
+						// image={images[index]}
+						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
-					/>
+					>
+						{images[index + 1]}
+					</CarouselImage>
 				</>
 			) : (
 				<div className="w-full flex items-center mt-4 justify-center">
 					<CarouselImage
-						image={images[index]}
+						// image={images[index]}
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
-					/>
+					>
+						{images[index]}
+					</CarouselImage>
 				</div>
 			)}
 		</div>
