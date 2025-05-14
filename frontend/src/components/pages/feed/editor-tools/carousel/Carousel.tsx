@@ -27,6 +27,7 @@ export default function Carousel({
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
+						numImages={numImages}
 					>
 						{images[index]}
 					</CarouselImage>
@@ -35,6 +36,7 @@ export default function Carousel({
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
+						numImages={numImages}
 					>
 						{images[index + 2]}
 					</CarouselImage>
@@ -63,6 +65,7 @@ export default function Carousel({
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
+						numImages={numImages}
 					>
 						{images[index]}
 					</CarouselImage>
@@ -71,6 +74,7 @@ export default function Carousel({
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
+						numImages={numImages}
 					>
 						{images[index + 1]}
 					</CarouselImage>
@@ -99,6 +103,7 @@ export default function Carousel({
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
+						numImages={numImages}
 					>
 						{images[index]}
 					</CarouselImage>
@@ -107,6 +112,7 @@ export default function Carousel({
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
+						numImages={numImages}
 					>
 						{images[index + 1]}
 					</CarouselImage>
@@ -118,6 +124,7 @@ export default function Carousel({
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
+						numImages={numImages}
 					>
 						{images[index]}
 					</CarouselImage>
