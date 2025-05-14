@@ -113,6 +113,7 @@ export default function usePosts(feedType?: string): PostData {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["posts"] });
+			queryClient.invalidateQueries({ queryKey: ["currentUserPosts"] });
 		}
 	});
 
