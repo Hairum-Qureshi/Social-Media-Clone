@@ -13,8 +13,8 @@ export default function CarouselImage({
 	return (
 		<div
 			className={`relative m-2 ${
-				numImages === 1 ? "w-full" : "w-1/2"
-			} aspect-square`}
+				numImages === 1 ? "w-full" : "w-1/2 aspect-square"
+			}`}
 		>
 			{allowDelete && !forPost && (
 				<div
@@ -24,7 +24,6 @@ export default function CarouselImage({
 					<FontAwesomeIcon icon={faX} />
 				</div>
 			)}
-
 			<img
 				src={children as string}
 				alt="Uploaded image"
