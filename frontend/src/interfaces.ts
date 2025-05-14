@@ -286,3 +286,7 @@ export interface EditorProps {
 export interface PostModalComponentProp {
 	children: React.ReactNode;
 }
+
+export interface SideSuggestionsProps {
+	showFollowerSuggestions: boolean;
+}
