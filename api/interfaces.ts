@@ -5,7 +5,6 @@ export interface UserKeyData {
 	publicKey: string;
 }
 
-
 export interface IConversation {
 	_id: Types.ObjectId;
 	users: Types.ObjectId[] | UserKeyData[];
