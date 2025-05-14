@@ -28,7 +28,7 @@ export async function blobURLToFile(
 		});
 	}
 
-	return new File([blob], `${userID}-profile-backdrop`, {
+	return new File([blob], `${userID}-backdrop`, {
 		type: originalFile.type
 	});
 }
