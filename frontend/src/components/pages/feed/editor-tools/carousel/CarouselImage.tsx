@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CarouselImageProps } from "../../../../../interfaces";
 
 export default function CarouselImage({
-	image,
+	children,
 	imageIndex,
 	removeImage,
 	allowDelete,
@@ -18,7 +18,7 @@ export default function CarouselImage({
 				<FontAwesomeIcon icon={faX} />
 			</div>}
 			<img
-				src={image}
+				src={children as string}
 				className="object-contain rounded-md"
 				alt="Uploaded image"
 			/>
