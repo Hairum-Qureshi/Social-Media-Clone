@@ -1,14 +1,13 @@
 import { Request, Response } from "express";
-import { IUser } from "../interfaces";
+import { IUser, UserData } from "../interfaces";
 import User from "../models/User";
 import Notification from "../models/Notification";
 import mongoose, { Types } from "mongoose";
 import bcrypt from "bcrypt";
 import { bannedSettlerColonyVariations } from "../lib/utils/bannedSettlerColonyVariations";
-import { v2 as cloudinary } from "cloudinary";
 import { FOLDER_PATH } from "../config/multer-config";
 import fs from "fs";
-import path from "path";
+import { handleProfileImageUploads } from "../lib/utils/handleProfileImageUploads";
 
 const getProfile = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -278,32 +277,6 @@ const updateProfile = async (req: Request, res: Response): Promise<void> => {
 			).select("-password -__v")) as IUser;
 		}
 
-		// if (profileImage) {
-		// 	if (user.profilePicture) {
-		// 		// get the image's ID from the URL and delete it
-		// 		const profilePictureID: string = profileImage
-		// 			.split("/")
-		// 			.pop()
-		// 			.split(".")[0];
-		// 		await cloudinary.uploader.destroy(profilePictureID);
-		// 	}
-
-		// 	const uploadedProfileImage = await cloudinary.uploader.upload(
-		// 		profileImage
-		// 	);
-		// 	profileImage = uploadedProfileImage.secure_url;
-		// }
-
-		// if (coverImage) {
-		// 	if (user.coverImage) {
-		// 		// get the image's ID from the URL and delete it
-		// 		const coverImageID: string = coverImage.split("/").pop().split(".")[0];
-		// 		await cloudinary.uploader.destroy(coverImageID);
-		// 	}
-		// 	const uploadedCoverImage = await cloudinary.uploader.upload(coverImage);
-		// 	coverImage = uploadedCoverImage.secure_url;
-		// }
-
 		if (username) {
 			// check if the username is taken or not
 			const foundUser = await User.findOne({
@@ -363,49 +336,40 @@ const updateProfilePicture = async (
 		);
 
 		if (uploadedPfp) {
-			const uploadedImage = await cloudinary.uploader.upload(
-				`${FOLDER_PATH}/${uploadedPfp}`,
-				{
-					public_id: path.parse(uploadedPfp).name, // removes extension
-					overwrite: true,
-					resource_type: "image"
-				}
-			);
-			const uploadedImageURL = uploadedImage.secure_url;
-
-			await User.findByIdAndUpdate(
-				{ _id: currUID },
-				{
-					profilePicture: uploadedImageURL
-				}
-			);
-
-			fs.readdir(FOLDER_PATH, (err, uploadedFiles) => {
-				if (err) {
-					console.error("Error reading directory:", err);
-					return;
-				}
-
-				uploadedFiles.forEach(uploadedFile => {
-					if (uploadedFile.includes(`${currUID}-pfp`)) {
-						fs.unlink(`${FOLDER_PATH}/${uploadedFile}`, err => {
-							if (err) {
-								console.error(
-									"Error in createPost function: error deleting file:".red.bold,
-									uploadedFile,
-									err
-								);
-							}
-						});
-					}
-				});
-			});
+			const updatedUser:UserData = await handleProfileImageUploads(uploadedPfp, "pfp", currUID);
+			res.status(200).send(updatedUser);
 		}
-
-		// const uploadedImageURL = uploadedImage.secure_url;
 	} catch (error) {
 		console.error(
 			"Error in user.ts file, updateProfilePicture function controller".red
+				.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
+const updateProfileBackdrop = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const uploadedFiles: string[] = fs.readdirSync(FOLDER_PATH);
+		const currUID: Types.ObjectId = req.user._id;
+
+		const uploadedBackdrop: string | undefined = uploadedFiles.find(
+			(uploadedFile: string) => {
+				if (uploadedFile.includes(`${currUID}-backdrop`)) return uploadedFile;
+			}
+		);
+
+		if (uploadedBackdrop) {
+			const updatedUser:UserData = await handleProfileImageUploads(uploadedBackdrop, "backdrop", currUID);
+			res.status(200).send(updatedUser);
+		}
+	} catch (error) {
+		console.error(
+			"Error in user.ts file, updateProfileBackdrop function controller".red
 				.bold,
 			error
 		);
@@ -418,5 +382,6 @@ export {
 	getSuggestedUsers,
 	handleFollowStatus,
 	updateProfile,
-	updateProfilePicture
+	updateProfilePicture,
+	updateProfileBackdrop
 };
