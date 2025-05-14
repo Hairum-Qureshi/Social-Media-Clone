@@ -6,6 +6,7 @@ export interface CarouselImageProps {
 	removeImage?: (imageIndex: number) => void;
 	allowDelete: boolean;
 	forPost: boolean;
+	numImages: number;
 }
 
 export interface CarouselProps {
