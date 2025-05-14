@@ -242,7 +242,6 @@ export default function useProfile(): ProfileTools {
 		}
 	});
 
-	// ! For some reason when you update your pfp, you have to refresh the page to see the new pfp
 	function handleImage(
 		event: React.ChangeEvent<HTMLInputElement>,
 		isPfp: boolean
