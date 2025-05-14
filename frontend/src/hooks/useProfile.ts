@@ -8,9 +8,9 @@ import { blobURLToFile } from "../utils/blobURLToFile";
 
 export default function useProfile(): ProfileTools {
 	const queryClient = useQueryClient();
-	const [profileData, setProfileData] = useState<UserData>();
+	// const [profileData, setProfileData] = useState<UserData>();
 	const username = window.location.pathname.split("/").pop();
-	const location = useLocation();
+	// const location = useLocation();
 	const { userData } = useAuthContext()!;
 
 	const { mutate } = useMutation({
@@ -114,8 +114,6 @@ export default function useProfile(): ProfileTools {
 						withCredentials: true
 					}
 				);
-
-				setProfileData(response.data);
 				return response.data;
 			} catch (error) {
 				console.error(error);
@@ -124,15 +122,14 @@ export default function useProfile(): ProfileTools {
 	});
 
 	useEffect(() => {
-		setProfileData(data);
 		queryClient.invalidateQueries({ queryKey: ["profile"] });
-	}, [location]);
+	}, [username]); // you can also do "location.pathname";
 
-	useEffect(() => {
-		if (userData?._id === profileData?._id) {
-			window.history.pushState({}, "", encodeURI(`/${userData?.username}`));
-		}
-	}, [userData]);
+	// useEffect(() => {
+	// 	if (userData?._id === profileData?._id) {
+	// 		window.history.pushState({}, "", encodeURI(`/${userData?.username}`));
+	// 	}
+	// }, [userData]);
 
 	const { mutate: handleFollowingMutation } = useMutation({
 		mutationFn: async ({ userID }: { userID: string | undefined }) => {
@@ -194,7 +191,6 @@ export default function useProfile(): ProfileTools {
 					}
 				);
 
-				setProfileData(response.data.userData);
 				return response.data;
 			} catch (error) {
 				console.error("Error in updating profile picture:", error);
@@ -204,6 +200,7 @@ export default function useProfile(): ProfileTools {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["profile"] });
 			queryClient.invalidateQueries({ queryKey: ["user"] });
+			queryClient.invalidateQueries({ queryKey: ["currentUserPosts"] });
 		}
 	});
 
@@ -234,7 +231,6 @@ export default function useProfile(): ProfileTools {
 					}
 				);
 
-				setProfileData(response.data.userData);
 				return response.data;
 			} catch (error) {
 				console.error("Error in updating profile backdrop:", error);
@@ -243,7 +239,6 @@ export default function useProfile(): ProfileTools {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["profile"] });
-			queryClient.invalidateQueries({ queryKey: ["user"] });
 		}
 	});
 
@@ -263,5 +258,5 @@ export default function useProfile(): ProfileTools {
 		}
 	}
 
-	return { postMutation, profileData, handleFollowing, handleImage };
+	return { postMutation, profileData: data, handleFollowing, handleImage };
 }
