@@ -10,6 +10,7 @@ import fs from "fs";
 import { handleProfileImageUploads } from "../lib/utils/handleProfileImageUploads";
 
 const getProfile = async (req: Request, res: Response): Promise<void> => {
+	// TODO - you may/not need to exclude 'password' from the populate methods using select
 	try {
 		const { username } = req.params;
 		const user: IUser = (await User.findOne({ username })
