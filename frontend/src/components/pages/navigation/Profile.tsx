@@ -229,7 +229,7 @@ export default function Profile() {
 						)}
 						<div
 							className={`flex items-center justify-center w-1/2 p-2 hover:cursor-pointer hover:bg-gray-900 ${
-								isLikes && "border-b-2 border-sky-500"
+								isMedia && "border-b-2 border-sky-500"
 							}`}
 							onClick={() => {
 								setIsLikes(false);
