@@ -5,7 +5,8 @@ import {
 	handleFollowStatus,
 	updateProfile,
 	updateProfileBackdrop,
-	updateProfilePicture
+	updateProfilePicture,
+	getPostsImages
 } from "../controllers/user";
 import checkAuthStatus from "../middleware/checkAuthStatus";
 import { upload } from "./post";
@@ -18,5 +19,6 @@ router.post("/follow-status/:uid", checkAuthStatus, handleFollowStatus);
 router.patch("/update-profile", checkAuthStatus, updateProfile);
 router.patch("/update-profile/images/profile-picture", checkAuthStatus, upload.single("profile-picture"), updateProfilePicture);
 router.patch("/update-profile/images/backdrop", checkAuthStatus, upload.single("backdrop"), updateProfileBackdrop);
+router.get("/profile/:username/posts-images", checkAuthStatus, getPostsImages);
 
 export default router;
