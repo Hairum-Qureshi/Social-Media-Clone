@@ -118,5 +118,10 @@ export interface IMessage {
 
 export interface KeyPair {
 	publicKeyPem: string;
-	privateKeyPem: string 
+	privateKeyPem: string;
+}
+
+export interface PostImage {
+	_id: Types.ObjectId;
+	postImages: string[];
 }
