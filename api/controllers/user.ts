@@ -428,6 +428,7 @@ const getPostsImages = async (req: Request, res: Response): Promise<void> => {
 		}
 
 		res.status(200).json(postsImages);
+		return;
 	} catch (error) {
 		console.error(
 			"Error in user.ts file, getPostsImages function controller".red.bold,
