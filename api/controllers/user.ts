@@ -409,6 +409,7 @@ const getPostsImages = async (req: Request, res: Response): Promise<void> => {
 			res
 				.status(404)
 				.send("No user ID corresponds to this user/user ID not valid");
+			return;
 		}
 
 		// gives all the user's posts' images (array object containing just the postImage objects)
