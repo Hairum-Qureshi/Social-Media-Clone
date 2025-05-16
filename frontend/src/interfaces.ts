@@ -167,8 +167,8 @@ export interface UserSearchTools {
 }
 
 export interface PostImage {
-	postID: string;
-	postsImages: string[];
+	_id: string;
+	postImages: string[];
 }
 
 export interface ProfileTools {
@@ -297,4 +297,8 @@ export interface PostModalComponentProp {
 
 export interface SideSuggestionsComponentProps {
 	showFollowerSuggestions: boolean;
+}
+
+export interface ProfileHeaderProps {
+	openModal: () => void;
 }
