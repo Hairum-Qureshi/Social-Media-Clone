@@ -32,7 +32,7 @@ export default function PostDetails() {
 
 	return (
 		postDataByID && (
-			<div className="bg-black text-white w-full">
+			<div className="bg-black text-white w-full overflow-y-auto">
 				<div className="flex items-center w-full">
 					<Link to="/" className="">
 						<span className="text-lg ml-3">
