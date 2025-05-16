@@ -166,6 +166,11 @@ export interface UserSearchTools {
 	addUserTag: (user: UserData) => void;
 }
 
+export interface PostImage {
+	postID: string;
+	postsImages: string[];
+}
+
 export interface ProfileTools {
 	postMutation: (
 		fullName: string,
@@ -183,6 +188,7 @@ export interface ProfileTools {
 		event: React.ChangeEvent<HTMLInputElement>,
 		isPfp: boolean
 	) => void;
+	postsImages: PostImage[];
 }
 
 export interface ContactProps {
