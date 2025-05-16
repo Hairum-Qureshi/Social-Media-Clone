@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IPost, IUser, UserData } from "../interfaces";
+import { IPost, IUser, PostImage, UserData } from "../interfaces";
 import User from "../models/User";
 import Notification from "../models/Notification";
 import mongoose, { Types } from "mongoose";
@@ -408,12 +408,14 @@ const getPostsImages = async (req: Request, res: Response): Promise<void> => {
 		// gives all the user's posts' images (array object containing just the postImage objects)
 		const posts = await Post.find(
 			{ user: userID },
-			{ postImages: 1, _id: 0 }
+			{ postImages: 1, _id: 1 }
 		).lean();
 
-		// combines all the objects into one array
-		const postsImages: string[] = posts.flatMap(post => post.postImages);
-
+		const postsImages: PostImage[] = posts.map(post => ({
+			_id: post._id,
+			postImages: post.postImages
+		}));
+		
 		res.status(200).json(postsImages);
 	} catch (error) {
 		console.error(
