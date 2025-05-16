@@ -415,7 +415,12 @@ const getPostsImages = async (req: Request, res: Response): Promise<void> => {
 			_id: post._id,
 			postImages: post.postImages
 		}));
-		
+
+		if (postsImages.length === 1 && postsImages[0].postImages.length === 0) {
+			res.status(200).send([]);
+			return;
+		}
+
 		res.status(200).json(postsImages);
 	} catch (error) {
 		console.error(
