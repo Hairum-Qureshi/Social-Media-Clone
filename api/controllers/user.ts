@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IUser, UserData } from "../interfaces";
+import { IPost, IUser, UserData } from "../interfaces";
 import User from "../models/User";
 import Notification from "../models/Notification";
 import mongoose, { Types } from "mongoose";
@@ -8,9 +8,10 @@ import { bannedSettlerColonyVariations } from "../lib/utils/bannedSettlerColonyV
 import { FOLDER_PATH } from "../config/multer-config";
 import fs from "fs";
 import { handleProfileImageUploads } from "../lib/utils/handleProfileImageUploads";
+import Post from "../models/Post";
 
 const getProfile = async (req: Request, res: Response): Promise<void> => {
-	// TODO - you may/not need to exclude 'password' from the populate methods using select
+	// TODO - Need to exclude 'password' from the populate methods using select
 	try {
 		const { username } = req.params;
 		const user: IUser = (await User.findOne({ username })
@@ -46,6 +47,7 @@ const getSuggestedUsers = async (
 			return;
 		}
 
+		// TODO - *might* need to tweak this logic so it also does not show users you're already following
 		const users: IUser[] = (await User.aggregate([
 			{
 				$match: {
@@ -201,6 +203,8 @@ const handleFollowStatus = async (
 };
 
 function correctLocation(location: string): string {
+	// TODO - update the logic so it also checks if the location includes the word 'israel' (and other variations)
+	// TODO - also clean out the list of various words in the bannedSettlerColonyVariations.ts file
 	for (const bannedWord of bannedSettlerColonyVariations) {
 		if (
 			location
@@ -337,8 +341,15 @@ const updateProfilePicture = async (
 		);
 
 		if (uploadedPfp) {
-			const updatedUser:UserData = await handleProfileImageUploads(uploadedPfp, "pfp", currUID);
-			res.status(200).send(updatedUser);
+			const updatedUser: UserData = await handleProfileImageUploads(
+				uploadedPfp,
+				"pfp",
+				currUID
+			);
+			res.status(200).json({
+				message: "Successfully updated pfp",
+				updatedUser
+			});
 		}
 	} catch (error) {
 		console.error(
@@ -365,13 +376,48 @@ const updateProfileBackdrop = async (
 		);
 
 		if (uploadedBackdrop) {
-			const updatedUser:UserData = await handleProfileImageUploads(uploadedBackdrop, "backdrop", currUID);
-			res.status(200).send(updatedUser);
+			const updatedUser: UserData = await handleProfileImageUploads(
+				uploadedBackdrop,
+				"backdrop",
+				currUID
+			);
+			res.status(200).json({
+				message: "Successfully updated backdrop",
+				updatedUser
+			});
 		}
 	} catch (error) {
 		console.error(
 			"Error in user.ts file, updateProfileBackdrop function controller".red
 				.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
+const getPostsImages = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { username } = req.params;
+		const userID: Types.ObjectId = (
+			(await User.findOne({
+				username
+			}).lean()) as UserData
+		)._id;
+
+		// gives all the user's posts' images (array object containing just the postImage objects)
+		const posts = await Post.find(
+			{ user: userID },
+			{ postImages: 1, _id: 0 }
+		).lean();
+
+		// combines all the objects into one array
+		const postsImages: string[] = posts.flatMap(post => post.postImages);
+
+		res.status(200).json(postsImages);
+	} catch (error) {
+		console.error(
+			"Error in user.ts file, getPostsImages function controller".red.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });
@@ -384,5 +430,6 @@ export {
 	handleFollowStatus,
 	updateProfile,
 	updateProfilePicture,
-	updateProfileBackdrop
+	updateProfileBackdrop,
+	getPostsImages
 };
