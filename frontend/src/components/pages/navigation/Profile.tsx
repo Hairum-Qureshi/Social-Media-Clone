@@ -12,7 +12,7 @@ import UserSettingsModal from "../../UserSettingsModal";
 import useAuthContext from "../../../contexts/AuthContext";
 import usePosts from "../../../hooks/usePosts";
 import { Link } from "react-router-dom";
-import { Post as IPost } from "../../../interfaces";
+import { Post as IPost, PostImage } from "../../../interfaces";
 import Post from "../feed/editor-tools/Post";
 import useProfile from "../../../hooks/useProfile";
 import isFollowing from "../../../utils/checkFollowingStatus";
@@ -41,13 +41,14 @@ export default function Profile() {
 	const { userData } = useAuthContext()!;
 	const { currentUserPostData } = usePosts();
 	const { profileData, handleFollowing } = useProfile();
-	const [attachments, setAttachments] = useState(); // TEMPORARY
 
 	function closeModal() {
 		setShowModal(false);
 	}
 
-	const { handleImage } = useProfile();
+	const { handleImage, postsImages } = useProfile();
+
+	// TODO - figure out why posts' images aren't being displayed in the media section
 
 	return (
 		<div className="bg-black w-full text-white min-h-screen overflow-auto relative">
@@ -264,18 +265,41 @@ export default function Profile() {
 							Your likes are private. Only you can see them.
 						</p>
 					</div>
-				) : !attachments ? (
-					<div className="text-white p-2 flex flex-col justify-center items-center">
-						<div>
-							<h3 className="font-bold mt-10 text-5xl">
-								Lights, camera ... <br /> attachments!
-							</h3>
-							<p className="text-zinc-500 mt-3">
-								When you post photos or videos, they will show up here.
-							</p>
-						</div>
+				) : (
+					<div className="text-white p-2 flex justify-center">
+						{postsImages?.length > 0 ? (
+							<div className="grid grid-cols-3 gap-3 w-full max-w-4xl m-0">
+								{postsImages.flatMap((postImageData: PostImage) =>
+									postImageData.postImages?.map(
+										(postImageSrc: string, imageIndex: number) => (
+											<Link
+												key={`${postImageData._id}-${imageIndex}`}
+												to={`/post/${postImageData._id}/image/${
+													imageIndex + 1
+												}`}
+											>
+												<img
+													src={postImageSrc}
+													alt="post media"
+													className="w-full aspect-square object-cover rounded"
+												/>
+											</Link>
+										)
+									)
+								)}
+							</div>
+						) : (
+							<div>
+								<h3 className="font-bold mt-10 text-5xl">
+									Lights, camera ... <br /> attachments!
+								</h3>
+								<p className="text-zinc-500 mt-3">
+									When you post photos or videos, they will show up here.
+								</p>
+							</div>
+						)}
 					</div>
-				) : undefined}
+				)}
 			</div>
 		</div>
 	);
