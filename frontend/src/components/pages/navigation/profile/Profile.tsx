@@ -28,7 +28,7 @@ export default function Profile() {
 	const [isMedia, setIsMedia] = useState(false);
 	const [isLikes, setIsLikes] = useState(false);
 	const { userData } = useAuthContext()!;
-	const { currentUserPostData } = usePosts();
+	const { currentProfilePostData } = usePosts();
 	const { profileData } = useProfile();
 
 	function closeModal() {
@@ -89,8 +89,8 @@ export default function Profile() {
 			</div>
 			<div>
 				{isPosts ? (
-					currentUserPostData?.length > 0 ? (
-						currentUserPostData?.map((post: IPost) => {
+					currentProfilePostData?.length > 0 ? (
+						currentProfilePostData?.map((post: IPost) => {
 							return (
 								<Link to={`/post/${post._id}`} key={post._id}>
 									<Post isOwner={true} postData={post} />
