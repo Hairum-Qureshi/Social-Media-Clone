@@ -59,7 +59,7 @@ export default function useProfile(): ProfileTools {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["user"] });
-			queryClient.invalidateQueries({ queryKey: ["currentUserPosts"] });
+			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
 		}
 	});
 
@@ -123,6 +123,7 @@ export default function useProfile(): ProfileTools {
 
 	useEffect(() => {
 		queryClient.invalidateQueries({ queryKey: ["profile"] });
+		queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
 	}, [location.pathname]);
 	
 	const { mutate: handleFollowingMutation } = useMutation({
@@ -194,7 +195,7 @@ export default function useProfile(): ProfileTools {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["profile"] });
 			queryClient.invalidateQueries({ queryKey: ["user"] });
-			queryClient.invalidateQueries({ queryKey: ["currentUserPosts"] });
+			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
 		}
 	});
 
@@ -251,5 +252,24 @@ export default function useProfile(): ProfileTools {
 		}
 	}
 
-	return { postMutation, profileData: data, handleFollowing, handleImage };
+	const { data:postsImages } = useQuery({
+		queryKey: ["postsImages"],
+		queryFn: async () => {
+			try {
+				const response = await axios.get(
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/user/profile/${username}/posts-images`,
+					{
+						withCredentials: true
+					}
+				);
+				return response.data;
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	});
+
+	return { postMutation, profileData: data, handleFollowing, handleImage, postsImages };
 }
