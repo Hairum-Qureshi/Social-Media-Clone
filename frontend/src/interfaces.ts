@@ -121,7 +121,7 @@ export interface PostProps {
 export interface PostData {
 	postData: Post[];
 	loadingStatus: boolean;
-	currentProfilePostData: Post[];
+	currentUserPostData: Post[];
 	postMutation: (uploadedImages: string[], postContent: string) => void;
 	isPending: boolean;
 	deleteMutation: (postID: string) => void;
