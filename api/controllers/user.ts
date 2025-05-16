@@ -405,6 +405,10 @@ const getPostsImages = async (req: Request, res: Response): Promise<void> => {
 			}).lean()) as UserData
 		)._id;
 
+		if (!userID) {
+			res.status(404).send("User not found with provided ID");
+		}
+
 		// gives all the user's posts' images (array object containing just the postImage objects)
 		const posts = await Post.find(
 			{ user: userID },
