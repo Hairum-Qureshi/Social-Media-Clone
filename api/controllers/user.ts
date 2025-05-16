@@ -399,14 +399,16 @@ const updateProfileBackdrop = async (
 const getPostsImages = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { username } = req.params;
-		const userID: Types.ObjectId = (
+		const userID: Types.ObjectId | undefined = (
 			(await User.findOne({
 				username
 			}).lean()) as UserData
-		)._id;
+		)?._id;
 
 		if (!userID) {
-			res.status(404).send("User not found with provided ID");
+			res
+				.status(404)
+				.send("No user ID corresponds to this user/user ID not valid");
 		}
 
 		// gives all the user's posts' images (array object containing just the postImage objects)
