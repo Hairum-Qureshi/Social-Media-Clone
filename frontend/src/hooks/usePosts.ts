@@ -9,7 +9,7 @@ import { blobURLToFile } from "../utils/blobURLToFile";
 export default function usePosts(feedType?: string): PostData {
 	const [postData, setPostData] = useState<Post[]>([]);
 	const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
-	const [currentUserPostData, setCurrentUserPostData] = useState<Post[]>([]);
+	const [currentProfilePostData, setcurrentProfilePostData] = useState<Post[]>([]);
 	const [showPostModal, setShowPostModal] = useState(false);
 	const queryClient = useQueryClient();
 	const { userData } = useAuthContext()!;
@@ -50,12 +50,32 @@ export default function usePosts(feedType?: string): PostData {
 		}
 	});
 
+	// const { data: currUserPostData, isLoading: loading } = useQuery({
+	// 	queryKey: ["currentProfilePosts"],
+	// 	queryFn: async () => {
+	// 		try {
+	// 			const response = await axios.get(
+	// 				`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/current-user/all`,
+	// 				{
+	// 					withCredentials: true
+	// 				}
+	// 			);
+
+	// 			return response.data;
+	// 		} catch (error) {
+	// 			console.error(error);
+	// 		}
+	// 	}
+	// });
+
 	const { data: currUserPostData, isLoading: loading } = useQuery({
-		queryKey: ["currentUserPosts"],
+		queryKey: ["currentProfilePosts"],
 		queryFn: async () => {
 			try {
 				const response = await axios.get(
-					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/current-user/all`,
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/posts/user/${location.pathname.split("/").pop()}`,
 					{
 						withCredentials: true
 					}
@@ -113,7 +133,8 @@ export default function usePosts(feedType?: string): PostData {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["posts"] });
-			queryClient.invalidateQueries({ queryKey: ["currentUserPosts"] });
+			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
+			queryClient.invalidateQueries({ queryKey: ["postsImages"] });
 		}
 	});
 
@@ -167,7 +188,7 @@ export default function usePosts(feedType?: string): PostData {
 	});
 
 	useEffect(() => {
-		setCurrentUserPostData(currUserPostData);
+		setcurrentProfilePostData(currUserPostData);
 	}, [currUserPostData, loading]);
 
 	useEffect(() => {
@@ -178,15 +199,21 @@ export default function usePosts(feedType?: string): PostData {
 		setShowPostModal(bool);
 	}
 
+	function getPostDataOnHover() {
+		// TODO - implement logic that will check if the post's data is cached (that way you don't send a ton of requests ot the server on mouse hover). Then, basically while the user is hovering over the post and hasn't clicked yet, in the background, fetch that post's data (or make sure it's there) and then when they click it, instantly display the content
+		console.log("ran");
+	}
+
 	return {
 		postData,
 		loadingStatus,
-		currentUserPostData,
+		currentProfilePostData,
 		postMutation,
 		isPending,
 		deleteMutation,
 		postDataByID,
 		showPostModal,
-		showThePostModal
+		showThePostModal,
+		getPostDataOnHover
 	};
 }
