@@ -54,7 +54,7 @@ export default function Post({ isOwner, postData }: PostProps) {
 					>
 						{postData.user.fullName}&nbsp;
 						<span className="text-gray-500 font-light">
-							@{postData.user.username}&nbsp;
+							@{postData.user.username}
 							{postData.user.isVerified && (
 								<span
 									className="text-purple-500"
@@ -63,7 +63,7 @@ export default function Post({ isOwner, postData }: PostProps) {
 									<FontAwesomeIcon icon={faCertificate} />
 								</span>
 							)}
-							&nbsp;· {moment(postData.createdAt.toString()).fromNow()}
+							&nbsp;·&nbsp;{moment(postData.createdAt.toString()).fromNow()}
 						</span>
 					</Link>
 					{postData.text && (
@@ -85,6 +85,7 @@ export default function Post({ isOwner, postData }: PostProps) {
 				<div
 					className="ml-auto mr-3 hover:cursor-pointer"
 					onClick={e => {
+						e.stopPropagation();
 						e.stopPropagation();
 						setShowOptions(!showOptions);
 					}}
