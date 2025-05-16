@@ -7,13 +7,15 @@ import SignIn from "./pages/authentication/SignIn";
 import useProfile from "../hooks/useProfile";
 import usePosts from "../hooks/usePosts";
 
+// TODO - when you open a profile page that has no posts, it shows the SideSuggestions component appear on the side for a brief moment
+
 export default function ProtectedRoutesGuard({
 	children
 }: React.PropsWithChildren) {
 	const { userData } = useAuthContext()!;
 	const [isLoading, setIsLoading] = useState(true);
 	const { profileData } = useProfile();
-	const { currentUserPostData } = usePosts();
+	const { postData } = usePosts();
 	const location = useLocation();
 
 	useEffect(() => {
@@ -30,7 +32,7 @@ export default function ProtectedRoutesGuard({
 
 	const isProfilePage = location.pathname === `/${profileData?.username}`;
 	const showSideSuggestions =
-		isProfilePage && currentUserPostData.length === 0 ? false : true;
+		isProfilePage && postData?.length === 0 ? false : true;
 
 	return userData ? (
 		<div className="w-full h-screen flex">
