@@ -12,14 +12,14 @@ import FollowersSuggestions from "../../feed/suggestions/FollowersSuggestions";
 import ProfileHeader from "./ProfileHeader";
 
 // TODO - get the number of posts the user has (currently it only works for the current user and not other users)
-// TODO - need to get other users' posts too to display on their profile pages
-// 		--> change logic over looping over the 'currentUserPosts' so that when you go to a different user's page, it displays their posts, not the current user's
 // TODO - add a kebab button to allow users to block profiles too
 // TODO - if the user visits a profile of a non-existent user, it should lead to a 404 page
 // TODO - need to display some kind of loading indication to show that the profile picture/backdrop is being uploaded
 // TODO - make the back button work
 // TODO - sometimes when switching from one user profile to the other, it shows your profile first before showing the other user's
+// TODO - add a character limit to the textarea for the bio
 // TODO - get rid of the lighter opacity effect when hovering over the pfp picture
+// TODO - for images that have more than 1 image, for the media gallery, stack the image so it'll display the first image and when the user clicks on it, it'll take them to a slideshow (also add an icon to symbolize there's more than one image)
 // ! FIX: when updating the location in the settings modal, for some reason you still have to refresh the page to see the change
 // ! FIX: the kebab buttons are not shifted to the right in mobile view for the posts
 export default function Profile() {
@@ -41,12 +41,10 @@ export default function Profile() {
 
 	const { postsImages } = useProfile();
 
-	// TODO - figure out why posts' images aren't being displayed in the media section
-
 	return (
 		<div className="bg-black w-full text-white min-h-screen overflow-auto relative">
 			{showModal && <UserSettingsModal closeModal={closeModal} />}
-			<ProfileHeader openModal={openModal} />
+			<ProfileHeader openModal={openModal} isMedia = {isMedia} />
 			<div className="w-full flex text-center">
 				<div
 					className={`flex items-center justify-center w-1/2 p-2 hover:cursor-pointer hover:bg-gray-900 ${

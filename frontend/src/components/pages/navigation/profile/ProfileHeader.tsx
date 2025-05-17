@@ -12,18 +12,35 @@ import usePosts from "../../../../hooks/usePosts";
 import { useRef } from "react";
 import isFollowing from "../../../../utils/checkFollowingStatus";
 import getMonthAndYear from "../../../../utils/getMonthAndYear";
-import { ProfileHeaderProps } from "../../../../interfaces";
+import { PostImage, ProfileHeaderProps } from "../../../../interfaces";
+import DOMPurify from "dompurify";
+import { Link, useLocation } from "react-router-dom";
 
-export default function ProfileHeader({ openModal }: ProfileHeaderProps) {
+export default function ProfileHeader({
+	openModal,
+	isMedia
+}: ProfileHeaderProps) {
 	const { userData } = useAuthContext()!;
 	const { profileData, handleFollowing, handleImage } = useProfile();
-	const { currentUserPostData } = usePosts();
+	const { currentProfilePostData } = usePosts();
 	const filePFPInputRef = useRef<HTMLInputElement>(null);
 	const fileBackgroundImageInputRef = useRef<HTMLInputElement>(null);
+	const rawBio =
+		userData?._id !== profileData?._id ? profileData?.bio : userData?.bio;
+	const collapsedBio = rawBio ? rawBio.replace(/\n{2,}/g, "\n") : "";
+	const formattedBio = collapsedBio.replace(/\n/g, "<br/>");
+	const sanitizedBio = DOMPurify.sanitize(formattedBio);
+	const location = useLocation();
+	const profileUsername = location.pathname.split("/").pop();
+	const { postsImages } = useProfile();
+
+	const numImages: string[] = postsImages.flatMap(
+		(postImage: PostImage) => postImage.postImages
+	);
 
 	return (
 		<>
-			<div className="w-full p-2 flex items-center">
+			<div className="w-full p-2 flex items-center sticky top-0 bg-black bg-opacity-80 z-50">
 				<div className="text-xl ml-5">
 					<FontAwesomeIcon icon={faArrowLeft} />
 				</div>
@@ -34,8 +51,11 @@ export default function ProfileHeader({ openModal }: ProfileHeaderProps) {
 							: userData?.username}
 					</h2>
 					<div className="ml-5 text-gray-600">
-						{currentUserPostData?.length || 0} post
-						{currentUserPostData?.length === 1 ? "" : "s"}
+						{isMedia
+							? `${numImages?.length} photos and/or videos`
+							: `${currentProfilePostData?.length || 0} post${
+									currentProfilePostData?.length === 1 ? "" : "s"
+							  }`}
 					</div>
 				</div>
 			</div>
@@ -139,9 +159,7 @@ export default function ProfileHeader({ openModal }: ProfileHeaderProps) {
 					</p>
 					<div className="mx-5 my-2">
 						<div>
-							{userData?._id !== profileData?._id
-								? profileData?.bio
-								: userData?.bio}
+							<div dangerouslySetInnerHTML={{ __html: sanitizedBio }} />
 						</div>
 						<div className="mt-3 text-gray-500">
 							<span>
@@ -157,18 +175,28 @@ export default function ProfileHeader({ openModal }: ProfileHeaderProps) {
 							</span>
 						</div>
 						<div className="w-full mt-3 flex mb-3">
-							<p className="text-gray-500">
-								<span className="text-white font-bold">
-									{profileData?.numFollowers}
-								</span>
-								<span className="">&nbsp; Followers</span>
-							</p>
-							<p className="text-gray-500 ml-3">
-								<span className="text-white font-bold">
-									{profileData?.numFollowing}
-								</span>
-								<span className="">&nbsp; Following</span>
-							</p>
+							<Link
+								to={`/${profileUsername}/followers`}
+								className="hover:underline"
+							>
+								<p className="text-gray-500">
+									<span className="text-white font-bold">
+										{profileData?.numFollowers}
+									</span>
+									<span>&nbsp; Followers</span>
+								</p>
+							</Link>
+							<Link
+								to={`/${profileUsername}/following`}
+								className="hover:underline"
+							>
+								<p className="text-gray-500 ml-3">
+									<span className="text-white font-bold">
+										{profileData?.numFollowing}
+									</span>
+									<span>&nbsp; Following</span>
+								</p>
+							</Link>
 						</div>
 					</div>
 				</div>
