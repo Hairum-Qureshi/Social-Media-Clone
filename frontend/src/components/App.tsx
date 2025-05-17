@@ -122,6 +122,14 @@ export default function App() {
 							}
 						/>
 						<Route
+							path="/:username/verified_followers"
+							element={
+								<ProtectedRoutesGuard>
+									<ProfileConnections />
+								</ProtectedRoutesGuard>
+							}
+						/>
+						<Route
 							path="/post/:postID"
 							element={
 								<ProtectedRoutesGuard>
