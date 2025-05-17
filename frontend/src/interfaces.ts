@@ -301,4 +301,5 @@ export interface SideSuggestionsComponentProps {
 
 export interface ProfileHeaderProps {
 	openModal: () => void;
+	isMedia: boolean;
 }
