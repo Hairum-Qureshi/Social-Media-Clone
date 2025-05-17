@@ -8,10 +8,11 @@ import { useLocation } from "react-router-dom";
 
 export default function useProfile(): ProfileTools {
 	const queryClient = useQueryClient();
-	// const [profileData, setProfileData] = useState<UserData>();
-	const username = window.location.pathname.split("/").pop();
-	const { userData } = useAuthContext()!;
 	const location = useLocation();
+	const splitPathname = location.pathname.split("/");
+	const username =
+		splitPathname.length === 1 ? splitPathname.pop() : splitPathname[1];
+	const { userData } = useAuthContext()!;
 
 	const { mutate } = useMutation({
 		mutationFn: async ({
@@ -125,7 +126,7 @@ export default function useProfile(): ProfileTools {
 		queryClient.invalidateQueries({ queryKey: ["profile"] });
 		queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
 	}, [location.pathname]);
-	
+
 	const { mutate: handleFollowingMutation } = useMutation({
 		mutationFn: async ({ userID }: { userID: string | undefined }) => {
 			try {
@@ -252,7 +253,7 @@ export default function useProfile(): ProfileTools {
 		}
 	}
 
-	const { data:postsImages } = useQuery({
+	const { data: postsImages } = useQuery({
 		queryKey: ["postsImages"],
 		queryFn: async () => {
 			try {
@@ -271,5 +272,11 @@ export default function useProfile(): ProfileTools {
 		}
 	});
 
-	return { postMutation, profileData: data, handleFollowing, handleImage, postsImages };
+	return {
+		postMutation,
+		profileData: data,
+		handleFollowing,
+		handleImage,
+		postsImages
+	};
 }
