@@ -6,13 +6,16 @@ import Explore from "./pages/navigation/Explore";
 import Notifications from "./pages/navigation/notification/Notifications";
 import Messages from "./pages/navigation/messages/Messages";
 import Bookmarks from "./pages/navigation/Bookmarks";
-import Profile from "./pages/navigation/Profile";
+import Profile from "./pages/navigation/profile/Profile";
 import NotFound from "./pages/NotFound";
 import ProtectedRoutesGuard from "./ProtectedRoutesGuard";
 import { AuthProvider } from "../contexts/AuthContext";
 import { SocketProvider } from "../contexts/SocketIOContext";
 import PostDetails from "./post/PostDetails";
 import Requests from "./pages/navigation/messages/Requests";
+import ProfileConnections from "./pages/navigation/profile/ProfileConnections";
+
+// TODO - you may need to move AuthProvider so it's not wrapped around *all* the routes, but if it causes no harm, leave it
 
 export default function App() {
 	return (
@@ -99,6 +102,22 @@ export default function App() {
 							element={
 								<ProtectedRoutesGuard>
 									<Profile />
+								</ProtectedRoutesGuard>
+							}
+						/>
+						<Route
+							path="/:username/followers"
+							element={
+								<ProtectedRoutesGuard>
+									<ProfileConnections />
+								</ProtectedRoutesGuard>
+							}
+						/>
+						<Route
+							path="/:username/following"
+							element={
+								<ProtectedRoutesGuard>
+									<ProfileConnections />
 								</ProtectedRoutesGuard>
 							}
 						/>
