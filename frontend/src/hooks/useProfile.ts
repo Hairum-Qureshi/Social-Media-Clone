@@ -104,7 +104,7 @@ export default function useProfile(): ProfileTools {
 	};
 
 	const { data } = useQuery({
-		queryKey: ["profile"],
+		queryKey: ["profile", username],
 		queryFn: async () => {
 			try {
 				const response = await axios.get(
@@ -123,7 +123,7 @@ export default function useProfile(): ProfileTools {
 	});
 
 	useEffect(() => {
-		queryClient.invalidateQueries({ queryKey: ["profile"] });
+		queryClient.invalidateQueries({ queryKey: ["profile", username] });
 		queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
 	}, [location.pathname]);
 
@@ -149,7 +149,7 @@ export default function useProfile(): ProfileTools {
 			}
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["profile"] });
+			queryClient.invalidateQueries({ queryKey: ["profile", username] });
 		}
 	});
 
@@ -194,7 +194,7 @@ export default function useProfile(): ProfileTools {
 			}
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["profile"] });
+			queryClient.invalidateQueries({ queryKey: ["profile", username] });
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
 		}
@@ -234,7 +234,7 @@ export default function useProfile(): ProfileTools {
 			}
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["profile"] });
+			queryClient.invalidateQueries({ queryKey: ["profile", username] });
 		}
 	});
 
