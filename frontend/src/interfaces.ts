@@ -8,6 +8,7 @@ export interface CarouselImageProps {
 	forPost: boolean;
 	numImages: number;
 	forGallery?: boolean;
+	imgsPerSlide?:number;
 }
 
 export interface CarouselProps {
