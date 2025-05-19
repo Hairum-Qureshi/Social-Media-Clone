@@ -8,7 +8,8 @@ export interface CarouselImageProps {
 	forPost: boolean;
 	numImages: number;
 	forGallery?: boolean;
-	imgsPerSlide?:number;
+	imgsPerSlide: number;
+	isEditor?: boolean;
 }
 
 export interface CarouselProps {
@@ -18,6 +19,7 @@ export interface CarouselProps {
 	allowDelete: boolean;
 	forPost: boolean;
 	imgsPerSlide?: number;
+	forEditor?: boolean;
 }
 
 export interface EditorOptionsProps {
@@ -25,7 +27,7 @@ export interface EditorOptionsProps {
 	uploadedImages: string[];
 	postContent: string;
 	clearTextArea: () => void;
-	buttonText: string
+	buttonText: string;
 }
 
 export interface UserData_Conversation {
@@ -116,6 +118,7 @@ export interface OptionsProps {
 	username: string;
 	postID: string;
 	isGalleryPost?: boolean;
+	setEditMode: (postContent: string) => void;
 }
 
 export interface PostProps {
@@ -296,10 +299,12 @@ export interface EditorProps {
 	showBorder?: boolean;
 	placeHolder?: string;
 	buttonText?: string;
+	content?: string;
 }
 
 export interface PostModalComponentProp {
 	children: React.ReactNode;
+	editMode?: boolean;
 }
 
 export interface SideSuggestionsComponentProps {
