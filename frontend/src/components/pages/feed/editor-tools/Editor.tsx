@@ -9,7 +9,10 @@ import useAuthContext from "../../../../contexts/AuthContext";
 // TODO - instead of alerting the user they can only have a max of 4 images, disable the GIF and image icon
 // TODO - move all this logic to a custom hook
 
-export default function Editor({ showBorder = true }: EditorProps) {
+export default function Editor({
+	showBorder = true,
+	placeHolder = "What's Happening?!"
+}: EditorProps) {
 	const [postContent, setPostContent] = useState("");
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
 	const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -81,7 +84,7 @@ export default function Editor({ showBorder = true }: EditorProps) {
 									<textarea
 										ref={textAreaRef}
 										className="bg-transparent w-full max-h-28 outline-none resize-none p-2"
-										placeholder="What's happening?!"
+										placeholder={placeHolder}
 										value={postContent}
 										onChange={e => setPostContent(e.target.value)}
 										onInput={handleInput}
