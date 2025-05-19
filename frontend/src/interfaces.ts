@@ -113,6 +113,7 @@ export interface OptionsProps {
 	isOwner: boolean;
 	username: string;
 	postID: string;
+	isGalleryPost?: boolean;
 }
 
 export interface PostProps {
@@ -308,5 +309,5 @@ export interface ProfileHeaderProps {
 }
 
 export interface IconsProps {
-    postData: Post;
+	postData: Post;
 }
