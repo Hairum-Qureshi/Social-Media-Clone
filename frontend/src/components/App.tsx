@@ -14,6 +14,7 @@ import { SocketProvider } from "../contexts/SocketIOContext";
 import PostDetails from "./post/PostDetails";
 import Requests from "./pages/navigation/messages/Requests";
 import ProfileConnections from "./pages/navigation/profile/ProfileConnections";
+import PostImageDetails from "./post/PostImageDetails";
 
 // TODO - you may need to move AuthProvider so it's not wrapped around *all* the routes, but if it causes no harm, leave it
 
@@ -134,6 +135,14 @@ export default function App() {
 							element={
 								<ProtectedRoutesGuard>
 									<PostDetails />
+								</ProtectedRoutesGuard>
+							}
+						/>
+						<Route
+							path="/:username/post/:postID/photo/:photoNumber"
+							element={
+								<ProtectedRoutesGuard>
+									<PostImageDetails />
 								</ProtectedRoutesGuard>
 							}
 						/>
