@@ -1,4 +1,4 @@
-import { faLock } from "@fortawesome/free-solid-svg-icons";
+import { faClone, faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import UserSettingsModal from "../../../UserSettingsModal";
@@ -19,7 +19,6 @@ import ProfileHeader from "./ProfileHeader";
 // TODO - sometimes when switching from one user profile to the other, it shows your profile first before showing the other user's
 // TODO - add a character limit to the textarea for the bio
 // TODO - get rid of the lighter opacity effect when hovering over the pfp picture
-// TODO - for images that have more than 1 image, for the media gallery, stack the image so it'll display the first image and when the user clicks on it, it'll take them to a slideshow (also add an icon to symbolize there's more than one image)
 // ! FIX: when updating the location in the settings modal, for some reason you still have to refresh the page to see the change
 // ! FIX: the kebab buttons are not shifted to the right in mobile view for the posts
 export default function Profile() {
@@ -44,7 +43,7 @@ export default function Profile() {
 	return (
 		<div className="bg-black w-full text-white min-h-screen overflow-auto relative">
 			{showModal && <UserSettingsModal closeModal={closeModal} />}
-			<ProfileHeader openModal={openModal} isMedia = {isMedia} />
+			<ProfileHeader openModal={openModal} isMedia={isMedia} />
 			<div className="w-full flex text-center">
 				<div
 					className={`flex items-center justify-center w-1/2 p-2 hover:cursor-pointer hover:bg-gray-900 ${
@@ -110,25 +109,31 @@ export default function Profile() {
 				) : (
 					<div className="text-white p-2 flex justify-center">
 						{postsImages?.length > 0 ? (
-							<div className="grid grid-cols-3 gap-3 w-full max-w-4xl m-0">
-								{postsImages?.map((postImageData: PostImage) =>
-									postImageData.postImages?.map(
-										(postImageSrc: string, imageIndex: number) => (
-											<Link
-												key={`${postImageData._id}-${imageIndex}`}
-												to={`/post/${postImageData._id}/image/${
-													imageIndex + 1
-												}`}
-											>
+							<div className="grid grid-cols-3 gap-3 w-full max-w-4xl m-0 absolute">
+								{postsImages?.map((postImageData: PostImage) => {
+									const isMultiImage = postImageData.postImages.length > 1;
+									const firstImageSrc = postImageData.postImages[0];
+
+									return (
+										<Link
+											key={postImageData._id}
+											to={`/post/${postImageData._id}/image/1`}
+										>
+											<div className="relative">
 												<img
-													src={postImageSrc}
+													src={firstImageSrc}
 													alt="post media"
 													className="w-full aspect-square object-cover rounded"
 												/>
-											</Link>
-										)
-									)
-								)}
+												{isMultiImage && (
+													<div className="absolute bottom-2 right-2 bg-black bg-opacity-60 text-white p-1 rounded">
+														<FontAwesomeIcon icon={faClone} />
+													</div>
+												)}
+											</div>
+										</Link>
+									);
+								})}
 							</div>
 						) : (
 							<div>
