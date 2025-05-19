@@ -7,8 +7,6 @@ import { useNavigate } from "react-router-dom";
 import PostIconsBar from "./PostIconsBar";
 import moment from "moment";
 
-// TODO - add the right and left arrows
-// TODO - add a prop to the Editor component to change the placeholder text
 // TODO - replace empty "" in else block
 
 export default function PostImageDetails() {
