@@ -11,7 +11,8 @@ import {
 	getUserPosts,
 	deleteComment,
 	getAllCurrUserPosts,
-	getPostData
+	getPostData,
+	editPost
 } from "../controllers/post";
 import multer from "multer";
 import { storage } from "../config/multer-config";
@@ -30,5 +31,6 @@ router.get("/user/:username", checkAuthStatus, getUserPosts);
 router.get("/current-user/all", checkAuthStatus, getAllCurrUserPosts);
 router.delete("/comment/:commentID/:postID", checkAuthStatus, deleteComment);
 router.get("/:postID", checkAuthStatus, getPostData);
+router.patch("/:postID/edit", checkAuthStatus, editPost);
 
 export default router;
