@@ -11,9 +11,11 @@ import useAuthContext from "../../../../contexts/AuthContext";
 
 export default function Editor({
 	showBorder = true,
-	placeHolder = "What's Happening?!"
+	placeHolder = "What's Happening?!",
+	buttonText = "POST",
+	content = ""
 }: EditorProps) {
-	const [postContent, setPostContent] = useState("");
+	const [postContent, setPostContent] = useState(content || "");
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
 	const [uploadedImages, setUploadedImages] = useState<string[]>([]);
 	const { userData } = useAuthContext()!;
@@ -80,7 +82,9 @@ export default function Editor({
 								className="lg:w-10 lg:h-10 w-12 h-12 rounded-full"
 							/>
 							<div className="flex flex-col w-full text-left mx-3">
-								<div className="border-b-2 border-gray-500">
+								<div
+									className={`${showBorder && "border-b-2 border-gray-500"}`}
+								>
 									<textarea
 										ref={textAreaRef}
 										className="bg-transparent w-full max-h-28 outline-none resize-none p-2"
@@ -99,6 +103,7 @@ export default function Editor({
 											removeImage={removeImage}
 											allowDelete={true}
 											forPost={false}
+											forEditor={true}
 										/>
 									</div>
 								)}
@@ -110,6 +115,7 @@ export default function Editor({
 								uploadedImages={uploadedImages}
 								postContent={postContent}
 								clearTextArea={clearTextArea}
+								buttonText={buttonText}
 							/>
 						</div>
 					</div>
