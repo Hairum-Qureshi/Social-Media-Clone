@@ -306,3 +306,7 @@ export interface ProfileHeaderProps {
 	openModal: () => void;
 	isMedia: boolean;
 }
+
+export interface IconsProps {
+    postData: Post;
+}
