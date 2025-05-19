@@ -15,9 +15,8 @@ export default function Carousel({
 }: CarouselProps) {
 	const location = useLocation();
 	const navigate = useNavigate();
-	const [index, setIndex] = useState(
-		Number(location.pathname.split("/").pop()) - 1 || 0
-	);
+	const idx = Number(location.pathname.split("/").pop()) - 1;
+	const [index, setIndex] = useState(idx === -1 ? 0 : idx);
 
 	function moveNext() {
 		setIndex(index => (index === numImages - 1 ? index : index + 1));
