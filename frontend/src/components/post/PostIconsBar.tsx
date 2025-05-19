@@ -14,23 +14,23 @@ export default function PostIconsBar({ postData }: IconsProps) {
 			className="grid grid-cols-5 gap-1 text-center text-gray-600 mt-3"
 			onClick={e => e.stopPropagation()}
 		>
-			<div className="hover:text-sky-400">
+			<div className="hover:text-sky-400 hover:cursor-pointer">
 				<FontAwesomeIcon icon={faComment} />
 				<span className="ml-1">{postData?.numComments}</span>
 			</div>
-			<div className="hover:text-green-400">
+			<div className="hover:text-green-400 hover:cursor-pointer">
 				<FontAwesomeIcon icon={faRetweet} />
 				<span className="ml-1">0</span>
 			</div>
-			<div className="hover:text-red-500">
+			<div className="hover:text-red-500 hover:cursor-pointer">
 				<FontAwesomeIcon icon={faHeart} />
 				<span className="ml-1">{postData?.numLikes}</span>
 			</div>
-			<div className="hover:text-yellow-400">
+			<div className="hover:text-yellow-400 ">
 				<FontAwesomeIcon icon={faBookmark} />
 				<span className="ml-1">0</span>
 			</div>
-			<div className="hover:text-sky-400">
+			<div className="hover:text-sky-400 hover:cursor-pointer">
 				<FontAwesomeIcon icon={faShare} />
 			</div>
 		</div>
