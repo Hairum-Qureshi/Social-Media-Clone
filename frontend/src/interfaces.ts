@@ -16,6 +16,7 @@ export interface CarouselProps {
 	removeImage?: (imageIndex: number) => void;
 	allowDelete: boolean;
 	forPost: boolean;
+	imgsPerSlide?: number;
 }
 
 export interface EditorOptionsProps {
