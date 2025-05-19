@@ -24,6 +24,7 @@ export interface EditorOptionsProps {
 	uploadedImages: string[];
 	postContent: string;
 	clearTextArea: () => void;
+	buttonText: string
 }
 
 export interface UserData_Conversation {
@@ -293,6 +294,7 @@ export interface UserNotificationCardProps {
 export interface EditorProps {
 	showBorder?: boolean;
 	placeHolder?: string;
+	buttonText?: string;
 }
 
 export interface PostModalComponentProp {
