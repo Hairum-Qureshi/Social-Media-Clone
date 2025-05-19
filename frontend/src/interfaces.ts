@@ -7,6 +7,7 @@ export interface CarouselImageProps {
 	allowDelete: boolean;
 	forPost: boolean;
 	numImages: number;
+	forGallery?: boolean;
 }
 
 export interface CarouselProps {
