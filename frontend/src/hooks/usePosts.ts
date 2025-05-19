@@ -6,7 +6,7 @@ import useAuthContext from "../contexts/AuthContext";
 import { useLocation } from "react-router-dom";
 import { blobURLToFile } from "../utils/blobURLToFile";
 
-export default function usePosts(feedType?: string): PostData {
+export default function usePosts(feedType?: string, postID?: string): PostData {
 	const [postData, setPostData] = useState<Post[]>([]);
 	const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
 	const [currentProfilePostData, setcurrentProfilePostData] = useState<Post[]>(
@@ -16,14 +16,9 @@ export default function usePosts(feedType?: string): PostData {
 	const queryClient = useQueryClient();
 	const { userData } = useAuthContext()!;
 	const location = useLocation();
-	// const urlPostID = useMemo(
-	// 	() => location.pathname.split("/").pop() || "",
-	// 	[location]
-	// );
 
 	const urlPostID = useMemo(() => {
 		const splitPathname = location.pathname.split("/");
-
 		return splitPathname.includes("photo")
 			? splitPathname[3]
 			: splitPathname.pop() || "";
@@ -181,11 +176,11 @@ export default function usePosts(feedType?: string): PostData {
 	}, [data, feedType, isLoading]);
 
 	const { data: postDataByID } = useQuery({
-		queryKey: ["postData", urlPostID],
+		queryKey: ["postData", urlPostID || postID],
 		queryFn: async () => {
 			try {
 				const response = await axios.get(
-					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/${urlPostID}`,
+					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/${urlPostID || postID}`,
 					{
 						withCredentials: true
 					}
@@ -211,7 +206,7 @@ export default function usePosts(feedType?: string): PostData {
 
 	function getPostDataOnHover() {
 		// TODO - implement logic that will check if the post's data is cached (that way you don't send a ton of requests ot the server on mouse hover). Then, basically while the user is hovering over the post and hasn't clicked yet, in the background, fetch that post's data (or make sure it's there) and then when they click it, instantly display the content
-		console.log("ran");
+		// console.log("ran");
 	}
 
 	return {
