@@ -41,15 +41,17 @@ export default function Carousel({
 	}, [index]);
 
 	return (
-		<div className="relative flex mb-3 w-full h-auto items-center justify-center">
+		<div className="relative mb-3 w-full h-auto flex items-center justify-center">
 			{numImages === 1 ? (
-				<div className="w-full mt-4">
+				<div className="w-full mt-4 flex items-center justify-center">
 					<CarouselImage
 						imageIndex={index}
 						removeImage={removeImage}
 						allowDelete={allowDelete}
 						forPost={forPost}
 						numImages={numImages}
+						forGallery={true}
+						imgsPerSlide={imgsPerSlide}
 					>
 						{images[index]}
 					</CarouselImage>
