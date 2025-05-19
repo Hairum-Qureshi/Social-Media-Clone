@@ -114,25 +114,28 @@ export default function Profile() {
 									const isMultiImage = postImageData.postImages.length > 1;
 									const firstImageSrc = postImageData.postImages[0];
 
-									return (
-										<Link
-											key={postImageData._id}
-											to={`/post/${postImageData._id}/image/1`}
-										>
-											<div className="relative">
-												<img
-													src={firstImageSrc}
-													alt="post media"
-													className="w-full aspect-square object-cover rounded"
-												/>
-												{isMultiImage && (
-													<div className="absolute bottom-2 right-2 bg-black bg-opacity-60 text-white p-1 rounded">
-														<FontAwesomeIcon icon={faClone} />
-													</div>
-												)}
-											</div>
-										</Link>
-									);
+									console.log(postImageData, firstImageSrc);
+
+									if (firstImageSrc)
+										return (
+											<Link
+												key={postImageData._id}
+												to={`/${profileData?.username}/post/${postImageData._id}/photo/1`}
+											>
+												<div className="relative">
+													<img
+														src={firstImageSrc}
+														alt="post media"
+														className="w-full aspect-square object-cover rounded"
+													/>
+													{isMultiImage && (
+														<div className="absolute bottom-2 right-2 bg-black bg-opacity-60 text-white p-1 rounded">
+															<FontAwesomeIcon icon={faClone} />
+														</div>
+													)}
+												</div>
+											</Link>
+										);
 								})}
 							</div>
 						) : (
