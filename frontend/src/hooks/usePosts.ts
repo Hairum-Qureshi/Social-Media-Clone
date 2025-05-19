@@ -9,15 +9,25 @@ import { blobURLToFile } from "../utils/blobURLToFile";
 export default function usePosts(feedType?: string): PostData {
 	const [postData, setPostData] = useState<Post[]>([]);
 	const [loadingStatus, setLoadingStatus] = useState<boolean>(false);
-	const [currentProfilePostData, setcurrentProfilePostData] = useState<Post[]>([]);
+	const [currentProfilePostData, setcurrentProfilePostData] = useState<Post[]>(
+		[]
+	);
 	const [showPostModal, setShowPostModal] = useState(false);
 	const queryClient = useQueryClient();
 	const { userData } = useAuthContext()!;
 	const location = useLocation();
-	const urlPostID = useMemo(
-		() => location.pathname.split("/").pop() || "",
-		[location]
-	);
+	// const urlPostID = useMemo(
+	// 	() => location.pathname.split("/").pop() || "",
+	// 	[location]
+	// );
+
+	const urlPostID = useMemo(() => {
+		const splitPathname = location.pathname.split("/");
+
+		return splitPathname.includes("photo")
+			? splitPathname[3]
+			: splitPathname.pop() || "";
+	}, [location]);
 
 	function getFeedTypeEndpoint(): string {
 		switch (feedType) {
