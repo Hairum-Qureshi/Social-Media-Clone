@@ -30,15 +30,17 @@ export default function ProtectedRoutesGuard({
 		location.pathname.includes("/messages") ||
 		location.pathname.includes("/messages/requests");
 
+	const isDetailedPhotoPostGallery = location.pathname.includes("/photo");
+
 	const isProfilePage = location.pathname === `/${profileData?.username}`;
 	const showSideSuggestions =
 		isProfilePage && postData?.length === 0 ? false : true;
 
 	return userData ? (
 		<div className="w-full h-screen flex">
-			<SideNavbar />
+			{!isDetailedPhotoPostGallery && <SideNavbar />}
 			<div className="flex-1 flex justify-center">{children}</div>
-			{!isMessagesPage && (
+			{!isMessagesPage && !isDetailedPhotoPostGallery && (
 				<SideSuggestions showFollowerSuggestions={showSideSuggestions} />
 			)}
 		</div>
