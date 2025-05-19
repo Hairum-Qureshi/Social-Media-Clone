@@ -1,19 +1,12 @@
-import {
-	faCertificate,
-	faEllipsis,
-	faShare,
-	faComment,
-	faHeart,
-	faBookmark
-} from "@fortawesome/free-solid-svg-icons";
+import { faCertificate, faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRetweet } from "@fortawesome/free-solid-svg-icons/faRetweet";
 import { useState } from "react";
 import Options from "../../../post/Options";
 import Carousel from "./carousel/Carousel";
 import { PostProps } from "../../../../interfaces";
 import moment from "moment";
 import { Link, useNavigate } from "react-router-dom";
+import PostIconsBar from "../../../post/PostIconsBar";
 
 export default function Post({ isOwner, postData }: PostProps) {
 	const [showOptions, setShowOptions] = useState(false);
@@ -93,30 +86,7 @@ export default function Post({ isOwner, postData }: PostProps) {
 					<FontAwesomeIcon icon={faEllipsis} />
 				</div>
 			</div>
-			<div
-				className="grid grid-cols-5 gap-1 text-center text-gray-600 mt-3"
-				onClick={e => e.stopPropagation()}
-			>
-				<div className="hover:text-sky-400">
-					<FontAwesomeIcon icon={faComment} />
-					<span className="ml-1">{postData.numComments}</span>
-				</div>
-				<div className="hover:text-green-400">
-					<FontAwesomeIcon icon={faRetweet} />
-					<span className="ml-1">0</span>
-				</div>
-				<div className="hover:text-red-500">
-					<FontAwesomeIcon icon={faHeart} />
-					<span className="ml-1">{postData.numLikes}</span>
-				</div>
-				<div className="hover:text-yellow-400">
-					<FontAwesomeIcon icon={faBookmark} />
-					<span className="ml-1">0</span>
-				</div>
-				<div className="hover:text-sky-400">
-					<FontAwesomeIcon icon={faShare} />
-				</div>
-			</div>
+			<PostIconsBar postData={postData} />
 		</div>
 	);
 }
