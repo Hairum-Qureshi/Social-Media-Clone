@@ -291,6 +291,7 @@ export interface UserNotificationCardProps {
 
 export interface EditorProps {
 	showBorder?: boolean;
+	placeHolder?: string;
 }
 
 export interface PostModalComponentProp {
