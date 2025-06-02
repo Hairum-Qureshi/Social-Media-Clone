@@ -125,6 +125,7 @@ export default function useProfile(): ProfileTools {
 	useEffect(() => {
 		queryClient.invalidateQueries({ queryKey: ["profile", username] });
 		queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
+		queryClient.invalidateQueries({ queryKey: ["postsImages"] });
 	}, [location.pathname]);
 
 	const { mutate: handleFollowingMutation } = useMutation({
