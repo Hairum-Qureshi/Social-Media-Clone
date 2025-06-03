@@ -101,9 +101,10 @@ export interface IPost {
 	comments: Comment[];
 	numLikes: number;
 	numComments: number;
+	postImages: string[];
+	isPinned: boolean;
 	createdAt: Date;
 	updatedAt: Date;
-	postImages: string[];
 }
 
 export interface IMessage {
