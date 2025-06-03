@@ -107,18 +107,17 @@ export interface Post {
 	comments: Comment[];
 	numLikes: number;
 	numComments: number;
+	isPinned: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 	postImages: string[];
 }
 
 export interface OptionsProps {
-	close: () => void;
 	isOwner: boolean;
 	username: string;
 	postID: string;
 	isGalleryPost?: boolean;
-	setEditMode: (postContent: string) => void;
 }
 
 export interface PostProps {
@@ -137,6 +136,11 @@ export interface PostData {
 	showPostModal: boolean;
 	showThePostModal: (bool: boolean) => void;
 	getPostDataOnHover: () => void;
+	optionsMenu: boolean;
+	showOptions: () => void;
+	close: () => void;
+	editPostMutation: (postID: string, postContent: string) => void;
+	editPending: boolean;
 }
 
 export interface UserCardProps {
