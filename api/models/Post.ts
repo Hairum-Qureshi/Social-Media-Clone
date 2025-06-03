@@ -49,6 +49,10 @@ const postSchema = new Schema(
 		postImages: {
 			type: [String],
 			default: []
+		},
+		isPinned: {
+			type: Boolean,
+			default: false
 		}
 	},
 	{
