@@ -97,9 +97,13 @@ export interface IPost {
 	user: Types.ObjectId;
 	text: string;
 	images: string[];
-	likes: Types.ObjectId[];
-	comments: Comment[];
+	likedBy: Types.ObjectId[];
+	retweetedBy: Types.ObjectId[];
+	bookmarkedBy: Types.ObjectId[];
 	numLikes: number;
+	numBookmarks: number;
+	numRetweets: number;
+	comments: Comment[];
 	numComments: number;
 	postImages: string[];
 	isPinned: boolean;
