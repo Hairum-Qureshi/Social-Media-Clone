@@ -18,7 +18,19 @@ const postSchema = new Schema(
 		images: {
 			type: [String]
 		},
-		likes: [
+		likedBy: [
+			{
+				type: Types.ObjectId,
+				ref: "User"
+			}
+		],
+		retweetedBy: [
+			{
+				type: Types.ObjectId,
+				ref: "User"
+			}
+		],
+		bookmarkedBy: [
 			{
 				type: Types.ObjectId,
 				ref: "User"
@@ -42,6 +54,16 @@ const postSchema = new Schema(
 			min: 0
 		},
 		numComments: {
+			type: Number,
+			default: 0,
+			min: 0
+		},
+		numBookmarks: {
+			type: Number,
+			default: 0,
+			min: 0
+		},
+		numRetweets: {
 			type: Number,
 			default: 0,
 			min: 0
