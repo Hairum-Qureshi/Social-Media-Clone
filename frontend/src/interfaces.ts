@@ -113,6 +113,7 @@ export interface Post {
 	numComments: number;
 	isPinned: boolean;
 	postImages: string[];
+	isBookmarked: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
