@@ -126,7 +126,7 @@ const handleLikes = async (req: Request, res: Response) => {
 			return;
 		}
 
-		const userLikedPost: boolean = post.likes.some((uid: Types.ObjectId) =>
+		const userLikedPost: boolean = post.likedBy.some((uid: Types.ObjectId) =>
 			uid.equals(currUID)
 		);
 		if (userLikedPost) {
@@ -490,6 +490,85 @@ const getPostData = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+const editPost = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { postContent } = req.body;
+		const { postID } = req.params;
+
+		const post: IPost = (await Post.findById({ _id: postID })) as IPost;
+
+		if (!post) {
+			res.status(404).json({ error: "Post not found" });
+			return;
+		}
+
+		if (!postContent) {
+			res.status(400).json({ error: "Post content is required" });
+			return;
+		}
+
+		if (post.text === postContent) {
+			res.status(400).json({ error: "No changes made to the post" });
+			return;
+		}
+
+		const updatedPost: IPost = (await Post.findByIdAndUpdate(
+			postID,
+			{
+				text: postContent
+			},
+			{
+				new: true
+			}
+		)) as IPost;
+
+		res.status(200).json(updatedPost);
+		return;
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, editPost function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+const pinPost = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { postID } = req.params;
+		const currUID = req.user._id;
+
+		const pinnedPost: IPost = (await Post.findOne({
+			user: currUID,
+			isPinned: true
+		})) as IPost;
+
+		if (pinnedPost) {
+			// Unpin the previously pinned post
+			await Post.findByIdAndUpdate(pinnedPost._id, { isPinned: false });
+
+			// pin the new post
+			await Post.findByIdAndUpdate(postID, { isPinned: true });
+
+			// if the pinned post's ID is the same as the postID, then it means the user is unpinning the post
+			if (pinnedPost._id.toString() === postID) {
+				await Post.findByIdAndUpdate(postID, { isPinned: false });
+			}
+		} else {
+			// if no post is pinned, then pin the post
+			await Post.findByIdAndUpdate(postID, { isPinned: true });
+		}
+
+		res.status(200).json({ message: "Post pinned successfully" });
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, pinPost function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
 export {
 	createPost,
 	deletePost,
@@ -501,5 +580,7 @@ export {
 	getUserPosts,
 	deleteComment,
 	getAllCurrUserPosts,
-	getPostData
+	getPostData,
+	editPost,
+	pinPost
 };
