@@ -107,6 +107,7 @@ export interface IPost {
 	numComments: number;
 	postImages: string[];
 	isPinned: boolean;
+	isBookmarked?: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
