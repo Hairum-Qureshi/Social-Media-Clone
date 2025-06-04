@@ -103,14 +103,18 @@ export interface Post {
 	user: UserData;
 	text: string;
 	image: string;
-	likes: string[];
+	likedBy: UserData[];
+	retweetedBy: UserData[];
+	bookmarkedBy: UserData[];
 	comments: Comment[];
 	numLikes: number;
+	numBookmarks: number;
+	numRetweets: number;
 	numComments: number;
 	isPinned: boolean;
+	postImages: string[];
 	createdAt: Date;
 	updatedAt: Date;
-	postImages: string[];
 }
 
 export interface OptionsProps {
