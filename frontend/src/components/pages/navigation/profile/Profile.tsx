@@ -107,7 +107,7 @@ export default function Profile() {
 					</div>
 				) : (
 					<div className="text-white p-2 flex justify-center">
-						{checkIfAnyPostImagesExist() ? (
+						{checkIfAnyPostImagesExist(postsImages) ? (
 							<div className="grid grid-cols-3 gap-3 w-full max-w-4xl m-0 absolute">
 								{postsImages?.map((postImageData: PostImage) => {
 									const isMultiImage = postImageData.postImages.length > 1;
