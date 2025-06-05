@@ -261,24 +261,34 @@ const postComment = async (req: Request, res: Response): Promise<void> => {
 };
 
 const getAllPosts = async (req: Request, res: Response): Promise<void> => {
+	// TODO - implement pagination (i.e. only fetch X posts at a time);
 	try {
 		const posts: IPost[] = (await Post.find({})
-			.sort({
-				createdAt: -1
-			})
+			.sort({ createdAt: -1 })
 			.populate({ path: "user", select: "-password -__v" })
-			.populate({
-				path: "comments.user",
-				select: "-password -__v"
-			})
-			.select("-__v")) as IPost[];
+			.populate({ path: "comments.user", select: "-password -__v" })
+			.select("-__v")
+			.lean()) as IPost[];
 
-		if (posts.length === 0) {
-			res.status(200).send([]);
-			return;
-		}
+		const currUID: Types.ObjectId = req.user._id;
 
-		res.status(200).json(posts);
+		// Add `isBookmarked` to each post
+		const enrichedPosts = posts.map((post: IPost) => {
+			if (!post.bookmarkedBy || post.bookmarkedBy.length === 0) {
+				return { ...post, isBookmarked: false };
+			}
+			const isBookmarked = post.bookmarkedBy.some((uid: Types.ObjectId) =>
+				uid.equals(currUID)
+			);
+			const numBookmarks = post.bookmarkedBy.length;
+			return {
+				...post,
+				isBookmarked,
+				numBookmarks
+			};
+		});
+
+		res.status(200).json(enrichedPosts);
 	} catch (error) {
 		console.error(
 			"Error in post.ts file, getAllPosts function controller".red.bold,
@@ -465,6 +475,7 @@ const getAllCurrUserPosts = async (
 const getPostData = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { postID } = req.params;
+		const currUID: Types.ObjectId = req.user._id;
 		const post: IPost | null = await Post.findById({
 			_id: postID
 		})
@@ -473,12 +484,20 @@ const getPostData = async (req: Request, res: Response): Promise<void> => {
 				path: "comments.user",
 				select: "-password -__v"
 			})
-			.select("-__v");
+			.select("-__v")
+			.lean();
 
 		if (!post) {
 			res.status(404).json({ error: "Post not found" });
 			return;
 		}
+
+		// check if post is bookmarked
+		const isBookmarked: boolean = post.bookmarkedBy.some(
+			(userID: Types.ObjectId) => userID.equals(currUID)
+		);
+		post.isBookmarked = isBookmarked;
+		post.numBookmarks = post.bookmarkedBy.length;
 
 		res.status(200).json(post);
 	} catch (error) {
@@ -569,6 +588,79 @@ const pinPost = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+const bookmarkPost = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { postID } = req.params;
+
+		const post: IPost = (await Post.findById(postID)) as IPost;
+
+		if (!post) {
+			res.status(404).json({ error: "Post not found" });
+			return;
+		}
+
+		const userID = req.user._id.toString();
+		const alreadyBookmarked = post.bookmarkedBy.some(
+			id => id.toString() === userID
+		);
+
+		if (alreadyBookmarked) {
+			const updatedPost: IPost = (await Post.findByIdAndUpdate(
+				postID,
+				{
+					$pull: { bookmarkedBy: req.user._id },
+					$inc: { bookmarkCount: -1 }
+				},
+				{ new: true }
+			).lean()) as IPost;
+
+			res.status(200).json({ ...updatedPost, isBookmarked: false });
+			return;
+		}
+
+		const updatedPost: IPost = (await Post.findByIdAndUpdate(
+			postID,
+			{
+				$addToSet: { bookmarkedBy: req.user._id },
+				$inc: { bookmarkCount: 1 }
+			},
+			{ new: true }
+		).lean()) as IPost;
+
+		res.status(200).json({ ...updatedPost, isBookmarked: true });
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, bookmarkPost function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+const getAllBookmarkedPosts = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const allBookmarkedPosts: IPost[] = await Post.find({
+			bookmarkedBy: {
+				$in: [req.user._id]
+			}
+		})
+			.populate("bookmarkedBy")
+			.select("-password -__v");
+
+		res.status(200).json(allBookmarkedPosts);
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, getAllBookmarkedPosts function controller".red
+				.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
 export {
 	createPost,
 	deletePost,
@@ -582,5 +674,7 @@ export {
 	getAllCurrUserPosts,
 	getPostData,
 	editPost,
-	pinPost
+	pinPost,
+	bookmarkPost,
+	getAllBookmarkedPosts
 };
