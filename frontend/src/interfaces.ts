@@ -123,6 +123,7 @@ export interface OptionsProps {
 	username: string;
 	postID: string;
 	isGalleryPost?: boolean;
+	updateOptionsView: () => void;
 }
 
 export interface PostProps {
