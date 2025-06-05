@@ -20,7 +20,8 @@ export default function Options({
 	username,
 	postID,
 	isGalleryPost = false,
-	updateOptionsView
+	updateOptionsView,
+	isPinned
 }: OptionsProps) {
 	const { deleteMutation, postDataByID, close, pinPost } = usePosts(
 		undefined,
@@ -91,7 +92,7 @@ export default function Options({
 							<span className="mx-3">
 								<FontAwesomeIcon icon={faThumbtack} />
 							</span>
-							{postDataByID?.isPinned ? "Unpin Post" : "Pin Post"}
+							{isPinned ? "Unpin Post" : "Pin Post"}
 						</p>
 					)}
 					{!isOwner && (
