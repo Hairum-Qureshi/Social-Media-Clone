@@ -128,6 +128,7 @@ export interface OptionsProps {
 export interface PostProps {
 	isOwner: boolean;
 	postData: Post;
+	isPinned?: boolean;
 }
 
 export interface PostData {
@@ -146,6 +147,13 @@ export interface PostData {
 	close: () => void;
 	editPostMutation: (postID: string, postContent: string) => void;
 	editPending: boolean;
+	bookmarkPostMutation: (postID: string) => void;
+	bookmarks: Post[];
+	isLoadingBookmarks: boolean;
+	searchPhrase: (searchedPhrase: string) => void;
+	isSearching: boolean;
+	searchedPhraseResult: Post | null;
+	pinPost: (postID: string) => void;
 }
 
 export interface UserCardProps {
