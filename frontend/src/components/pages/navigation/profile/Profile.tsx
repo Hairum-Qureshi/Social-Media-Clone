@@ -10,6 +10,7 @@ import Post from "../../feed/editor-tools/Post";
 import useProfile from "../../../../hooks/useProfile";
 import FollowersSuggestions from "../../feed/suggestions/FollowersSuggestions";
 import ProfileHeader from "./ProfileHeader";
+import { checkIfAnyPostImagesExist } from "../../../../utils/checkIfAnyPostImagesExist";
 
 // TODO - get the number of posts the user has (currently it only works for the current user and not other users)
 // TODO - add a kebab button to allow users to block profiles too
@@ -28,7 +29,7 @@ export default function Profile() {
 	const [isLikes, setIsLikes] = useState(false);
 	const { userData } = useAuthContext()!;
 	const { currentProfilePostData } = usePosts();
-	const { profileData } = useProfile();
+	const { profileData, postsImages } = useProfile();
 
 	function closeModal() {
 		setShowModal(false);
@@ -37,8 +38,6 @@ export default function Profile() {
 	function openModal() {
 		setShowModal(true);
 	}
-
-	const { postsImages } = useProfile();
 
 	return (
 		<div className="bg-black w-full text-white min-h-screen overflow-auto relative">
@@ -108,14 +107,11 @@ export default function Profile() {
 					</div>
 				) : (
 					<div className="text-white p-2 flex justify-center">
-						{postsImages?.length > 0 ? (
+						{checkIfAnyPostImagesExist() ? (
 							<div className="grid grid-cols-3 gap-3 w-full max-w-4xl m-0 absolute">
 								{postsImages?.map((postImageData: PostImage) => {
 									const isMultiImage = postImageData.postImages.length > 1;
 									const firstImageSrc = postImageData.postImages[0];
-
-									console.log(postImageData, firstImageSrc);
-
 									if (firstImageSrc)
 										return (
 											<Link
