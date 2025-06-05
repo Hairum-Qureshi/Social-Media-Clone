@@ -39,7 +39,7 @@ export default function Profile() {
 		setShowModal(true);
 	}
 
-	const sortedPosts = [...currentProfilePostData].sort((a, b) => {
+	const sortedPosts = [...currentProfilePostData]?.sort((a, b) => {
 		if (a.isPinned === b.isPinned) return 0;
 		return a.isPinned ? -1 : 1; // Pinned posts first
 	});
