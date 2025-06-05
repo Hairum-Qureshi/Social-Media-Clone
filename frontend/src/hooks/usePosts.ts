@@ -13,6 +13,7 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 		[]
 	);
 	const [showPostModal, setShowPostModal] = useState(false);
+	const [optionsMenu, setShowOptionMenu] = useState(false);
 	const queryClient = useQueryClient();
 	const { userData } = useAuthContext()!;
 	const location = useLocation();
@@ -43,6 +44,24 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 			try {
 				const response = await axios.get(
 					`${import.meta.env.VITE_BACKEND_BASE_URL}${POST_ENDPOINT}`,
+					{
+						withCredentials: true
+					}
+				);
+
+				return response.data;
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	});
+
+	const { data: bookmarks, isLoading: isLoadingBookmarks } = useQuery({
+		queryKey: ["bookmarks"],
+		queryFn: async () => {
+			try {
+				const response = await axios.get(
+					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/bookmarked/all`,
 					{
 						withCredentials: true
 					}
@@ -180,11 +199,14 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 		queryFn: async () => {
 			try {
 				const response = await axios.get(
-					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/${urlPostID || postID}`,
+					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/${
+						urlPostID || postID
+					}`,
 					{
 						withCredentials: true
 					}
 				);
+				console.log("-->", response.data.isBookmarked);
 				return response.data || [];
 			} catch (error) {
 				console.error(error);
@@ -209,6 +231,63 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 		// console.log("ran");
 	}
 
+	function showOptions() {
+		setShowOptionMenu(true);
+	}
+
+	function close() {
+		setShowOptionMenu(false);
+	}
+
+	const { mutate: editPostMutate, isPending: editPending } = useMutation({
+		mutationFn: async ({
+			postID,
+			postContent
+		}: {
+			postID: string;
+			postContent: string;
+		}) => {
+			const response = await axios.patch(
+				`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/${postID}/edit`,
+				{ postContent },
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: (data: Post) => {
+			queryClient.invalidateQueries({ queryKey: ["posts"] });
+			queryClient.invalidateQueries({ queryKey: ["postData", data._id] });
+			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
+		}
+	});
+
+	const editPostMutation = (postID: string, postContent: string) => {
+		editPostMutate({ postID, postContent });
+	};
+
+	const { mutate: bookmarkPostMutate } = useMutation({
+		mutationFn: async ({ postID }: { postID: string }) => {
+			const response = await axios.patch(
+				`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/${postID}/bookmark`,
+				{},
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: (data: Post) => {
+			queryClient.invalidateQueries({ queryKey: ["posts"] });
+			queryClient.invalidateQueries({ queryKey: ["postData", data._id] });
+			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
+			queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+		}
+	});
+
+	const bookmarkPostMutation = (postID: string) => {
+		bookmarkPostMutate({ postID });
+	};
+
+	
+
 	return {
 		postData,
 		loadingStatus,
@@ -219,6 +298,14 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 		postDataByID,
 		showPostModal,
 		showThePostModal,
-		getPostDataOnHover
+		getPostDataOnHover,
+		optionsMenu,
+		showOptions,
+		close,
+		editPostMutation,
+		editPending,
+		bookmarkPostMutation,
+		bookmarks,
+		isLoadingBookmarks
 	};
 }
