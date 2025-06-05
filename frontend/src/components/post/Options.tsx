@@ -4,22 +4,29 @@ import {
 	faTrash,
 	faUserMinus,
 	faUserPlus,
-	faX
+	faX,
+	faThumbtack
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OptionsProps } from "../../interfaces";
 import usePosts from "../../hooks/usePosts";
+import { usePostModal } from "../../contexts/PostModalContext";
 
 // TODO - make sure that the "follow/unfollow" options are only available depending on whether the user has followed them or not
+// TODO - issue where options modal opens for all posts when you click on one
+
 export default function Options({
-	close,
 	isOwner,
 	username,
 	postID,
 	isGalleryPost = false,
-	setEditMode
+	updateOptionsView
 }: OptionsProps) {
-	const { deleteMutation, postDataByID } = usePosts(undefined, postID);
+	const { deleteMutation, postDataByID, close, pinPost } = usePosts(
+		undefined,
+		postID
+	);
+	const { setPostContent, setIsEditMode } = usePostModal();
 
 	return (
 		<>
@@ -33,7 +40,7 @@ export default function Options({
 					onClick={e => {
 						e.stopPropagation();
 						e.preventDefault();
-						close();
+						updateOptionsView();
 					}}
 				>
 					<FontAwesomeIcon icon={faX} />
@@ -41,12 +48,13 @@ export default function Options({
 				<div>
 					{isOwner && (
 						<p
-							className="my-4"
+							className="my-4 hover:cursor-pointer"
 							onClick={e => {
 								e.stopPropagation();
 								e.preventDefault();
-								setEditMode(postDataByID?.text);
-								close();
+								setPostContent(postDataByID?.text);
+								setIsEditMode(true);
+								setOptionsMenu(false);
 							}}
 						>
 							<span className="mx-3">
@@ -57,7 +65,7 @@ export default function Options({
 					)}
 					{isOwner && (
 						<p
-							className="mb-4"
+							className="mb-4 hover:cursor-pointer"
 							onClick={e => {
 								e.stopPropagation();
 								e.preventDefault();
@@ -69,6 +77,21 @@ export default function Options({
 								<FontAwesomeIcon icon={faTrash} />
 							</span>
 							Delete Post
+						</p>
+					)}
+					{isOwner && (
+						<p
+							className="mb-4 hover:cursor-pointer"
+							onClick={e => {
+								e.stopPropagation();
+								e.preventDefault();
+								pinPost(postID);
+							}}
+						>
+							<span className="mx-3">
+								<FontAwesomeIcon icon={faThumbtack} />
+							</span>
+							{postDataByID?.isPinned ? "Unpin Post" : "Pin Post"}
 						</p>
 					)}
 					{!isOwner && (
