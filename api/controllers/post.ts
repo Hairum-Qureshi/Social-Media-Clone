@@ -7,6 +7,7 @@ import Notification from "../models/Notification";
 import User from "../models/User";
 import fs from "fs";
 import { FOLDER_PATH } from "../config/multer-config";
+import { checkIfBookmarked } from "../lib/utils/checkIfBookmarked";
 
 const createPost = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -277,9 +278,8 @@ const getAllPosts = async (req: Request, res: Response): Promise<void> => {
 			if (!post.bookmarkedBy || post.bookmarkedBy.length === 0) {
 				return { ...post, isBookmarked: false };
 			}
-			const isBookmarked = post.bookmarkedBy.some((uid: Types.ObjectId) =>
-				uid.equals(currUID)
-			);
+			const isBookmarked = checkIfBookmarked(post, currUID);
+
 			const numBookmarks = post.bookmarkedBy.length;
 			return {
 				...post,
@@ -392,9 +392,23 @@ const getUserPosts = async (req: Request, res: Response): Promise<void> => {
 				path: "comments.user",
 				select: "-password -__v"
 			})
-			.select("-__v");
+			.select("-__v")
+			.lean();
 
-		res.status(200).json(posts);
+		if (!posts || posts.length === 0) {
+			res.status(404).json({ error: "User has no posts" });
+			return;
+		}
+
+		const currUID: Types.ObjectId = req.user._id;
+
+		const modified: IPost[] = posts.map((post: IPost) => {
+			const isBookmarked: boolean = checkIfBookmarked(post, currUID);
+
+			return { ...post, isBookmarked };
+		});
+
+		res.status(200).json(modified);
 	} catch (error) {
 		console.error(
 			"Error in post.ts file, getUserPosts function controller".red.bold,
@@ -493,11 +507,8 @@ const getPostData = async (req: Request, res: Response): Promise<void> => {
 		}
 
 		// check if post is bookmarked
-		const isBookmarked: boolean = post.bookmarkedBy.some(
-			(userID: Types.ObjectId) => userID.equals(currUID)
-		);
+		const isBookmarked: boolean = checkIfBookmarked(post, currUID);
 		post.isBookmarked = isBookmarked;
-		// post.numBookmarks = post.bookmarkedBy.length;
 
 		res.status(200).json(post);
 	} catch (error) {
@@ -591,7 +602,7 @@ const pinPost = async (req: Request, res: Response): Promise<void> => {
 const bookmarkPost = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { postID } = req.params;
-		const userID = req.user._id;
+		const currUID = req.user._id;
 
 		const post = await Post.findById(postID);
 		if (!post) {
@@ -599,7 +610,7 @@ const bookmarkPost = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		const alreadyBookmarked = post.bookmarkedBy.some(id => id.equals(userID));
+		const alreadyBookmarked = checkIfBookmarked(post, currUID);
 
 		let updatedPost: IPost | null;
 
@@ -607,7 +618,7 @@ const bookmarkPost = async (req: Request, res: Response): Promise<void> => {
 			updatedPost = await Post.findByIdAndUpdate(
 				postID,
 				{
-					$pull: { bookmarkedBy: userID },
+					$pull: { bookmarkedBy: currUID },
 					$inc: { numBookmarks: -1 }
 				},
 				{ new: true }
@@ -626,7 +637,7 @@ const bookmarkPost = async (req: Request, res: Response): Promise<void> => {
 		updatedPost = await Post.findByIdAndUpdate(
 			postID,
 			{
-				$addToSet: { bookmarkedBy: userID },
+				$addToSet: { bookmarkedBy: currUID },
 				$inc: { numBookmarks: 1 }
 			},
 			{ new: true }
