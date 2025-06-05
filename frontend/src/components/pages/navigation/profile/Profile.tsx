@@ -12,12 +12,9 @@ import FollowersSuggestions from "../../feed/suggestions/FollowersSuggestions";
 import ProfileHeader from "./ProfileHeader";
 import { checkIfAnyPostImagesExist } from "../../../../utils/checkIfAnyPostImagesExist";
 
-// TODO - get the number of posts the user has (currently it only works for the current user and not other users)
 // TODO - add a kebab button to allow users to block profiles too
 // TODO - if the user visits a profile of a non-existent user, it should lead to a 404 page
 // TODO - need to display some kind of loading indication to show that the profile picture/backdrop is being uploaded
-// TODO - make the back button work
-// TODO - sometimes when switching from one user profile to the other, it shows your profile first before showing the other user's
 // TODO - add a character limit to the textarea for the bio
 // TODO - get rid of the lighter opacity effect when hovering over the pfp picture
 // ! FIX: when updating the location in the settings modal, for some reason you still have to refresh the page to see the change
