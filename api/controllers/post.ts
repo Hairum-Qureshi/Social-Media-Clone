@@ -497,7 +497,7 @@ const getPostData = async (req: Request, res: Response): Promise<void> => {
 			(userID: Types.ObjectId) => userID.equals(currUID)
 		);
 		post.isBookmarked = isBookmarked;
-		post.numBookmarks = post.bookmarkedBy.length;
+		// post.numBookmarks = post.bookmarkedBy.length;
 
 		res.status(200).json(post);
 	} catch (error) {
@@ -591,48 +591,50 @@ const pinPost = async (req: Request, res: Response): Promise<void> => {
 const bookmarkPost = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { postID } = req.params;
+		const userID = req.user._id;
 
-		const post: IPost = (await Post.findById(postID)) as IPost;
-
+		const post = await Post.findById(postID);
 		if (!post) {
 			res.status(404).json({ error: "Post not found" });
 			return;
 		}
 
-		const userID = req.user._id.toString();
-		const alreadyBookmarked = post.bookmarkedBy.some(
-			id => id.toString() === userID
-		);
+		const alreadyBookmarked = post.bookmarkedBy.some(id => id.equals(userID));
+
+		let updatedPost: IPost | null;
 
 		if (alreadyBookmarked) {
-			const updatedPost: IPost = (await Post.findByIdAndUpdate(
+			updatedPost = await Post.findByIdAndUpdate(
 				postID,
 				{
-					$pull: { bookmarkedBy: req.user._id },
-					$inc: { bookmarkCount: -1 }
+					$pull: { bookmarkedBy: userID },
+					$inc: { numBookmarks: -1 }
 				},
 				{ new: true }
-			).lean()) as IPost;
+			).lean();
+
+			// Ensure numBookmarks doesn't go below zero
+			if (updatedPost && updatedPost.numBookmarks < 0) {
+				updatedPost.numBookmarks = 0;
+				await Post.findByIdAndUpdate(postID, { $set: { numBookmarks: 0 } });
+			}
 
 			res.status(200).json({ ...updatedPost, isBookmarked: false });
 			return;
 		}
 
-		const updatedPost: IPost = (await Post.findByIdAndUpdate(
+		updatedPost = await Post.findByIdAndUpdate(
 			postID,
 			{
-				$addToSet: { bookmarkedBy: req.user._id },
-				$inc: { bookmarkCount: 1 }
+				$addToSet: { bookmarkedBy: userID },
+				$inc: { numBookmarks: 1 }
 			},
 			{ new: true }
-		).lean()) as IPost;
+		).lean();
 
 		res.status(200).json({ ...updatedPost, isBookmarked: true });
 	} catch (error) {
-		console.error(
-			"Error in post.ts file, bookmarkPost function controller".red.bold,
-			error
-		);
+		console.error("Error in bookmarkPost controller".red.bold, error);
 		res.status(500).json({ error: "Internal Server Error" });
 	}
 };
@@ -647,14 +649,53 @@ const getAllBookmarkedPosts = async (
 				$in: [req.user._id]
 			}
 		})
-			.populate("bookmarkedBy")
-			.select("-password -__v");
+			.populate("user")
+			.select("-password -__v")
+			.lean();
 
-		res.status(200).json(allBookmarkedPosts);
+		const postsWithBookmarkStatus = allBookmarkedPosts.map((post: IPost) => ({
+			...post,
+			isBookmarked: true
+		}));
+
+		res.status(200).json(postsWithBookmarkStatus);
 	} catch (error) {
 		console.error(
 			"Error in post.ts file, getAllBookmarkedPosts function controller".red
 				.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
+const getSearchedPhrase = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const searchedPhrase = req.query.phrase;
+
+		if (!searchedPhrase) {
+			res.status(400).json({ error: "Please enter a search phrase" });
+			return;
+		}
+
+		// find all bookmarked posts that contain the searched phrase in their text verbatim
+		const post: IPost = (await Post.findOne({
+			bookmarkedBy: {
+				$in: [req.user._id]
+			},
+			text: { $regex: searchedPhrase, $options: "i" } // 'i' = case-insensitive
+		})
+			.populate("user")
+			.select("-password -__v")
+			.lean()) as IPost;
+
+		res.status(200).json(post);
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, getSearchedPhrase function controller".red.bold,
 			error
 		);
 		res.status(500).json({ error: "Internal Server Error" });
@@ -676,5 +717,6 @@ export {
 	editPost,
 	pinPost,
 	bookmarkPost,
-	getAllBookmarkedPosts
+	getAllBookmarkedPosts,
+	getSearchedPhrase
 };
