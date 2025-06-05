@@ -39,6 +39,11 @@ export default function Profile() {
 		setShowModal(true);
 	}
 
+	const sortedPosts = [...currentProfilePostData].sort((a, b) => {
+		if (a.isPinned === b.isPinned) return 0;
+		return a.isPinned ? -1 : 1; // Pinned posts first
+	});
+
 	return (
 		<div className="bg-black w-full text-white min-h-screen overflow-auto relative">
 			{showModal && <UserSettingsModal closeModal={closeModal} />}
@@ -85,12 +90,14 @@ export default function Profile() {
 			</div>
 			<div>
 				{isPosts ? (
-					currentProfilePostData?.length > 0 ? (
-						currentProfilePostData?.map((post: IPost) => {
+					sortedPosts?.length > 0 ? (
+						sortedPosts?.map((post: IPost) => {
 							return (
-								<Link to={`/post/${post._id}`} key={post._id}>
-									<Post isOwner={true} postData={post} />
-								</Link>
+								<div>
+									<Link to={`/post/${post._id}`} key={post._id}>
+										<Post isOwner={true} postData={post} isPinned = {post.isPinned} />
+									</Link>
+								</div>
 							);
 						})
 					) : (
