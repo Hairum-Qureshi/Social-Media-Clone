@@ -207,7 +207,6 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 						withCredentials: true
 					}
 				);
-				console.log("-->", response.data.isBookmarked);
 				return response.data || [];
 			} catch (error) {
 				console.error(error);

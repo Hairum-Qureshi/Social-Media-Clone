@@ -57,6 +57,7 @@ export default function Post({
 						username={postData.user.username}
 						postID={postData._id}
 						updateOptionsView={updateOptionsView}
+						isPinned={isPinned}
 					/>
 				)}
 				<div className="flex items-start mt-3">
