@@ -10,7 +10,7 @@ import { IconsProps } from "../../interfaces";
 import usePosts from "../../hooks/usePosts";
 
 export default function PostIconsBar({ postData }: IconsProps) {
-	const { bookmarkPostMutation } = usePosts(postData?._id);
+	const { bookmarkPostMutation } = usePosts(undefined, postData?._id);
 
 	return (
 		<div
