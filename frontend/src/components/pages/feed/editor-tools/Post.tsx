@@ -1,6 +1,9 @@
-import { faCertificate, faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import {
+	faCertificate,
+	faEllipsis,
+	faThumbtack
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
 import Options from "../../../post/Options";
 import Carousel from "./carousel/Carousel";
 import { PostProps } from "../../../../interfaces";
@@ -9,26 +12,27 @@ import { Link, useNavigate } from "react-router-dom";
 import PostIconsBar from "../../../post/PostIconsBar";
 import PostModal from "../../../post/PostModal";
 import Editor from "./Editor";
+import { usePostModal } from "../../../../contexts/PostModalContext";
+import { useState } from "react";
 
-export default function Post({ isOwner, postData }: PostProps) {
-	const [showOptions, setShowOptions] = useState(false);
+export default function Post({
+	isOwner,
+	postData,
+	isPinned = false
+}: PostProps) {
 	const navigate = useNavigate();
-	const [isEditMode, setIsEditMode] = useState(false);
-	const [postContent, setPostContent] = useState("");
+	const { isEditMode, postContent } = usePostModal();
 
-	function close() {
-		setShowOptions(false);
-	}
+	const [optionsMenu, setOptionsMenu] = useState(false);
 
-	function setEditMode(postContent: string) {
-		setIsEditMode(!isEditMode);
-		setPostContent(postContent);
+	function updateOptionsView() {
+		setOptionsMenu(!optionsMenu);
 	}
 
 	return (
 		<>
 			{isEditMode && (
-				<PostModal editMode={true}>
+				<PostModal editMode={isEditMode}>
 					<Editor
 						showBorder={false}
 						placeHolder="Edit Post"
@@ -41,16 +45,21 @@ export default function Post({ isOwner, postData }: PostProps) {
 				className="w-full p-2 border-t-2 border-b-2 border-t-gray-700 border-b-gray-700 relative hover:cursor-pointer"
 				onClick={() => navigate(`/post/${postData._id}`)}
 			>
-				{showOptions && (
+				{isPinned && (
+					<span className="text-zinc-500 text-sm">
+						<FontAwesomeIcon icon={faThumbtack} />
+						&nbsp;Pinned
+					</span>
+				)}
+				{optionsMenu && (
 					<Options
-						close={close}
 						isOwner={isOwner}
 						username={postData.user.username}
 						postID={postData._id}
-						setEditMode={setEditMode}
+						updateOptionsView={updateOptionsView}
 					/>
 				)}
-				<div className="flex items-start">
+				<div className="flex items-start mt-3">
 					<img
 						src={postData.user.profilePicture}
 						alt="User pfp"
@@ -100,8 +109,8 @@ export default function Post({ isOwner, postData }: PostProps) {
 						className="ml-auto mr-3 hover:cursor-pointer"
 						onClick={e => {
 							e.stopPropagation();
-							e.stopPropagation();
-							setShowOptions(!showOptions);
+							e.preventDefault();
+							setOptionsMenu(true);
 						}}
 					>
 						<FontAwesomeIcon icon={faEllipsis} />
