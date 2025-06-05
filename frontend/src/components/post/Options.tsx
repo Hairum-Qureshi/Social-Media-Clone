@@ -4,8 +4,8 @@ import {
 	faTrash,
 	faUserMinus,
 	faUserPlus,
-	faX,
-	faThumbtack
+	faThumbtack,
+	faCircleXmark
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OptionsProps } from "../../interfaces";
@@ -32,21 +32,37 @@ export default function Options({
 	return (
 		<>
 			<div
-				className={`bg-black z-10 border-2 font-bold border-white p-2 h-auto absolute right-0 ${
+				className={`bg-black z-10 font-bold border border-zinc-700 py-2 px-1 h-auto absolute right-0 ${
 					isGalleryPost ? "w-1/4" : "w-2/5"
-				} mr-5 mt-2 rounded-md`}
+				} mr-5 mt-2 rounded-md text-sm`}
 			>
 				<div
-					className="absolute top-0 right-0 m-3 font-bold text-lg hover:cursor-pointer"
+					className="absolute top-0 right-0 m-3 font-bold text-xl hover:cursor-pointer"
 					onClick={e => {
 						e.stopPropagation();
 						e.preventDefault();
 						updateOptionsView();
 					}}
 				>
-					<FontAwesomeIcon icon={faX} />
+					<FontAwesomeIcon icon={faCircleXmark} />
 				</div>
 				<div>
+					{isOwner && (
+						<p
+							className="mb-4 hover:cursor-pointer text-red-600"
+							onClick={e => {
+								e.stopPropagation();
+								e.preventDefault();
+								deleteMutation(postID);
+								close();
+							}}
+						>
+							<span className="mx-3">
+								<FontAwesomeIcon icon={faTrash} />
+							</span>
+							Delete
+						</p>
+					)}
 					{isOwner && (
 						<p
 							className="my-4 hover:cursor-pointer"
@@ -66,23 +82,7 @@ export default function Options({
 					)}
 					{isOwner && (
 						<p
-							className="mb-4 hover:cursor-pointer"
-							onClick={e => {
-								e.stopPropagation();
-								e.preventDefault();
-								deleteMutation(postID);
-								close();
-							}}
-						>
-							<span className="mx-3">
-								<FontAwesomeIcon icon={faTrash} />
-							</span>
-							Delete Post
-						</p>
-					)}
-					{isOwner && (
-						<p
-							className="mb-4 hover:cursor-pointer"
+							className="hover:cursor-pointer"
 							onClick={e => {
 								e.stopPropagation();
 								e.preventDefault();
@@ -92,7 +92,7 @@ export default function Options({
 							<span className="mx-3">
 								<FontAwesomeIcon icon={faThumbtack} />
 							</span>
-							{isPinned ? "Unpin Post" : "Pin Post"}
+							{isPinned ? "Unpin from profile" : "Pin to profile"}
 						</p>
 					)}
 					{!isOwner && (
@@ -125,7 +125,6 @@ export default function Options({
 					)}
 					{!isOwner && (
 						<p
-							className="mb-4"
 							onClick={e => {
 								e.stopPropagation();
 								e.preventDefault();
