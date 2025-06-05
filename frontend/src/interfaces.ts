@@ -124,6 +124,7 @@ export interface OptionsProps {
 	postID: string;
 	isGalleryPost?: boolean;
 	updateOptionsView: () => void;
+	isPinned: boolean;
 }
 
 export interface PostProps {
