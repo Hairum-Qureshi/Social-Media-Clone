@@ -32,9 +32,9 @@ export default function Options({
 	return (
 		<>
 			<div
-				className={`bg-black z-10 font-bold border border-zinc-700 py-2 px-1 h-auto absolute right-0 ${
+				className={`bg-black z-10 font-bold border border-zinc-700 py-3 px-1 h-auto absolute right-0 ${
 					isGalleryPost ? "w-1/4" : "w-2/5"
-				} mr-5 mt-2 rounded-md text-sm`}
+				} mr-5 mt-2 rounded-md text-sm shadow-[0_0_10px_rgba(255,255,255,0.4)]`}
 			>
 				<div
 					className="absolute top-0 right-0 m-3 font-bold text-xl hover:cursor-pointer"
