@@ -17,6 +17,7 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 	const queryClient = useQueryClient();
 	const { userData } = useAuthContext()!;
 	const location = useLocation();
+	const [searchTerm, setSearchTerm] = useState("");
 
 	const urlPostID = useMemo(() => {
 		const splitPathname = location.pathname.split("/");
@@ -286,7 +287,51 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 		bookmarkPostMutate({ postID });
 	};
 
-	
+	const {
+		data: searchedPhraseResult,
+		isLoading: isSearching,
+		refetch
+	} = useQuery({
+		queryKey: ["searchedPhrase"],
+		queryFn: async () => {
+			try {
+				const response = await axios.get(
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/posts/bookmarked?phrase=${encodeURIComponent(searchTerm)}`,
+					{ withCredentials: true }
+				);
+				return response.data;
+			} catch (error) {
+				console.error(error);
+				throw error;
+			}
+		},
+		enabled: false // don't run on component mount
+	});
+
+	function searchPhrase(searchedPhrase: string) {
+		setSearchTerm(searchedPhrase);
+		refetch();
+	}
+
+	const { mutate: pinPostMutate } = useMutation({
+		mutationFn: async ({ postID }: { postID: string }) => {
+			const response = await axios.patch(
+				`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/${postID}/pin`,
+				{},
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
+		}
+	});
+
+	const pinPost = (postID: string) => {
+		pinPostMutate({ postID });
+	};
 
 	return {
 		postData,
@@ -306,6 +351,10 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 		editPending,
 		bookmarkPostMutation,
 		bookmarks,
-		isLoadingBookmarks
+		isLoadingBookmarks,
+		searchPhrase,
+		isSearching,
+		searchedPhraseResult,
+		pinPost
 	};
 }
