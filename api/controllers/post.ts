@@ -674,19 +674,23 @@ const getSearchedPhrase = async (
 	res: Response
 ): Promise<void> => {
 	try {
-		const searchedPhrase = req.query.phrase;
+		const searchedPhrase = req.query.phrase as string;
 
 		if (!searchedPhrase) {
 			res.status(400).json({ error: "Please enter a search phrase" });
 			return;
 		}
 
-		// find all bookmarked posts that contain the searched phrase in their text verbatim
 		const post: IPost = (await Post.findOne({
 			bookmarkedBy: {
 				$in: [req.user._id]
 			},
-			text: { $regex: searchedPhrase, $options: "i" } // 'i' = case-insensitive
+			text: {
+				$regex: new RegExp(
+					`^${searchedPhrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").trim()}$`,
+					"i"
+				)
+			}
 		})
 			.populate("user")
 			.select("-password -__v")
