@@ -12,7 +12,11 @@ import {
 	deleteComment,
 	getAllCurrUserPosts,
 	getPostData,
-	editPost
+	editPost,
+	pinPost,
+	bookmarkPost,
+	getAllBookmarkedPosts,
+	getSearchedPhrase
 } from "../controllers/post";
 import multer from "multer";
 import { storage } from "../config/multer-config";
@@ -30,7 +34,11 @@ router.get("/following", checkAuthStatus, getFollowingUsersPosts);
 router.get("/user/:username", checkAuthStatus, getUserPosts);
 router.get("/current-user/all", checkAuthStatus, getAllCurrUserPosts);
 router.delete("/comment/:commentID/:postID", checkAuthStatus, deleteComment);
+router.get("/bookmarked", checkAuthStatus, getSearchedPhrase);
 router.get("/:postID", checkAuthStatus, getPostData);
 router.patch("/:postID/edit", checkAuthStatus, editPost);
+router.patch("/:postID/pin", checkAuthStatus, pinPost);
+router.patch("/:postID/bookmark", checkAuthStatus, bookmarkPost);
+router.get("/bookmarked/all", checkAuthStatus, getAllBookmarkedPosts);
 
 export default router;
