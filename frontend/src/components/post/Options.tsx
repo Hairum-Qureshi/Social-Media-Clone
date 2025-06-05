@@ -54,7 +54,7 @@ export default function Options({
 								e.preventDefault();
 								setPostContent(postDataByID?.text);
 								setIsEditMode(true);
-								setOptionsMenu(false);
+								updateOptionsView();
 							}}
 						>
 							<span className="mx-3">
