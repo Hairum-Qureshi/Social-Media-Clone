@@ -116,95 +116,6 @@ const deletePost = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-const handleLikes = async (req: Request, res: Response) => {
-	try {
-		const currUID: Types.ObjectId = req.user._id;
-		const postID: string = req.params.postID;
-		const post: IPost = (await Post.findById(postID)) as IPost;
-
-		if (!post) {
-			res.status(404).json({ message: "Post not found" });
-			return;
-		}
-
-		const userLikedPost: boolean = post.likedBy.some((uid: Types.ObjectId) =>
-			uid.equals(currUID)
-		);
-		if (userLikedPost) {
-			// dislike the post and decrement the total number of likes
-			await Post.updateOne(
-				{
-					_id: postID
-				},
-				{
-					$pull: {
-						likes: currUID
-					},
-					$inc: { numLikes: -1 }
-				}
-			);
-
-			await User.updateOne(
-				{
-					_id: currUID
-				},
-				{
-					$pull: {
-						likedPosts: postID
-					}
-				}
-			);
-
-			res.status(200).json({ message: "Post disliked successfully" });
-			return;
-		} else {
-			// like the post and increment the total number of likes
-			await Post.updateOne(
-				{
-					_id: postID
-				},
-				{
-					$push: {
-						likes: currUID
-					},
-					$inc: {
-						numLikes: 1
-					}
-				}
-			);
-
-			await User.updateOne(
-				{
-					_id: currUID
-				},
-				{
-					$push: {
-						likedPosts: postID
-					}
-				}
-			);
-
-			// if the current user likes their own post, don't notify them
-			if (!post.user.equals(currUID)) {
-				await Notification.create({
-					from: currUID,
-					to: post.user,
-					notifType: "LIKE"
-				});
-			}
-
-			res.status(200).json({ message: "Post liked successfully" });
-			return;
-		}
-	} catch (error) {
-		console.error(
-			"Error in post.ts file, handleLikes function controller".red.bold,
-			error
-		);
-		res.status(500).json({ error: "Internal Server Error" });
-	}
-};
-
 const postComment = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { text } = req.body;
@@ -599,7 +510,7 @@ const pinPost = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-const bookmarkPost = async (req: Request, res: Response): Promise<void> => {
+const handleBookmarking = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { postID } = req.params;
 		const currUID = req.user._id;
@@ -717,10 +628,98 @@ const getSearchedPhrase = async (
 	}
 };
 
+const handleLikes = async (req: Request, res: Response) => {
+	try {
+		const currUID: Types.ObjectId = req.user._id;
+		const postID: string = req.params.postID;
+		const post: IPost = (await Post.findById(postID)) as IPost;
+
+		if (!post) {
+			res.status(404).json({ message: "Post not found" });
+			return;
+		}
+
+		const userLikedPost: boolean = post.likedBy.some((uid: Types.ObjectId) =>
+			uid.equals(currUID)
+		);
+		if (userLikedPost) {
+			// dislike the post and decrement the total number of likes
+			await Post.updateOne(
+				{
+					_id: postID
+				},
+				{
+					$pull: {
+						likes: currUID
+					},
+					$inc: { numLikes: -1 }
+				}
+			);
+
+			await User.updateOne(
+				{
+					_id: currUID
+				},
+				{
+					$pull: {
+						likedPosts: postID
+					}
+				}
+			);
+
+			res.status(200).json({ message: "Post disliked successfully" });
+			return;
+		} else {
+			// like the post and increment the total number of likes
+			await Post.updateOne(
+				{
+					_id: postID
+				},
+				{
+					$push: {
+						likes: currUID
+					},
+					$inc: {
+						numLikes: 1
+					}
+				}
+			);
+
+			await User.updateOne(
+				{
+					_id: currUID
+				},
+				{
+					$push: {
+						likedPosts: postID
+					}
+				}
+			);
+
+			// if the current user likes their own post, don't notify them
+			if (!post.user.equals(currUID)) {
+				await Notification.create({
+					from: currUID,
+					to: post.user,
+					notifType: "LIKE"
+				});
+			}
+
+			res.status(200).json({ message: "Post liked successfully" });
+			return;
+		}
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, handleLikes function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
 export {
 	createPost,
 	deletePost,
-	handleLikes,
 	postComment,
 	getAllPosts,
 	getAllLikedPosts,
@@ -731,7 +730,9 @@ export {
 	getPostData,
 	editPost,
 	pinPost,
-	bookmarkPost,
+	handleBookmarking,
 	getAllBookmarkedPosts,
-	getSearchedPhrase
+	getSearchedPhrase,
+	handleLikes,
+
 };
