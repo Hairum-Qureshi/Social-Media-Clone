@@ -14,7 +14,7 @@ import {
 	getPostData,
 	editPost,
 	pinPost,
-	bookmarkPost,
+	handleBookmarking,
 	getAllBookmarkedPosts,
 	getSearchedPhrase
 } from "../controllers/post";
@@ -26,10 +26,8 @@ const router = express.Router();
 
 router.post("/create", checkAuthStatus, upload.array("images", 4), createPost);
 router.delete("/:postID", checkAuthStatus, deletePost);
-router.post("/handle-likes/:postID", checkAuthStatus, handleLikes);
 router.post("/comment/:postID", checkAuthStatus, postComment);
 router.get("/all", checkAuthStatus, getAllPosts);
-router.get("/liked-posts/:userID", checkAuthStatus, getAllLikedPosts);
 router.get("/following", checkAuthStatus, getFollowingUsersPosts);
 router.get("/user/:username", checkAuthStatus, getUserPosts);
 router.get("/current-user/all", checkAuthStatus, getAllCurrUserPosts);
@@ -38,7 +36,9 @@ router.get("/bookmarked", checkAuthStatus, getSearchedPhrase);
 router.get("/:postID", checkAuthStatus, getPostData);
 router.patch("/:postID/edit", checkAuthStatus, editPost);
 router.patch("/:postID/pin", checkAuthStatus, pinPost);
-router.patch("/:postID/bookmark", checkAuthStatus, bookmarkPost);
+router.patch("/:postID/bookmark", checkAuthStatus, handleBookmarking);
 router.get("/bookmarked/all", checkAuthStatus, getAllBookmarkedPosts);
+router.patch("/:postID/like", checkAuthStatus, handleLikes);
+router.get("/all-liked/:userID", checkAuthStatus, getAllLikedPosts);
 
 export default router;
