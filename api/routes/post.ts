@@ -1,25 +1,28 @@
 import express from "express";
 import checkAuthStatus from "../middleware/checkAuthStatus";
 import {
-	createPost,
-	deletePost,
 	handleLikes,
-	postComment,
-	getAllPosts,
 	getAllLikedPosts,
 	getFollowingUsersPosts,
-	getUserPosts,
-	deleteComment,
-	getAllCurrUserPosts,
-	getPostData,
-	editPost,
 	pinPost,
-	handleBookmarking,
-	getAllBookmarkedPosts,
 	getSearchedPhrase
-} from "../controllers/post";
+} from "../controllers/post-related/post";
 import multer from "multer";
 import { storage } from "../config/multer-config";
+import {
+	createPost,
+	deletePost,
+	editPost,
+	getAllCurrUserPosts,
+	getPostData,
+	getUserPosts,
+	getAllPosts
+} from "../controllers/post-related/crud-operations/post-crud-ops";
+import {
+	getAllBookmarkedPosts,
+	handleBookmarking
+} from "../controllers/post-related/bookmarking-logic";
+import { deleteComment, postComment } from "../controllers/post-related/crud-operations/comment-crud-ops";
 
 export const upload = multer({ storage });
 const router = express.Router();
