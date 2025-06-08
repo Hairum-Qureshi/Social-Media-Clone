@@ -59,7 +59,7 @@ const userSchema = new Schema(
 		},
 		likedPosts: [
 			{
-				type: Types.ObjectId,
+				type: String,
 				ref: "Post",
 				default: []
 			}
@@ -82,6 +82,11 @@ const userSchema = new Schema(
 			type: [Types.ObjectId],
 			ref: "Conversation",
 			default: []
+		},
+		publicKey: {
+			type: String,
+			required: true,
+			isUnique: true
 		}
 	},
 	{
