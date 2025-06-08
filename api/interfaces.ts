@@ -108,6 +108,7 @@ export interface IPost {
 	postImages: string[];
 	isPinned: boolean;
 	isBookmarked?: boolean;
+	isLiked?: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
