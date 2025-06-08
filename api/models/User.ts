@@ -64,6 +64,13 @@ const userSchema = new Schema(
 				default: []
 			}
 		],
+		bookmarkedPosts: [
+			{
+				type: String,
+				ref: "Post",
+				default: []
+			}
+		],
 		numFollowers: {
 			type: Number,
 			default: 0,
