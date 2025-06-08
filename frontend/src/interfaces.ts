@@ -114,6 +114,7 @@ export interface Post {
 	isPinned: boolean;
 	postImages: string[];
 	isBookmarked: boolean;
+	isLiked: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -156,6 +157,7 @@ export interface PostData {
 	isSearching: boolean;
 	searchedPhraseResult: Post | null;
 	pinPost: (postID: string) => void;
+	likePostMutation: (postID: string) => void;
 }
 
 export interface UserCardProps {
