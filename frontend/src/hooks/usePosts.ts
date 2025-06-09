@@ -355,6 +355,24 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 		likePostMutate({ postID });
 	};
 
+	const { data: currUserLikedPosts } = useQuery({
+		queryKey: ["currUserLikedPosts"],
+		queryFn: async () => {
+			try {
+				const response = await axios.get(
+					`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/all-liked`,
+					{
+						withCredentials: true
+					}
+				);
+
+				return response.data;
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	});
+
 	return {
 		postData,
 		loadingStatus,
@@ -378,6 +396,7 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 		isSearching,
 		searchedPhraseResult,
 		pinPost,
-		likePostMutation
+		likePostMutation,
+		currUserLikedPosts
 	};
 }
