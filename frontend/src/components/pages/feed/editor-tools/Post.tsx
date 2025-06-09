@@ -18,7 +18,8 @@ import { useState } from "react";
 export default function Post({
 	isOwner,
 	postData,
-	isPinned = false
+	isPinned = false,
+	showTopBorder = true
 }: PostProps) {
 	const navigate = useNavigate();
 	const { isEditMode, postContent } = usePostModal();
@@ -42,7 +43,9 @@ export default function Post({
 				</PostModal>
 			)}
 			<div
-				className="w-full p-2 border-t-2 border-b-2 border-t-gray-700 border-b-gray-700 relative hover:cursor-pointer"
+				className={`w-full p-2 ${
+					showTopBorder && "border-t-2 border-t-gray-700"
+				} border-b-2 border-b-gray-700 relative hover:cursor-pointer`}
 				onClick={() => navigate(`/post/${postData._id}`)}
 			>
 				{isPinned && (
