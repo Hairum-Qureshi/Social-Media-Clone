@@ -4,6 +4,7 @@ import Post from "../../models/Post";
 import { Types } from "mongoose";
 import Notification from "../../models/Notification";
 import User from "../../models/User";
+import { checkIfLikedAndBookmarked } from "../../lib/utils/checkIfLikedAndBookmarked";
 
 const getFollowingUsersPosts = async (
 	req: Request,
@@ -218,34 +219,38 @@ const handleLikes = async (req: Request, res: Response) => {
 };
 
 const getAllLikedPosts = async (req: Request, res: Response): Promise<void> => {
-	const { userID } = req.params;
 	try {
-		const user: IUser | undefined = (await User.findById({
-			_id: userID
-		})) as IUser;
+		const currUID: Types.ObjectId = req.user._id;
 
-		if (!user) {
-			res.status(404).json({ error: "User not found" });
-			return;
+		const userWithLikedPosts = await User.findOne({ _id: currUID })
+			.populate({
+				path: "likedPosts",
+				populate: {
+					path: "user",
+					select: "_id username fullName profilePicture isVerified"
+				}
+			})
+			.select("likedPosts")
+			.lean();
+
+		const likedPosts: IPost[] = (userWithLikedPosts?.likedPosts ??
+			[]) as unknown as IPost[];
+
+		let updatedLikedPosts: IPost[] = [];
+		
+		if (likedPosts.length > 0) {
+			updatedLikedPosts = await Promise.all(
+				likedPosts.map(async (post: IPost) => {
+					const { isBookmarked, isLiked } = await checkIfLikedAndBookmarked(
+						post._id,
+						currUID
+					);
+					return { ...post, isLiked, isBookmarked };
+				})
+			);
 		}
 
-		// finds all the posts based on the array of post IDs
-		const likedPosts: IPost[] = (await Post.find({
-			_id: {
-				$in: user.likedPosts
-			}
-		})
-			.populate({
-				path: "user",
-				select: "-password -__v"
-			})
-			.populate({
-				path: "comments.user",
-				select: "-password -__v"
-			})
-			.select("-__v")) as IPost[];
-
-		res.status(200).json(likedPosts);
+		res.status(200).send(updatedLikedPosts);
 		return;
 	} catch (error) {
 		console.error(
