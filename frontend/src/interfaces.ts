@@ -132,6 +132,7 @@ export interface PostProps {
 	isOwner: boolean;
 	postData: Post;
 	isPinned?: boolean;
+	showTopBorder?: boolean;
 }
 
 export interface PostData {
@@ -158,6 +159,7 @@ export interface PostData {
 	searchedPhraseResult: Post | null;
 	pinPost: (postID: string) => void;
 	likePostMutation: (postID: string) => void;
+	currUserLikedPosts: Post[];
 }
 
 export interface UserCardProps {
