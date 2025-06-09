@@ -30,6 +30,7 @@ const router = express.Router();
 router.post("/create", checkAuthStatus, upload.array("images", 4), createPost);
 router.delete("/:postID", checkAuthStatus, deletePost);
 router.post("/comment/:postID", checkAuthStatus, postComment);
+router.get("/all-liked", checkAuthStatus, getAllLikedPosts);
 router.get("/all", checkAuthStatus, getAllPosts);
 router.get("/following", checkAuthStatus, getFollowingUsersPosts);
 router.get("/user/:username", checkAuthStatus, getUserPosts);
@@ -42,6 +43,5 @@ router.patch("/:postID/pin", checkAuthStatus, pinPost);
 router.patch("/:postID/bookmark", checkAuthStatus, handleBookmarking);
 router.get("/bookmarked/all", checkAuthStatus, getAllBookmarkedPosts);
 router.patch("/:postID/like", checkAuthStatus, handleLikes);
-router.get("/all-liked/:userID", checkAuthStatus, getAllLikedPosts);
 
 export default router;
