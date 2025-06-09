@@ -297,7 +297,9 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 				const response = await axios.get(
 					`${
 						import.meta.env.VITE_BACKEND_BASE_URL
-					}/api/posts/bookmarked?phrase=${encodeURIComponent(searchTerm)}`,
+					}/api/posts/bookmarked?phrase=${encodeURIComponent(
+						searchTerm.trim()
+					)}`,
 					{ withCredentials: true }
 				);
 				return response.data;
@@ -332,6 +334,27 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 		pinPostMutate({ postID });
 	};
 
+	const { mutate: likePostMutate } = useMutation({
+		mutationFn: async ({ postID }: { postID: string }) => {
+			const response = await axios.patch(
+				`${import.meta.env.VITE_BACKEND_BASE_URL}/api/posts/${postID}/like`,
+				{},
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: (data: Post) => {
+			queryClient.invalidateQueries({ queryKey: ["posts"] });
+			queryClient.invalidateQueries({ queryKey: ["postData", data._id] });
+			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
+			queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
+		}
+	});
+
+	const likePostMutation = (postID: string) => {
+		likePostMutate({ postID });
+	};
+
 	return {
 		postData,
 		loadingStatus,
@@ -354,6 +377,7 @@ export default function usePosts(feedType?: string, postID?: string): PostData {
 		searchPhrase,
 		isSearching,
 		searchedPhraseResult,
-		pinPost
+		pinPost,
+		likePostMutation
 	};
 }
