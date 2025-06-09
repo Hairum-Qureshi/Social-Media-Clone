@@ -25,7 +25,7 @@ export default function Profile() {
 	const [isMedia, setIsMedia] = useState(false);
 	const [isLikes, setIsLikes] = useState(false);
 	const { userData } = useAuthContext()!;
-	const { currentProfilePostData } = usePosts();
+	const { currentProfilePostData, currUserLikedPosts } = usePosts();
 	const { profileData, postsImages } = useProfile();
 
 	function closeModal() {
@@ -36,10 +36,11 @@ export default function Profile() {
 		setShowModal(true);
 	}
 
-	const sortedPosts = [...currentProfilePostData]?.sort((a, b) => {
-		if (a.isPinned === b.isPinned) return 0;
-		return a.isPinned ? -1 : 1; // Pinned posts first
-	});
+	const sortedPosts: IPost[] =
+		[...currentProfilePostData]?.sort((a, b) => {
+			if (a.isPinned === b.isPinned) return 0;
+			return a.isPinned ? -1 : 1; // Pinned posts first
+		}) || profileData;
 
 	return (
 		<div className="bg-black w-full text-white min-h-screen overflow-auto relative">
@@ -92,7 +93,12 @@ export default function Profile() {
 							return (
 								<div>
 									<Link to={`/post/${post._id}`} key={post._id}>
-										<Post isOwner={true} postData={post} isPinned = {post.isPinned} />
+										<Post
+											isOwner={true}
+											postData={post}
+											isPinned={post.isPinned}
+											showTopBorder={false}
+										/>
 									</Link>
 								</div>
 							);
@@ -101,14 +107,33 @@ export default function Profile() {
 						<FollowersSuggestions />
 					)
 				) : profileData?._id === userData?._id && isLikes ? (
-					<div className="bg-blue-950 rounded-md m-2 text-white p-2 text-sm">
-						<p>
-							<span className="mx-3">
-								<FontAwesomeIcon icon={faLock} />
-							</span>
-							Your likes are private. Only you can see them.
-						</p>
-					</div>
+					<>
+						<div className="bg-blue-950 rounded-md m-2 text-white p-2 text-sm">
+							<p>
+								<span className="mx-3">
+									<FontAwesomeIcon icon={faLock} />
+								</span>
+								Your likes are private. Only you can see them.
+							</p>
+						</div>
+						<div>
+							{currUserLikedPosts?.length > 0 ? (
+								currUserLikedPosts.map((post: IPost) => {
+									return (
+										<Post
+											isOwner={userData?._id === post.user._id}
+											postData={post}
+											showTopBorder={false}
+										></Post>
+									);
+								})
+							) : (
+								<h1 className="text-center text-white font-semibold text-xl mt-10">
+									You haven't liked any Tweets yet
+								</h1>
+							)}
+						</div>
+					</>
 				) : (
 					<div className="text-white p-2 flex justify-center">
 						{checkIfAnyPostImagesExist(postsImages) ? (
