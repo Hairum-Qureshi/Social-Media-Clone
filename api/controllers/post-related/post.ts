@@ -237,15 +237,15 @@ const getAllLikedPosts = async (req: Request, res: Response): Promise<void> => {
 			[]) as unknown as IPost[];
 
 		let updatedLikedPosts: IPost[] = [];
-		
+
 		if (likedPosts.length > 0) {
 			updatedLikedPosts = await Promise.all(
 				likedPosts.map(async (post: IPost) => {
-					const { isBookmarked, isLiked } = await checkIfLikedAndBookmarked(
+					const { isBookmarked } = await checkIfLikedAndBookmarked(
 						post._id,
 						currUID
 					);
-					return { ...post, isLiked, isBookmarked };
+					return { ...post, isLiked: true, isBookmarked };
 				})
 			);
 		}
@@ -261,10 +261,25 @@ const getAllLikedPosts = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+const retweetPost = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { postID } = req.params;
+		const currUID: Types.ObjectId = req.user._id;
+
+	} catch (error) {
+		console.error(
+			"Error in post.ts file, retweetPost function controller".red.bold,
+			error
+		);
+		res.status(500).json({ error: "Internal Server Error" });
+	}
+};
+
 export {
 	getAllLikedPosts,
 	getFollowingUsersPosts,
 	pinPost,
 	getSearchedPhrase,
-	handleLikes
+	handleLikes,
+	retweetPost
 };
