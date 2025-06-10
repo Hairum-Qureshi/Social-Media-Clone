@@ -100,7 +100,6 @@ export default function Profile() {
 											isOwner={true}
 											postData={post}
 											isPinned={post.isPinned}
-											showTopBorder={false}
 										/>
 									</Link>
 								</div>
