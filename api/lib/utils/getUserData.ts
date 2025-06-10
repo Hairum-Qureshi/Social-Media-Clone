@@ -20,6 +20,7 @@ export default function getUserData(user: IUser): UserData {
 		createdAt: user.createdAt,
 		updatedAt: user.updatedAt,
 		isVerified: user.isVerified,
-		conversations: user.conversations
+		conversations: user.conversations,
+		extendedBio: user.extendedBio
 	};
 }
