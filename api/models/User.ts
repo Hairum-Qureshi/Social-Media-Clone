@@ -94,6 +94,9 @@ const userSchema = new Schema(
 			type: String,
 			required: true,
 			isUnique: true
+		},
+		extendedBio: {
+			type: String
 		}
 	},
 	{
