@@ -323,6 +323,8 @@ export interface EditorProps {
 	placeHolder?: string;
 	buttonText?: string;
 	content?: string;
+	isForRetweet?: boolean;
+	retweetPostData?: Post | null;
 }
 
 export interface PostModalComponentProp {
@@ -341,4 +343,8 @@ export interface ProfileHeaderProps {
 
 export interface IconsProps {
 	postData: Post;
+}
+
+export interface RetweetOptionsProps {
+	retweetPostData: Post | null;
 }
