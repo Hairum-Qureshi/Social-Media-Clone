@@ -20,8 +20,8 @@ export default function Options({
 	username,
 	postID,
 	isGalleryPost = false,
-	updateOptionsView,
-	isPinned
+	updateOptionsView = () => {},
+	isPinned = false
 }: OptionsProps) {
 	const { deleteMutation, postDataByID, close, pinPost } = usePosts(
 		undefined,
