@@ -39,11 +39,13 @@ export interface IUser {
 	bio: string;
 	link: string;
 	likedPosts: Types.ObjectId[];
+	bookmarkedPosts: IPost[];
 	numFollowers: number;
 	numFollowing: number;
 	isVerified: boolean;
 	conversations: IConversation[];
 	publicKey: string;
+	extendedBio: string;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -66,6 +68,7 @@ export interface UserData {
 	isVerified: boolean;
 	conversations: IConversation[];
 	publicKey: string;
+	extendedBio: string;
 	createdAt: Date;
 	updatedAt: Date;
 }
