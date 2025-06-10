@@ -15,6 +15,9 @@ import PostDetails from "./post/PostDetails";
 import Requests from "./pages/navigation/messages/Requests";
 import ProfileConnections from "./pages/navigation/profile/ProfileConnections";
 import PostImageDetails from "./post/PostImageDetails";
+import { PostModalProvider } from "../contexts/PostModalContext";
+import BioSettings from "./pages/navigation/profile/bio/BioSettings";
+import Bio from "./pages/navigation/profile/bio/Bio";
 
 // TODO - you may need to move AuthProvider so it's not wrapped around *all* the routes, but if it causes no harm, leave it
 
@@ -23,131 +26,149 @@ export default function App() {
 		<BrowserRouter>
 			<AuthProvider>
 				<SocketProvider>
-					<Routes>
-						<Route path="/sign-in" element={<SignIn />} />
-						<Route path="/sign-up" element={<SignUp />} />
-						<Route
-							path="/"
-							element={
-								<ProtectedRoutesGuard>
-									<Feed />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/explore"
-							element={
-								<ProtectedRoutesGuard>
-									<Explore />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/notifications"
-							element={
-								<ProtectedRoutesGuard>
-									<Notifications />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/messages"
-							element={
-								<ProtectedRoutesGuard>
-									<Messages />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/messages/compose"
-							element={
-								<ProtectedRoutesGuard>
-									<Messages />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/messages/conversation/:conversationID/:userIDs"
-							element={
-								<ProtectedRoutesGuard>
-									<Messages />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/messages/compose/group"
-							element={
-								<ProtectedRoutesGuard>
-									<Messages />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/messages/requests"
-							element={
-								<ProtectedRoutesGuard>
-									<Requests />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/bookmarks"
-							element={
-								<ProtectedRoutesGuard>
-									<Bookmarks />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/:username"
-							element={
-								<ProtectedRoutesGuard>
-									<Profile />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/:username/followers"
-							element={
-								<ProtectedRoutesGuard>
-									<ProfileConnections />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/:username/following"
-							element={
-								<ProtectedRoutesGuard>
-									<ProfileConnections />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/:username/verified_followers"
-							element={
-								<ProtectedRoutesGuard>
-									<ProfileConnections />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/post/:postID"
-							element={
-								<ProtectedRoutesGuard>
-									<PostDetails />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route
-							path="/:username/post/:postID/photo/:photoNumber"
-							element={
-								<ProtectedRoutesGuard>
-									<PostImageDetails />
-								</ProtectedRoutesGuard>
-							}
-						/>
-						<Route path="*" element={<NotFound />} />
-					</Routes>
+					<PostModalProvider>
+						<Routes>
+							<Route path="/sign-in" element={<SignIn />} />
+							<Route path="/sign-up" element={<SignUp />} />
+							<Route
+								path="/"
+								element={
+									<ProtectedRoutesGuard>
+										<Feed />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/explore"
+								element={
+									<ProtectedRoutesGuard>
+										<Explore />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/notifications"
+								element={
+									<ProtectedRoutesGuard>
+										<Notifications />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/messages"
+								element={
+									<ProtectedRoutesGuard>
+										<Messages />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/messages/compose"
+								element={
+									<ProtectedRoutesGuard>
+										<Messages />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/messages/conversation/:conversationID/:userIDs"
+								element={
+									<ProtectedRoutesGuard>
+										<Messages />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/messages/compose/group"
+								element={
+									<ProtectedRoutesGuard>
+										<Messages />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/messages/requests"
+								element={
+									<ProtectedRoutesGuard>
+										<Requests />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/bookmarks"
+								element={
+									<ProtectedRoutesGuard>
+										<Bookmarks />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/:username"
+								element={
+									<ProtectedRoutesGuard>
+										<Profile />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/:username/followers"
+								element={
+									<ProtectedRoutesGuard>
+										<ProfileConnections />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/:username/following"
+								element={
+									<ProtectedRoutesGuard>
+										<ProfileConnections />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/:username/verified_followers"
+								element={
+									<ProtectedRoutesGuard>
+										<ProfileConnections />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/post/:postID"
+								element={
+									<ProtectedRoutesGuard>
+										<PostDetails />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/:username/post/:postID/photo/:photoNumber"
+								element={
+									<ProtectedRoutesGuard>
+										<PostImageDetails />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/settings/bio"
+								element={
+									<ProtectedRoutesGuard>
+										<BioSettings />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path=":username/bio"
+								element={
+									<ProtectedRoutesGuard>
+										<Bio />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route path="*" element={<NotFound />} />
+						</Routes>
+					</PostModalProvider>
 				</SocketProvider>
 			</AuthProvider>
 		</BrowserRouter>
