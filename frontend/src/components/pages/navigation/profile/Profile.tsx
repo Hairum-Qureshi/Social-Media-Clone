@@ -36,11 +36,14 @@ export default function Profile() {
 		setShowModal(true);
 	}
 
-	const sortedPosts: IPost[] =
-		[...currentProfilePostData]?.sort((a, b) => {
-			if (a.isPinned === b.isPinned) return 0;
-			return a.isPinned ? -1 : 1; // Pinned posts first
-		}) || profileData;
+	const sortedPosts: IPost[] = (
+		currentProfilePostData
+			? [...currentProfilePostData]?.sort((a, b) => {
+					if (a.isPinned === b.isPinned) return 0;
+					return a.isPinned ? -1 : 1; // Pinned posts first
+			  })
+			: profileData
+	) as IPost[];
 
 	return (
 		<div className="bg-black w-full text-white min-h-screen overflow-auto relative">
