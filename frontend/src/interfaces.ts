@@ -73,6 +73,7 @@ export interface UserData {
 	numFollowing: number;
 	isVerified: boolean;
 	conversations: Conversation;
+	extendedBio: string;
 	createdAt: Date;
 	updatedAt: Date;
 }
