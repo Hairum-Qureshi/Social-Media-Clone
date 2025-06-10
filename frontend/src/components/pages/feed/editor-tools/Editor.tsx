@@ -3,6 +3,7 @@ import EditorOptions from "./EditorOptions";
 import Carousel from "./carousel/Carousel";
 import { EditorProps } from "../../../../interfaces";
 import useAuthContext from "../../../../contexts/AuthContext";
+import moment from "moment";
 
 // TODO - need to resolve image aspect ratio when uploading images
 // TODO - if the user hasn't typed anything yet, disable the "POST" button too
@@ -13,7 +14,9 @@ export default function Editor({
 	showBorder = true,
 	placeHolder = "What's Happening?!",
 	buttonText = "POST",
-	content = ""
+	content = "",
+	isForRetweet = false,
+	retweetPostData = null
 }: EditorProps) {
 	const [postContent, setPostContent] = useState(content || "");
 	const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -95,6 +98,46 @@ export default function Editor({
 										onPaste={e => handlePaste(e)}
 									></textarea>
 								</div>
+								{isForRetweet && (
+									<div className="border border-slate-600 rounded-lg">
+										<div className="w-full p-2 flex items-center">
+											<img
+												src={retweetPostData?.user?.profilePicture}
+												alt="User Profile Picture"
+												className="w-8 h-8 rounded-full object-cover"
+											/>
+											<div className="flex text-base text-slate-500">
+												<p className="font-semibold ml-3 text-white">
+													{retweetPostData?.user?.fullName}
+												</p>
+												<p className="ml-2">
+													@{retweetPostData?.user?.username}
+												</p>
+												&nbsp;·
+												<p>
+													&nbsp;
+													{moment(
+														retweetPostData?.createdAt?.toString()
+													).fromNow()}
+												</p>
+											</div>
+										</div>
+										<div className="w-full border-t border-t-slate-600 min-h-auto max-h-80 p-3 overflow-hidden">
+											{retweetPostData?.text}
+											{retweetPostData &&
+												retweetPostData?.postImages?.length > 0 && (
+													<div className="">
+														<Carousel
+															images={retweetPostData?.postImages}
+															numImages={retweetPostData?.postImages.length}
+															allowDelete={false}
+															forPost={true}
+														/>
+													</div>
+												)}
+										</div>
+									</div>
+								)}
 								{uploadedImages.length > 0 && (
 									<div className="w-full flex">
 										<Carousel
