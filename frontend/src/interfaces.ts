@@ -222,6 +222,7 @@ export interface ProfileTools {
 	) => void;
 	postsImages: PostImage[];
 	addExtendedBio: (extendedBioContent: string) => void;
+	deleteExtendedBio: () => void;
 }
 
 export interface ContactProps {
