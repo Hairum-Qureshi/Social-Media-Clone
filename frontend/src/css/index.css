@@ -6,3 +6,8 @@ div:empty:before {
 	content: attr(data-placeholder);
 	color: rgb(124, 124, 124);
 }
+
+@font-face {
+	font-family: "artegra-sans-extra-bold";
+	src: url("../assets/fonts/artegra-sans-extra-bold.ttf");
+}
