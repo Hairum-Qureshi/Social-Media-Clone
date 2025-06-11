@@ -7,7 +7,8 @@ import {
 	updateProfileBackdrop,
 	updateProfilePicture,
 	getPostsImages,
-	addExtendedBio
+	addExtendedBio,
+	deleteExtendedBio
 } from "../controllers/user";
 import checkAuthStatus from "../middleware/checkAuthStatus";
 import { upload } from "./post";
@@ -22,5 +23,6 @@ router.patch("/update-profile/images/profile-picture", checkAuthStatus, upload.s
 router.patch("/update-profile/images/backdrop", checkAuthStatus, upload.single("backdrop"), updateProfileBackdrop);
 router.get("/profile/:username/posts-images", checkAuthStatus, getPostsImages);
 router.post("/update-profile/extended-bio", checkAuthStatus, addExtendedBio);
+router.delete("/update-profile/delete-extended-bio", checkAuthStatus, deleteExtendedBio);
 
 export default router;
