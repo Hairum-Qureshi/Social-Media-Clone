@@ -289,7 +289,7 @@ export default function useProfile(): ProfileTools {
 			return response.data;
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
+			queryClient.invalidateQueries({ queryKey: ["user"] });
 		}
 	});
 
