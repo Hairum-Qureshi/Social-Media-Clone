@@ -14,7 +14,7 @@ import isFollowing from "../../../../utils/checkFollowingStatus";
 import getMonthAndYear from "../../../../utils/getMonthAndYear";
 import { PostImage, ProfileHeaderProps } from "../../../../interfaces";
 import DOMPurify from "dompurify";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function ProfileHeader({
 	openModal,
@@ -34,14 +34,19 @@ export default function ProfileHeader({
 	const profileUsername = location.pathname.split("/").pop();
 	const { postsImages } = useProfile();
 
-	const numImages: string[] = postsImages.flatMap(
+	const numImages: string[] = postsImages?.flatMap(
 		(postImage: PostImage) => postImage.postImages
 	);
+
+	const navigate = useNavigate();
 
 	return (
 		<>
 			<div className="w-full p-2 flex items-center sticky top-0 bg-black bg-opacity-80 z-50">
-				<div className="text-xl ml-5">
+				<div
+					className="text-xl ml-5 hover:cursor-pointer"
+					onClick={() => navigate(-1)}
+				>
 					<FontAwesomeIcon icon={faArrowLeft} />
 				</div>
 				<div>
@@ -160,6 +165,11 @@ export default function ProfileHeader({
 					<div className="mx-5 my-2">
 						<div>
 							<div dangerouslySetInnerHTML={{ __html: sanitizedBio }} />
+							{userData?.extendedBio && (
+								<Link to={`/${userData?.username}/bio`}>
+									<p className="text-sky-500 underline">View More</p>
+								</Link>
+							)}
 						</div>
 						<div className="mt-3 text-gray-500">
 							<span>
