@@ -491,6 +491,43 @@ const addExtendedBio = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+const deleteExtendedBio = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+
+		const currUID:Types.ObjectId = req.user._id;
+		const currUserData:IUser = await User.findOne({ _id: currUID }) as IUser;
+
+		if(!currUserData?.extendedBio || currUserData?.extendedBio.length === 0 || currUserData?.extendedBio.length === 7) {
+			res.status(400).json({ message: "Extended bio is already empty" });
+			return;
+		}
+
+		const updatedUser = await User.findByIdAndUpdate(
+			currUID,
+			{
+				extendedBio: ""
+			},
+			{
+				new: true
+			}
+		).select("-password -__v");
+
+		res.status(200).json({
+			updatedUser
+		});
+	}
+	catch (error) {
+		console.error(
+			"Error in user.ts file, addExtendedBio function controller".red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
 export {
 	getProfile,
 	getSuggestedUsers,
@@ -499,5 +536,6 @@ export {
 	updateProfilePicture,
 	updateProfileBackdrop,
 	getPostsImages,
-	addExtendedBio
+	addExtendedBio,
+	deleteExtendedBio
 };
