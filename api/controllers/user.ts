@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IPost, IUser, PostImage, UserData } from "../interfaces";
+import { IUser, PostImage, UserData } from "../interfaces";
 import User from "../models/User";
 import Notification from "../models/Notification";
 import mongoose, { Types } from "mongoose";
@@ -9,6 +9,7 @@ import { FOLDER_PATH } from "../config/multer-config";
 import fs from "fs";
 import { handleProfileImageUploads } from "../lib/utils/handleProfileImageUploads";
 import Post from "../models/Post";
+import sanitizeHtml from "sanitize-html";
 
 const getProfile = async (req: Request, res: Response): Promise<void> => {
 	// TODO - Need to exclude 'password' from the populate methods using select
@@ -399,18 +400,7 @@ const updateProfileBackdrop = async (
 const getPostsImages = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { username } = req.params;
-		const userID: Types.ObjectId | undefined = (
-			(await User.findOne({
-				username
-			}).lean()) as UserData
-		)?._id;
-
-		if (!userID) {
-			res
-				.status(404)
-				.send("No user ID corresponds to this user/user ID not valid");
-			return;
-		}
+		const userID: Types.ObjectId = req.user._id;
 
 		// gives all the user's posts' images (array object containing just the postImage objects)
 		const posts = await Post.find(
@@ -439,6 +429,60 @@ const getPostsImages = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+const addExtendedBio = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { extendedBioContent } = req.body;
+		const currUID: Types.ObjectId = req.user._id;
+
+		const cleanHTML = sanitizeHtml(extendedBioContent, {
+			allowedTags: [
+				"h1",
+				"h2",
+				"h3",
+				"h4",
+				"h5",
+				"h6",
+				"blockquote",
+				"li",
+				"ol",
+				"p",
+				"ul",
+				"a",
+				"b",
+				"br",
+				"em",
+				"i",
+				"s",
+				"strong",
+				"u"
+			],
+			allowedAttributes: {
+				a: ["href"]
+			}
+		});
+
+		const updatedUser = await User.findByIdAndUpdate(
+			currUID,
+			{
+				extendedBio: cleanHTML
+			},
+			{
+				new: true
+			}
+		).select("-password -__v");
+
+		res.status(200).json({
+			updatedUser
+		});
+	} catch (error) {
+		console.error(
+			"Error in user.ts file, addExtendedBio function controller".red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
 export {
 	getProfile,
 	getSuggestedUsers,
@@ -446,5 +490,6 @@ export {
 	updateProfile,
 	updateProfilePicture,
 	updateProfileBackdrop,
-	getPostsImages
+	getPostsImages,
+	addExtendedBio
 };
