@@ -434,6 +434,14 @@ const addExtendedBio = async (req: Request, res: Response): Promise<void> => {
 		const { extendedBioContent } = req.body;
 		const currUID: Types.ObjectId = req.user._id;
 
+		if (extendedBioContent.length === 0 || extendedBioContent.length === 7) {
+			// the bio is empty (have to use 7 because even if there's no text, there's still <p></p> tags left)
+			res.status(400).json({
+				message: "Extended bio cannot be empty"
+			});
+			return;
+		}
+
 		const cleanHTML = sanitizeHtml(extendedBioContent, {
 			allowedTags: [
 				"h1",
