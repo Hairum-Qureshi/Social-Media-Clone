@@ -221,6 +221,7 @@ export interface ProfileTools {
 		isPfp: boolean
 	) => void;
 	postsImages: PostImage[];
+	addExtendedBio: (extendedBioContent: string) => void;
 }
 
 export interface ContactProps {
