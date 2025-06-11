@@ -297,12 +297,38 @@ export default function useProfile(): ProfileTools {
 		extendedBioMutate({ extendedBioContent });
 	};
 
+	const { mutate: extendedBioDeletionMutate } = useMutation({
+		mutationFn: async () => {
+			const response = await axios.delete(
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/user/update-profile/delete-extended-bio`,
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+		}
+	});
+
+	const deleteExtendedBio = () => {
+		const confirmation = confirm(
+			"Are you sure you would like to delete your bio? This cannot be undone"
+		);
+
+		if (!confirmation) return;
+
+		extendedBioDeletionMutate();
+	};
+
 	return {
 		postMutation,
 		profileData: data,
 		handleFollowing,
 		handleImage,
 		postsImages,
-		addExtendedBio
+		addExtendedBio,
+		deleteExtendedBio
 	};
 }
