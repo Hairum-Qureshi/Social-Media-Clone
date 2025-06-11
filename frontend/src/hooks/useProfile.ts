@@ -273,11 +273,36 @@ export default function useProfile(): ProfileTools {
 		}
 	});
 
+	const { mutate: extendedBioMutate } = useMutation({
+		mutationFn: async ({
+			extendedBioContent
+		}: {
+			extendedBioContent: string;
+		}) => {
+			const response = await axios.post(
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/user/update-profile/extended-bio`,
+				{ extendedBioContent },
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
+		}
+	});
+
+	const addExtendedBio = (extendedBioContent: string) => {
+		extendedBioMutate({ extendedBioContent });
+	};
+
 	return {
 		postMutation,
 		profileData: data,
 		handleFollowing,
 		handleImage,
-		postsImages
+		postsImages,
+		addExtendedBio
 	};
 }
