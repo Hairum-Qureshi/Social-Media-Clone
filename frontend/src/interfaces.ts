@@ -1,3 +1,4 @@
+import { Editor } from "@tiptap/react";
 import { ChangeEvent, RefObject } from "react";
 
 export interface CarouselImageProps {
@@ -350,4 +351,20 @@ export interface IconsProps {
 
 export interface RetweetOptionsProps {
 	retweetPostData: Post | null;
+}
+
+export interface TipTapEditorProps {
+	getEditorContent: (content: string) => void;
+	showBlockQuoteButton?: boolean;
+	showEmojiButton?: boolean;
+	showLinkButton?: boolean;
+	showTextSizesSelector?: boolean;
+}
+
+export interface TipTapEditorToolbarProps {
+	editor: Editor;
+	showBlockQuoteButton: boolean;
+	showEmojiButton: boolean;
+	showLinkButton: boolean;
+	showTextSizesSelector: boolean;
 }
