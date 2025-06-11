@@ -16,8 +16,7 @@ import Requests from "./pages/navigation/messages/Requests";
 import ProfileConnections from "./pages/navigation/profile/ProfileConnections";
 import PostImageDetails from "./post/PostImageDetails";
 import { PostModalProvider } from "../contexts/PostModalContext";
-import BioSettings from "./pages/navigation/profile/bio/BioSettings";
-import Bio from "./pages/navigation/profile/bio/Bio";
+import UserBio from "./pages/navigation/profile/bio/UserBio";
 
 // TODO - you may need to move AuthProvider so it's not wrapped around *all* the routes, but if it causes no harm, leave it
 
@@ -154,7 +153,7 @@ export default function App() {
 								path="/settings/bio"
 								element={
 									<ProtectedRoutesGuard>
-										<BioSettings />
+										<UserBio />
 									</ProtectedRoutesGuard>
 								}
 							/>
@@ -162,7 +161,7 @@ export default function App() {
 								path=":username/bio"
 								element={
 									<ProtectedRoutesGuard>
-										<Bio />
+										<UserBio />
 									</ProtectedRoutesGuard>
 								}
 							/>
