@@ -5,13 +5,14 @@ import Underline from "@tiptap/extension-underline";
 import { useEffect } from "react";
 import useAuthContext from "../../../../../../contexts/AuthContext";
 import TipTapEditorToolbar from "./TipTapEditorToolbar";
-import { TipTapEditorProps } from "../../../../../../interfaces";
+import { EditorTypes, TipTapEditorProps } from "../../../../../../interfaces";
 
 // TODO - make the emoji button work
 // ! Resolve issue where if you paste in formatted text, the div width continues to grow
 
 export default function TipTapEditor({
 	getEditorContent,
+	editorFor,
 	showBlockQuoteButton = true,
 	showEmojiButton = true,
 	showLinkButton = true,
@@ -26,7 +27,12 @@ export default function TipTapEditor({
 				class: "focus:outline-none h-full"
 			}
 		},
-		content: userData?.extendedBio || ""
+		content:
+			editorFor === EditorTypes.BIO
+				? userData?.extendedBio
+				: // : editorFor === EditorTypes.WORK_HISTORY
+				  // ? userData?.workHistory
+				  ""
 	});
 
 	useEffect(() => {
