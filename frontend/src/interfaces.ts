@@ -353,8 +353,14 @@ export interface RetweetOptionsProps {
 	retweetPostData: Post | null;
 }
 
+export enum EditorTypes {
+	WORK_HISTORY = "workHistory",
+	BIO = "bio"
+}
+
 export interface TipTapEditorProps {
 	getEditorContent: (content: string) => void;
+	editorFor: EditorTypes;
 	showBlockQuoteButton?: boolean;
 	showEmojiButton?: boolean;
 	showLinkButton?: boolean;
