@@ -5,6 +5,16 @@ export default {
 		extend: {
 			fontFamily: {
 				artegra: ["artegra-sans-extra-bold", "sans-serif"]
+			},
+			typography: {
+				DEFAULT: {
+					css: {
+						h1: {
+							fontFamily: '"artegra-sans-extra-bold", sans-serif',
+							marginBottom: "-20px"
+						}
+					}
+				}
 			}
 		}
 	},
