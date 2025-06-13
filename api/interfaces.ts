@@ -25,6 +25,17 @@ export interface IConversation {
 	];
 }
 
+export interface WorkHistory {
+	_id: Types.ObjectId;
+	user: Types.ObjectId;
+	company: string;
+	location: string;
+	currentlyWorkThere: boolean;
+	startDate: string;
+	endDate: string;
+	description: string;
+}
+
 export interface IUser {
 	_id: Types.ObjectId;
 	username: string;
@@ -46,6 +57,7 @@ export interface IUser {
 	conversations: IConversation[];
 	publicKey: string;
 	extendedBio: string;
+	workHistory: WorkHistory[];
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -69,6 +81,7 @@ export interface UserData {
 	conversations: IConversation[];
 	publicKey: string;
 	extendedBio: string;
+	workHistory: WorkHistory[];
 	createdAt: Date;
 	updatedAt: Date;
 }
