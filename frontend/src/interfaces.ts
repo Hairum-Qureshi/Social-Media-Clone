@@ -57,6 +57,23 @@ export interface Conversation {
 	messages: Message[];
 }
 
+interface WorkHistory {
+	_id: string;
+	user: {
+		_id: string;
+		username: string;
+		fullName: string;
+		profilePicture: string;
+		isVerified: boolean;
+	};
+	company: string;
+	location: string;
+	currentlyWorkThere: boolean;
+	startDate: string;
+	endDate: string;
+	description: string;
+}
+
 export interface UserData {
 	_id: string;
 	username: string;
@@ -75,6 +92,7 @@ export interface UserData {
 	isVerified: boolean;
 	conversations: Conversation;
 	extendedBio: string;
+	workHistory: WorkHistory[];
 	createdAt: Date;
 	updatedAt: Date;
 }
