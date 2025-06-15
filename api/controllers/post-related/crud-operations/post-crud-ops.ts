@@ -255,18 +255,9 @@ const getUserPosts = async (req: Request, res: Response): Promise<void> => {
 					post._id,
 					currUID
 				);
-				// const isBookmarked = await User.findOne({
-				// 	_id: currUID,
-				// 	bookmarkedPosts: { $in: [post._id] }
-				// }).lean();
-
-				// const isLiked = await User.findOne({
-				// 	_id: currUID,
-				// 	likedPosts: { $in: [post._id] }
-				// }).lean();
-
-				post.isBookmarked = !!isBookmarked;
-				post.isLiked = !!isLiked;
+	
+				post.isBookmarked = isBookmarked;
+				post.isLiked = isLiked;
 
 				return { ...post, isBookmarked, isLiked };
 			})
