@@ -5,7 +5,6 @@ import { FOLDER_PATH } from "../../../config/multer-config";
 import { IPost, IUser } from "../../../interfaces";
 import Post from "../../../models/Post";
 import { Types } from "mongoose";
-// import { checkIfBookmarked } from "../../../lib/utils/checkIfLikedAndBookmarked";
 import User from "../../../models/User";
 import { checkIfLikedAndBookmarked } from "../../../lib/utils/checkIfLikedAndBookmarked";
 
@@ -180,18 +179,13 @@ const getPostData = async (req: Request, res: Response): Promise<void> => {
 		}
 
 		// check if post is bookmarked and liked
-		const isBookmarked = await User.findOne({
-			_id: currUID,
-			bookmarkedPosts: { $in: [postID] }
-		}).lean();
+		const { isBookmarked, isLiked } = await checkIfLikedAndBookmarked(
+			post._id,
+			currUID
+		);
 
-		const isLiked = await User.findOne({
-			_id: currUID,
-			likedPosts: { $in: [postID] }
-		}).lean();
-
-		post.isBookmarked = !!isBookmarked;
-		post.isLiked = !!isLiked;
+		post.isBookmarked = isBookmarked;
+		post.isLiked = isLiked;
 
 		res.status(200).json(post);
 	} catch (error) {
@@ -291,6 +285,7 @@ const getUserPosts = async (req: Request, res: Response): Promise<void> => {
 
 const getAllPosts = async (req: Request, res: Response): Promise<void> => {
 	// TODO - implement pagination (i.e. only fetch X posts at a time);
+	// TODO - add logic to not show any posts that the user has liked, maybe even have it so that it shows the most recent posts first (i.e. sort by createdAt in descending order)
 	try {
 		const posts: IPost[] = (await Post.find({})
 			.sort({ createdAt: -1 })
