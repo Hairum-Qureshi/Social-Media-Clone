@@ -10,6 +10,9 @@ export const workHistorySchema = new Schema(
 		company: {
 			type: String
 		},
+		jobTitle: {
+			type: String
+		},
 		location: {
 			type: String
 		},
