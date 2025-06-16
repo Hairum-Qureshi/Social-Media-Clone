@@ -242,6 +242,15 @@ export interface ProfileTools {
 	postsImages: PostImage[];
 	addExtendedBio: (extendedBioContent: string) => void;
 	deleteExtendedBio: () => void;
+	addExtendedBioWorkExperience: (
+		isCurrentlyWorkingHere: boolean,
+		jobTitle: string,
+		companyName: string,
+		location: string,
+		startDate: string,
+		endDate: string,
+		experience: string
+	) => void;
 }
 
 export interface ContactProps {
