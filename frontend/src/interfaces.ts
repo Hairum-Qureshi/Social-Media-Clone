@@ -68,6 +68,7 @@ interface WorkHistory {
 	};
 	company: string;
 	location: string;
+	jobTitle: string;
 	currentlyWorkThere: boolean;
 	startDate: string;
 	endDate: string;
