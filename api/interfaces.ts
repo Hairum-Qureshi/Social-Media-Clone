@@ -29,6 +29,7 @@ export interface WorkHistory {
 	_id: Types.ObjectId;
 	user: Types.ObjectId;
 	company: string;
+	jobTitle: string;
 	location: string;
 	currentlyWorkThere: boolean;
 	startDate: string;
