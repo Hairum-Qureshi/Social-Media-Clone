@@ -1,7 +1,7 @@
 import { Schema, Types, model } from "mongoose";
 import { IWorkHistory } from "../interfaces";
 
-export const workHistorySchema = new Schema(
+const workHistorySchema = new Schema(
 	{
 		user: {
 			type: Types.ObjectId,
