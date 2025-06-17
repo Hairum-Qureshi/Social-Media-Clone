@@ -322,6 +322,89 @@ export default function useProfile(): ProfileTools {
 		extendedBioDeletionMutate();
 	};
 
+	const { mutate: extendedBioWorkExperienceMutate } = useMutation({
+		mutationFn: async ({
+			isCurrentlyWorkingHere,
+			jobTitle,
+			companyName,
+			location,
+			startDate,
+			endDate,
+			experience
+		}: {
+			isCurrentlyWorkingHere: boolean;
+			jobTitle: string;
+			companyName: string;
+			location: string;
+			startDate: string;
+			endDate: string;
+			experience: string;
+		}) => {
+			const response = await axios.post(
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/user/update-profile/extended-bio/work-experience`,
+				{
+					isCurrentlyWorkingHere,
+					jobTitle,
+					companyName,
+					location,
+					startDate,
+					endDate,
+					experience
+				},
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["user"] });
+		}
+	});
+
+	const addExtendedBioWorkExperience = (
+		isCurrentlyWorkingHere: boolean,
+		jobTitle: string,
+		companyName: string,
+		location: string,
+		startDate: string,
+		endDate: string,
+		experience: string
+	) => {
+		extendedBioWorkExperienceMutate({
+			isCurrentlyWorkingHere,
+			jobTitle,
+			companyName,
+			location,
+			startDate,
+			endDate,
+			experience
+		});
+	};
+
+	const { data: extendedBio } = useQuery({
+		queryKey: ["extendedBio", username],
+		queryFn: async () => {
+			try {
+				const response = await axios.get(
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/user/profile/extended-bio/${
+						location.pathname.includes("/settings/bio")
+							? userData?.username
+							: username
+					}`,
+					{
+						withCredentials: true
+					}
+				);
+				return response.data;
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	});
+
 	return {
 		postMutation,
 		profileData: data,
@@ -329,6 +412,8 @@ export default function useProfile(): ProfileTools {
 		handleImage,
 		postsImages,
 		addExtendedBio,
-		deleteExtendedBio
+		deleteExtendedBio,
+		addExtendedBioWorkExperience,
+		extendedBio
 	};
 }
