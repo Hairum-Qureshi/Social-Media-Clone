@@ -1,5 +1,5 @@
 import { Schema, Types, model } from "mongoose";
-import { WorkHistory } from "../interfaces";
+import { IWorkHistory } from "../interfaces";
 
 export const workHistorySchema = new Schema(
 	{
@@ -34,4 +34,4 @@ export const workHistorySchema = new Schema(
 	}
 );
 
-export default model<WorkHistory>("WorkHistory", workHistorySchema);
+export default model<IWorkHistory>("WorkHistory", workHistorySchema);
