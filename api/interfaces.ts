@@ -82,7 +82,7 @@ export interface UserData {
 	conversations: IConversation[];
 	publicKey: string;
 	extendedBio: string;
-	workHistory: WorkHistory[];
+	workHistory: IWorkHistory[];
 	createdAt: Date;
 	updatedAt: Date;
 }
