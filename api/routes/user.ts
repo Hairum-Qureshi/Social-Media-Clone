@@ -9,22 +9,58 @@ import {
 	getPostsImages,
 	addExtendedBio,
 	deleteExtendedBio,
-	addExtendedBioWorkExperience
+	addExtendedBioWorkExperience,
+	getExtendedBioData
 } from "../controllers/user";
 import checkAuthStatus from "../middleware/checkAuthStatus";
 import { upload } from "./post";
 
 const router = express.Router();
 
-router.get("/profile/:username", checkAuthStatus, getProfile);
-router.get("/suggested", checkAuthStatus, getSuggestedUsers);
-router.post("/follow-status/:uid", checkAuthStatus, handleFollowStatus);
-router.patch("/update-profile", checkAuthStatus, updateProfile);
-router.patch("/update-profile/images/profile-picture", checkAuthStatus, upload.single("profile-picture"), updateProfilePicture);
-router.patch("/update-profile/images/backdrop", checkAuthStatus, upload.single("backdrop"), updateProfileBackdrop);
+// 1. Extended bio operations (more specific than /profile/:username)
+router.get(
+	"/profile/extended-bio/:username",
+	checkAuthStatus,
+	getExtendedBioData
+);
+
+// 2. Specific resource under profile
 router.get("/profile/:username/posts-images", checkAuthStatus, getPostsImages);
+
+router.post(
+	"/update-profile/extended-bio/work-experience",
+	checkAuthStatus,
+	addExtendedBioWorkExperience
+);
+
 router.post("/update-profile/extended-bio", checkAuthStatus, addExtendedBio);
-router.delete("/update-profile/delete-extended-bio", checkAuthStatus, deleteExtendedBio);
-router.post("/update-profile/extended-bio/work-experience", checkAuthStatus, addExtendedBioWorkExperience);
+router.delete(
+	"/update-profile/delete-extended-bio",
+	checkAuthStatus,
+	deleteExtendedBio
+);
+
+// 3. Upload-related routes
+router.patch(
+	"/update-profile/images/profile-picture",
+	checkAuthStatus,
+	upload.single("profile-picture"),
+	updateProfilePicture
+);
+
+router.patch(
+	"/update-profile/images/backdrop",
+	checkAuthStatus,
+	upload.single("backdrop"),
+	updateProfileBackdrop
+);
+
+// 4. General update and utility routes
+router.patch("/update-profile", checkAuthStatus, updateProfile);
+router.post("/follow-status/:uid", checkAuthStatus, handleFollowStatus);
+router.get("/suggested", checkAuthStatus, getSuggestedUsers);
+
+// 5. Generic profile fetch (must go LAST among /profile routes)
+router.get("/profile/:username", checkAuthStatus, getProfile);
 
 export default router;
