@@ -6,14 +6,16 @@ import {
 	updateProfile,
 	updateProfileBackdrop,
 	updateProfilePicture,
-	getPostsImages,
-	addExtendedBio,
-	deleteExtendedBio,
-	addExtendedBioWorkExperience,
-	getExtendedBioData
+	getPostsImages
 } from "../controllers/user";
 import checkAuthStatus from "../middleware/checkAuthStatus";
 import { upload } from "./post";
+import {
+	addExtendedBio,
+	addExtendedBioWorkExperience,
+	deleteExtendedBio,
+	getExtendedBioData
+} from "../controllers/user-related/extended-bio-crud/extended-bio-crud-ops";
 
 const router = express.Router();
 
