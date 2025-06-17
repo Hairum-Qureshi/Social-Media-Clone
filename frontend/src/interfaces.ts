@@ -57,15 +57,9 @@ export interface Conversation {
 	messages: Message[];
 }
 
-interface WorkHistory {
+export interface WorkHistory {
 	_id: string;
-	user: {
-		_id: string;
-		username: string;
-		fullName: string;
-		profilePicture: string;
-		isVerified: boolean;
-	};
+	user: string;
 	company: string;
 	location: string;
 	jobTitle: string;
