@@ -252,6 +252,15 @@ export interface ProfileTools {
 		endDate: string,
 		experience: string
 	) => void;
+	extendedBio: {
+		extendedBio: string;
+		userData: {
+			username: string;
+			fullName: string;
+			profilePicture: string;
+		};
+		workExperience: WorkHistory[];
+	};
 }
 
 export interface ContactProps {
@@ -408,5 +417,5 @@ export interface MonthsDropDownProps {
 }
 
 export interface YearsDropDownProps {
-    handleYearSelection: (year:string) => void;
+	handleYearSelection: (year: string) => void;
 }
