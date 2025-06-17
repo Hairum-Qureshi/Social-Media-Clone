@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { Types } from "mongoose";
 import sanitizeHtml from "sanitize-html";
-import User from "../../../models/User";
-import { IUser, IWorkHistory } from "../../../interfaces";
-import WorkHistory from "../../../models/WorkHistory";
+import User from "../../models/User";
+import { IUser, IWorkHistory } from "../../interfaces";
+import WorkHistory from "../../models/WorkHistory";
 
 const ALLOWED_HTML_TAGS = [
 	"h1",
