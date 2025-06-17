@@ -1,13 +1,8 @@
 import express from "express";
 import {
-	getProfile,
 	getSuggestedUsers,
 	handleFollowStatus,
-	updateProfile,
-	updateProfileBackdrop,
-	updateProfilePicture,
-	getPostsImages
-} from "../controllers/user";
+} from "../controllers/user-related/user";
 import checkAuthStatus from "../middleware/checkAuthStatus";
 import { upload } from "./post";
 import {
@@ -15,7 +10,13 @@ import {
 	addExtendedBioWorkExperience,
 	deleteExtendedBio,
 	getExtendedBioData
-} from "../controllers/user-related/extended-bio-crud/extended-bio-crud-ops";
+} from "../controllers/user-related/extended-bio-crud-ops";
+import {
+	getPostsImages,
+	updateProfileBackdrop,
+	updateProfilePicture
+} from "../controllers/user-related/profile/profile-and-images-handler";
+import { getProfile, updateProfile } from "../controllers/user-related/profile/profile-related";
 
 const router = express.Router();
 
