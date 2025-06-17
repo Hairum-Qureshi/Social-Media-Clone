@@ -402,3 +402,11 @@ export interface TipTapEditorToolbarProps {
 	showLinkButton: boolean;
 	showTextSizesSelector: boolean;
 }
+
+export interface MonthsDropDownProps {
+	handleMonthSelection: (month: string) => void;
+}
+
+export interface YearsDropDownProps {
+    handleYearSelection: (year:string) => void;
+}
