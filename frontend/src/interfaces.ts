@@ -67,6 +67,8 @@ export interface WorkHistory {
 	startDate: string;
 	endDate: string;
 	description: string;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 export interface UserData {
