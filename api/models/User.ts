@@ -1,6 +1,5 @@
 import { Schema, Types, model } from "mongoose";
 import { IUser } from "../interfaces";
-import { workHistorySchema } from "./WorkHistory";
 
 const userSchema = new Schema(
 	{
@@ -100,7 +99,8 @@ const userSchema = new Schema(
 			type: String
 		},
 		workHistory: {
-			type: [workHistorySchema]
+			type: [Types.ObjectId],
+			ref: "WorkHistory"
 		}
 	},
 	{
