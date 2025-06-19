@@ -170,15 +170,6 @@ const deleteExtendedBioWorkExperience = async (
 		const { workExperienceID } = req.params;
 		const currUID: Types.ObjectId = req.user._id;
 
-		const workHistory: IWorkHistory | null = await WorkHistory.findById({
-			_id: workExperienceID
-		});
-
-		if (!workHistory) {
-			res.status(404).json({ message: "Work Experience not found" });
-			return;
-		}
-
 		await User.findByIdAndUpdate(currUID, {
 			$pull: {
 				workHistory: workExperienceID
