@@ -257,6 +257,7 @@ export interface ProfileTools {
 		};
 		workExperience: WorkHistory[];
 	};
+	deleteWorkExperienceByID: (workExperienceID: string) => void;
 }
 
 export interface ContactProps {
