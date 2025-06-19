@@ -62,7 +62,8 @@ const addExtendedBio = async (req: Request, res: Response): Promise<void> => {
 		});
 	} catch (error) {
 		console.error(
-			"Error in user.ts file, addExtendedBio function controller".red.bold,
+			"Error in extended-bio-crud-ops.ts file,  addExtendedBio function controller"
+				.red.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });
@@ -101,7 +102,8 @@ const deleteExtendedBio = async (
 		});
 	} catch (error) {
 		console.error(
-			"Error in user.ts file, addExtendedBio function controller".red.bold,
+			"Error in extended-bio-crud-ops.ts file,  addExtendedBio function controller"
+				.red.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });
@@ -114,6 +116,7 @@ const addExtendedBioWorkExperience = async (
 ): Promise<void> => {
 	try {
 		// TODO - need to add guards such as making sure the user's 'end date' isn't greater than their start date for ex.
+		// TODO - need to prevent empty inputs
 
 		const {
 			isCurrentlyWorkingHere,
@@ -151,7 +154,45 @@ const addExtendedBioWorkExperience = async (
 		res.status(201).json(updatedUser);
 	} catch (error) {
 		console.error(
-			"Error in user.ts file, addExtendedBioWorkExperience function controller"
+			"Error in extended-bio-crud-ops.ts file, addExtendedBioWorkExperience function controller"
+				.red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
+const deleteExtendedBioWorkExperience = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const { workExperienceID } = req.params;
+		const currUID: Types.ObjectId = req.user._id;
+
+		const workHistory: IWorkHistory | null = await WorkHistory.findById({
+			_id: workExperienceID
+		});
+
+		if (!workHistory) {
+			res.status(404).json({ message: "Work Experience not found" });
+			return;
+		}
+
+		await User.findByIdAndUpdate(currUID, {
+			$pull: {
+				workHistory: workExperienceID
+			}
+		});
+
+		await WorkHistory.findByIdAndDelete({
+			_id: workExperienceID
+		});
+
+		res.status(200).json({ message: "Work Experience deleted" });
+	} catch (error) {
+		console.error(
+			"Error in extended-bio-crud-ops.ts file, deleteExtendedBioWorkExperience function controller"
 				.red.bold,
 			error
 		);
@@ -177,6 +218,14 @@ const getExtendedBioData = async (
 			"workHistory"
 		)) as IUser;
 
+		const sortedWorkExp =
+			userExtendedBio.workHistory.length > 0
+				? [...userExtendedBio.workHistory].sort(
+						(a: IWorkHistory, b: IWorkHistory) =>
+							b.createdAt.getTime() - a.createdAt.getTime()
+				  )
+				: [];
+
 		res.status(201).json({
 			extendedBio: userExtendedBio.extendedBio || undefined,
 			userData: {
@@ -184,18 +233,22 @@ const getExtendedBioData = async (
 				fullName: userExtendedBio.fullName,
 				profilePicture: userExtendedBio.profilePicture
 			},
-			workExperience: userExtendedBio.workHistory || undefined
+			workExperience: sortedWorkExp || []
 		});
 	} catch (error) {
 		console.error(
-			"Error in user.ts file, getExtendedBioData function controller".red.bold,
+			"Error in extended-bio-crud-ops.ts file, getExtendedBioData function controller"
+				.red.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });
 	}
 };
 
-export { 	addExtendedBio,
+export {
+	addExtendedBio,
 	deleteExtendedBio,
 	addExtendedBioWorkExperience,
-	getExtendedBioData };
+	deleteExtendedBioWorkExperience,
+	getExtendedBioData
+};
