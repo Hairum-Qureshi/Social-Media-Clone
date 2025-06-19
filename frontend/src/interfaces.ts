@@ -416,3 +416,7 @@ export interface MonthsDropDownProps {
 export interface YearsDropDownProps {
 	handleYearSelection: (year: string) => void;
 }
+
+export interface WorkHistoryFormProps {
+	hideWorkHistoryForm: () => void;
+}
