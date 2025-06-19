@@ -18,9 +18,15 @@ export default function checkOwner(
 	): Promise<void> {
 		try {
 			const currUID: Types.ObjectId = req.user._id;
-			const resourceID = req.params.id;
 
-			if (!Types.ObjectId.isValid(resourceID)) {
+			// ! as you add this middleware to more routes, make sure you're taking into account how to access the param ID appropriately for each resourceType
+			const resourceID =
+				resourceType === "post"
+					? req.params.postID
+					: req.params.workExperienceID;
+
+			if (resourceType !== "post" && !Types.ObjectId.isValid(resourceID)) {
+				// Chances are, req.params might be calling the wrong param (i.e. if it's '/:postID' and it says 'req.params.id')
 				res.status(400).json({ message: "Invalid resource ID" });
 				return;
 			}
