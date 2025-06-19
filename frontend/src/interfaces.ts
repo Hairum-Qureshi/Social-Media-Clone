@@ -420,3 +420,7 @@ export interface YearsDropDownProps {
 export interface WorkHistoryFormProps {
 	hideWorkHistoryForm: () => void;
 }
+
+export interface AboutBioProps {
+    isAnotherUserProfile: boolean;
+}

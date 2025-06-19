@@ -35,6 +35,8 @@ export interface IWorkHistory {
 	startDate: string;
 	endDate: string;
 	description: string;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 export interface IUser {
