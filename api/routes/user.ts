@@ -25,8 +25,6 @@ import checkOwner from "../middleware/checkOwner";
 
 const router = express.Router();
 
-// TODO - for some of the routes, add another middleware that will check if the user attempting to modify a resource is the owner
-
 router.get(
 	"/profile/extended-bio/:username",
 	checkAuthStatus,
