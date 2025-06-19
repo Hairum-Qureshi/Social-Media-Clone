@@ -33,8 +33,8 @@ const updateProfilePicture = async (
 		}
 	} catch (error) {
 		console.error(
-			"Error in user.ts file, updateProfilePicture function controller".red
-				.bold,
+			"Error in profile-and-images-handler.ts file, updateProfilePicture function controller"
+				.red.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });
@@ -68,8 +68,8 @@ const updateProfileBackdrop = async (
 		}
 	} catch (error) {
 		console.error(
-			"Error in user.ts file, updateProfileBackdrop function controller".red
-				.bold,
+			"Error in profile-and-images-handler.ts file, updateProfileBackdrop function controller"
+				.red.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });
@@ -101,7 +101,8 @@ const getPostsImages = async (req: Request, res: Response): Promise<void> => {
 		return;
 	} catch (error) {
 		console.error(
-			"Error in user.ts file, getPostsImages function controller".red.bold,
+			"Error in profile-and-images-handler.ts file, getPostsImages function controller"
+				.red.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });

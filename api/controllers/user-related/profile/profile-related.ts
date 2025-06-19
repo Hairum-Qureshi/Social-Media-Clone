@@ -122,7 +122,7 @@ const updateProfile = async (req: Request, res: Response): Promise<void> => {
 		return;
 	} catch (error) {
 		console.error(
-			"Error in user.ts file, updateProfile function controller".red.bold,
+			"Error in profile-related.ts file, updateProfile function controller".red.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });
@@ -141,7 +141,7 @@ const getProfile = async (req: Request, res: Response): Promise<void> => {
         res.status(200).json(user);
     } catch (error) {
         console.error(
-            "Error in user.ts file, getProfile function controller".red.bold,
+            "Error in profile-related.ts file, getProfile function controller".red.bold,
             error
         );
         res.status(500).json({ message: (error as Error).message });
