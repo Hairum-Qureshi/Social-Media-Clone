@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { EditorTypes } from "../../../../../../interfaces";
+import { EditorTypes, WorkHistoryFormProps } from "../../../../../../interfaces";
 import TipTapEditor from "../editor/TipTapEditor";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
@@ -7,12 +7,7 @@ import MonthsDropDown from "./dropdowns/MonthsDropDown";
 import YearsDropDown from "./dropdowns/YearsDropDown";
 import useProfile from "../../../../../../hooks/useProfile";
 
-// TODO - add disable effect if the user checks 'currently works here'
 // ! issue - animated placeholder hides text in input
-
-interface WorkHistoryFormProps {
-	hideWorkHistoryForm: () => void;
-}
 
 export default function WorkHistoryForm({
 	hideWorkHistoryForm
