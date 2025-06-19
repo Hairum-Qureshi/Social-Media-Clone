@@ -322,6 +322,29 @@ export default function useProfile(): ProfileTools {
 		extendedBioDeletionMutate();
 	};
 
+	const { data: extendedBio } = useQuery({
+		queryKey: ["extendedBio", username],
+		queryFn: async () => {
+			try {
+				const response = await axios.get(
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/user/profile/extended-bio/${
+						location.pathname.includes("/settings/bio")
+							? userData?.username
+							: username
+					}`,
+					{
+						withCredentials: true
+					}
+				);
+				return response.data;
+			} catch (error) {
+				console.error(error);
+			}
+		}
+	});
+
 	const { mutate: extendedBioWorkExperienceMutate } = useMutation({
 		mutationFn: async ({
 			isCurrentlyWorkingHere,
@@ -358,7 +381,7 @@ export default function useProfile(): ProfileTools {
 			return response.data;
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["user"] });
+			queryClient.invalidateQueries({ queryKey: ["extendedBio", username] });
 		}
 	});
 
@@ -382,28 +405,30 @@ export default function useProfile(): ProfileTools {
 		});
 	};
 
-	const { data: extendedBio } = useQuery({
-		queryKey: ["extendedBio", username],
-		queryFn: async () => {
-			try {
-				const response = await axios.get(
-					`${
-						import.meta.env.VITE_BACKEND_BASE_URL
-					}/api/user/profile/extended-bio/${
-						location.pathname.includes("/settings/bio")
-							? userData?.username
-							: username
-					}`,
-					{
-						withCredentials: true
-					}
-				);
-				return response.data;
-			} catch (error) {
-				console.error(error);
-			}
+	const { mutate: workExperienceDeletionMutate } = useMutation({
+		mutationFn: async (workExperienceID: string) => {
+			const response = await axios.delete(
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/user/update-profile/extended-bio/work-experience/${workExperienceID}`,
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["extendedBio", username] });
 		}
 	});
+
+	const deleteWorkExperienceByID = (workExperienceID: string) => {
+		const confirmation = confirm(
+			"Are you sure you would like to delete your work experience? This cannot be undone"
+		);
+
+		if (!confirmation) return;
+
+		workExperienceDeletionMutate(workExperienceID);
+	};
 
 	return {
 		postMutation,
@@ -414,6 +439,7 @@ export default function useProfile(): ProfileTools {
 		addExtendedBio,
 		deleteExtendedBio,
 		addExtendedBioWorkExperience,
-		extendedBio
+		extendedBio,
+		deleteWorkExperienceByID
 	};
 }
