@@ -419,8 +419,9 @@ export interface YearsDropDownProps {
 
 export interface WorkHistoryFormProps {
 	hideWorkHistoryForm: () => void;
+	workHistoryToEdit: WorkHistory | undefined;
 }
 
 export interface AboutBioProps {
-    isAnotherUserProfile: boolean;
+	isAnotherUserProfile: boolean;
 }
