@@ -4,6 +4,7 @@ import User from "../../models/User";
 import { IUser, IWorkHistory } from "../../interfaces";
 import WorkHistory from "../../models/WorkHistory";
 import { sanitizeEditorContent } from "../../lib/utils/sanitizeHTML";
+import { extendedBioChecks } from "../../lib/utils/extendedBioChecks";
 
 const addExtendedBio = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -129,10 +130,15 @@ const addExtendedBioWorkExperience = async (
 			experience
 		} = req.body;
 
-		if (!jobTitle || !companyName || !location || !startDate) {
-			res.status(400).json({ message: "Please fill in all required fields" });
-			return;
-		}
+		extendedBioChecks(
+			jobTitle,
+			companyName,
+			location,
+			startDate,
+			isCurrentlyWorkingHere,
+			endDate,
+			res
+		);
 
 		const ALLOWED_TAGS = [
 			"p",
@@ -286,10 +292,15 @@ const editExtendedBioWorkExperience = async (
 			experience
 		} = req.body;
 
-		if (!jobTitle || !companyName || !location || !startDate) {
-			res.status(400).json({ message: "Please fill in all required fields" });
-			return;
-		}
+		extendedBioChecks(
+			jobTitle,
+			companyName,
+			location,
+			startDate,
+			isCurrentlyWorkingHere,
+			endDate,
+			res
+		);
 
 		const logo = await WorkHistory.findById({ _id: workExperienceID }).select(
 			"companyLogo"
