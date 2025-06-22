@@ -345,6 +345,7 @@ export interface Notification {
 	};
 	notifType: NotificationTypes;
 	read: boolean;
+	link: string;
 	createdAt: Date;
 	updatedAt: Date;
 }
