@@ -12,7 +12,7 @@ const workHistorySchema = new Schema(
 		},
 		companyLogo: {
 			type: String,
-			default: "../assets/no-logo.jpg"
+			default: `${process.env.BACKEND_URL}/assets/no-logo.jpg`
 		},
 		jobTitle: {
 			type: String
