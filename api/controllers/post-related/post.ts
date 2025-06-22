@@ -202,7 +202,8 @@ const handleLikes = async (req: Request, res: Response) => {
 				await Notification.create({
 					from: currUID,
 					to: post.user,
-					notifType: "LIKE"
+					notifType: "LIKE",
+					link: `${process.env.FRONTEND_URL}/post/${postID}`
 				});
 			}
 
