@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import useProfile from "../../../../../hooks/useProfile";
-import { WorkHistory as IWorkHistory } from "../../../../../interfaces";
+import {
+	ExtendedBioSectionProp,
+	WorkHistory as IWorkHistory,
+} from "../../../../../interfaces";
 import { formatDateRange } from "../../../../../utils/formatDateRange";
 import useAuthContext from "../../../../../contexts/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,7 +15,9 @@ import {
 import { useLocation } from "react-router-dom";
 import WorkHistoryForm from "./form/WorkHistoryForm";
 
-export default function WorkHistory() {
+export default function WorkHistory({
+	isAnotherUserProfile
+}: ExtendedBioSectionProp) {
 	const [showWorkHistory, setShowWorkHistory] = useState(false);
 	const location = useLocation();
 	const [pathname] = useState(location.pathname.split("/"));
@@ -129,27 +134,29 @@ export default function WorkHistory() {
 								}
 							)}
 					</div>
-					<div
-						className={`bg-neutral-900 border border-slate-700 rounded-md p-3 mt-3 flex ${
-							pathname[1] !== userData?.username &&
-							pathname[1] === "settings" &&
-							"hover:cursor-pointer"
-						}`}
-						onClick={() =>
-							pathname[1] !== userData?.username &&
-							pathname[1] === "settings" &&
-							setShowWorkHistory(true)
-						}
-					>
-						<p className="text-base">Add experience</p>
+					{!isAnotherUserProfile && (
+						<div
+							className={`bg-neutral-900 border border-slate-700 rounded-md p-3 mt-3 flex ${
+								pathname[1] !== userData?.username &&
+								pathname[1] === "settings" &&
+								"hover:cursor-pointer"
+							}`}
+							onClick={() =>
+								pathname[1] !== userData?.username &&
+								pathname[1] === "settings" &&
+								setShowWorkHistory(true)
+							}
+						>
+							<p className="text-base">Add experience</p>
 
-						{pathname[1] !== userData?.username &&
-							pathname[1] === "settings" && (
-								<span className="ml-auto">
-									<FontAwesomeIcon icon={faCirclePlus} />
-								</span>
-							)}
-					</div>
+							{pathname[1] !== userData?.username &&
+								pathname[1] === "settings" && (
+									<span className="ml-auto">
+										<FontAwesomeIcon icon={faCirclePlus} />
+									</span>
+								)}
+						</div>
+					)}
 				</>
 			) : (
 				<WorkHistoryForm

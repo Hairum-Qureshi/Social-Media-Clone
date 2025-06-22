@@ -429,3 +429,7 @@ export interface WorkHistoryFormProps {
 export interface AboutBioProps {
 	isAnotherUserProfile: boolean;
 }
+
+export interface WorkHistoryProps {
+	isAnotherUserProfile: boolean;
+}
