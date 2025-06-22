@@ -10,6 +10,7 @@ import {
 	addExtendedBioWorkExperience,
 	deleteExtendedBio,
 	deleteExtendedBioWorkExperience,
+	editExtendedBioWorkExperience,
 	getExtendedBioData
 } from "../controllers/user-related/extended-bio-crud-ops";
 import {
@@ -32,6 +33,13 @@ router.get(
 );
 
 router.get("/profile/:username/posts-images", checkAuthStatus, getPostsImages);
+
+router.patch(
+	"/update-profile/extended-bio/work-experience/edit/:workExperienceID",
+	checkAuthStatus,
+	checkOwner("workHistory"),
+	editExtendedBioWorkExperience
+);
 
 router.post(
 	"/update-profile/extended-bio/work-experience",
