@@ -1,59 +1,98 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { EditorTypes, WorkHistoryFormProps } from "../../../../../../interfaces";
+import {
+	EditorTypes,
+	WorkHistoryFormProps
+} from "../../../../../../interfaces";
 import TipTapEditor from "../editor/TipTapEditor";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import MonthsDropDown from "./dropdowns/MonthsDropDown";
 import YearsDropDown from "./dropdowns/YearsDropDown";
 import useProfile from "../../../../../../hooks/useProfile";
+import CompaniesDropDown from "./dropdowns/CompaniesDropDown";
 
 // ! issue - animated placeholder hides text in input
 
 export default function WorkHistoryForm({
-	hideWorkHistoryForm
+	hideWorkHistoryForm,
+	workHistoryToEdit
 }: WorkHistoryFormProps) {
-	const [isCurrentlyWorkingHere, setIsCurrentlyWorkingHere] = useState(false);
-	const [jobTitle, setJobTitle] = useState("");
-	const [companyName, setCompanyName] = useState("");
-	const [location, setLocation] = useState("");
-	const [experience, setExperience] = useState("");
+	const [isCurrentlyWorkingHere, setIsCurrentlyWorkingHere] = useState(
+		workHistoryToEdit ? workHistoryToEdit.currentlyWorkThere : false
+	);
+	const [jobTitle, setJobTitle] = useState(
+		workHistoryToEdit ? workHistoryToEdit.jobTitle : ""
+	);
+	const [companyName, setCompanyName] = useState(
+		workHistoryToEdit ? workHistoryToEdit.company : ""
+	);
+	const [location, setLocation] = useState(
+		workHistoryToEdit ? workHistoryToEdit.location : ""
+	);
+	const [experience, setExperience] = useState(
+		workHistoryToEdit ? workHistoryToEdit.description : ""
+	);
 	const [showStartMonths, setShowStartMonths] = useState(false);
 	const [showEndMonths, setShowEndMonths] = useState(false);
-	const [chosenStartMonth, setChosenStartMonth] = useState("");
-	const [chosenEndMonth, setChosenEndMonth] = useState("");
+	const [chosenStartMonth, setChosenStartMonth] = useState(
+		workHistoryToEdit ? workHistoryToEdit.startDate.split(" ")[0] : ""
+	);
+	const [chosenEndMonth, setChosenEndMonth] = useState(
+		workHistoryToEdit ? workHistoryToEdit.endDate.split(" ")[0] : ""
+	);
 	const [selectedStartYear, setSelectedStartYear] = useState<string>(
-		new Date().getFullYear().toString()
+		workHistoryToEdit
+			? workHistoryToEdit.startDate.split(" ").pop()!
+			: new Date().getFullYear().toString()
 	);
 	const [selectedEndYear, setSelectedEndYear] = useState<string>(
-		new Date().getFullYear().toString()
+		workHistoryToEdit
+			? workHistoryToEdit.endDate.split(" ").pop()!
+			: new Date().getFullYear().toString()
 	);
 	const [showSelectedStartYear, setShowSelectedStartYear] = useState(false);
 	const [showSelectedEndYear, setShowSelectedEndYear] = useState(false);
+	const [companyLogo, setCompanyLogo] = useState("");
+	const [showCompaniesDropDown, setShowCompaniesDropDown] = useState(false);
 
 	function handleMonthSelection(month: string) {
 		if (showStartMonths) {
-			setChosenStartMonth(month);
+			setChosenStartMonth(
+				workHistoryToEdit ? workHistoryToEdit.startDate.split(" ")[0] : month
+			);
 			setShowStartMonths(false);
 		}
 		if (showEndMonths) {
-			setChosenEndMonth(month);
+			setChosenEndMonth(
+				workHistoryToEdit ? workHistoryToEdit.endDate.split(" ")[0] : month
+			);
 			setShowEndMonths(false);
 		}
 	}
 
 	function handleYearSelection(year: string) {
 		if (showSelectedStartYear) {
-			setSelectedStartYear(year);
+			setSelectedStartYear(
+				workHistoryToEdit ? workHistoryToEdit.startDate.split(" ").pop()! : year
+			);
 			setShowSelectedStartYear(false);
 		}
 		if (showSelectedEndYear) {
-			setSelectedEndYear(year);
+			setSelectedEndYear(
+				workHistoryToEdit ? workHistoryToEdit.endDate.split(" ").pop()! : year
+			);
 			setShowSelectedEndYear(false);
 		}
 	}
 
 	function getEditorContent(content: string) {
 		setExperience(content);
+	}
+
+	function setCompany(company: string, companyLogo: string) {
+		setCompanyName(company);
+		setCompanyLogo(companyLogo);
+		setShowCompaniesDropDown(false);
 	}
 
 	const { addExtendedBioWorkExperience } = useProfile();
@@ -67,7 +106,7 @@ export default function WorkHistoryForm({
 					id="jobTitle"
 					placeholder="Job Title"
 					className="peer p-2 w-full rounded-md outline-none border border-slate-500 bg-transparent text-white placeholder-transparent"
-					value={jobTitle}
+					value={workHistoryToEdit ? workHistoryToEdit.jobTitle : jobTitle}
 					onChange={e => setJobTitle(e.target.value)}
 				/>
 				<label
@@ -86,8 +125,9 @@ export default function WorkHistoryForm({
 					id="company"
 					placeholder="Company"
 					className="peer p-2 w-full rounded-md outline-none border border-slate-500 bg-transparent text-white placeholder-transparent"
-					value={companyName}
+					value={workHistoryToEdit ? workHistoryToEdit.company : companyName}
 					onChange={e => setCompanyName(e.target.value)}
+					onKeyDown={() => setShowCompaniesDropDown(true)}
 				/>
 				<label
 					htmlFor="company"
@@ -98,6 +138,9 @@ export default function WorkHistoryForm({
 				>
 					Company
 				</label>
+				{companyName && showCompaniesDropDown && (
+					<CompaniesDropDown company={companyName} setCompany={setCompany} />
+				)}
 			</div>
 			<div className="relative my-6 w-full">
 				<input
@@ -105,7 +148,7 @@ export default function WorkHistoryForm({
 					id="location"
 					placeholder="Location"
 					className="peer p-2 w-full rounded-md outline-none border border-slate-500 bg-transparent text-white placeholder-transparent"
-					value={location}
+					value={workHistoryToEdit ? workHistoryToEdit.location : location}
 					onChange={e => setLocation(e.target.value)}
 				/>
 				<label
@@ -247,27 +290,49 @@ export default function WorkHistoryForm({
 						showEmojiButton={false}
 						showLinkButton={false}
 						showTextSizesSelector={false}
+						workExperienceDescription={workHistoryToEdit?.description}
 					/>
 				</div>
 			</div>
 			<div className="flex mt-2">
-				<button
-					className="p-1 rounded-md bg-sky-500 w-28 ml-auto"
-					onClick={() => {
-						addExtendedBioWorkExperience(
-							isCurrentlyWorkingHere,
-							jobTitle,
-							companyName,
-							location,
-							`${chosenStartMonth} ${selectedStartYear}`,
-							`${chosenEndMonth} ${selectedEndYear}`,
-							experience
-						);
-						hideWorkHistoryForm();
-					}}
-				>
-					Add
-				</button>
+				{workHistoryToEdit ? (
+					<button
+						className="p-1 rounded-md bg-sky-500 w-28 ml-auto"
+						onClick={() => {
+							// addExtendedBioWorkExperience(
+							// 	isCurrentlyWorkingHere,
+							// 	jobTitle,
+							// 	companyName,
+							// 	location,
+							// 	`${chosenStartMonth} ${selectedStartYear}`,
+							// 	`${chosenEndMonth} ${selectedEndYear}`,
+							// 	experience
+							// );
+							hideWorkHistoryForm();
+						}}
+					>
+						Update
+					</button>
+				) : (
+					<button
+						className="p-1 rounded-md bg-sky-500 w-28 ml-auto"
+						onClick={() => {
+							addExtendedBioWorkExperience(
+								isCurrentlyWorkingHere,
+								jobTitle,
+								companyName,
+								companyLogo,
+								location,
+								`${chosenStartMonth} ${selectedStartYear}`,
+								`${chosenEndMonth} ${selectedEndYear}`,
+								experience
+							);
+							hideWorkHistoryForm();
+						}}
+					>
+						Add
+					</button>
+				)}
 			</div>
 		</div>
 	);
