@@ -61,6 +61,7 @@ export interface WorkHistory {
 	_id: string;
 	user: string;
 	company: string;
+	companyLogo: string;
 	location: string;
 	jobTitle: string;
 	currentlyWorkThere: boolean;
@@ -399,6 +400,7 @@ export interface TipTapEditorProps {
 	showEmojiButton?: boolean;
 	showLinkButton?: boolean;
 	showTextSizesSelector?: boolean;
+	workExperienceDescription?: string;
 }
 
 export interface TipTapEditorToolbarProps {
