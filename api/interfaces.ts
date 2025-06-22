@@ -32,7 +32,7 @@ export interface IWorkHistory {
 	companyLogo: string;
 	jobTitle: string;
 	location: string;
-	currentlyWorkThere: boolean;
+	currentlyWorkingThere: boolean;
 	startDate: string;
 	endDate: string;
 	description: string;
