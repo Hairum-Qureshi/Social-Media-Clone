@@ -16,7 +16,8 @@ export default function TipTapEditor({
 	showBlockQuoteButton = true,
 	showEmojiButton = true,
 	showLinkButton = true,
-	showTextSizesSelector = true
+	showTextSizesSelector = true,
+	workExperienceDescription = ""
 }: TipTapEditorProps) {
 	const { userData } = useAuthContext()!;
 
@@ -24,15 +25,15 @@ export default function TipTapEditor({
 		extensions: [StarterKit, Link, Underline],
 		editorProps: {
 			attributes: {
-				class: "focus:outline-none h-full"
+				class: "focus:outline-none"
 			}
 		},
 		content:
 			editorFor === EditorTypes.BIO
 				? userData?.extendedBio
-				: // : editorFor === EditorTypes.WORK_HISTORY
-				  // ? userData?.workHistory
-				  ""
+				: editorFor === EditorTypes.WORK_HISTORY
+				? workExperienceDescription
+				: ""
 	});
 
 	useEffect(() => {
@@ -40,6 +41,12 @@ export default function TipTapEditor({
 			getEditorContent(editor.getHTML());
 		}
 	}, [editor?.getHTML()]);
+
+	useEffect(() => {
+		if (editor && workExperienceDescription) {
+			editor.commands.setContent(workExperienceDescription);
+		}
+	}, [editor, workExperienceDescription]);
 
 	if (!editor) return null;
 
@@ -63,7 +70,7 @@ export default function TipTapEditor({
                 [&_li]:mb-1
                 [&_a]:text-sky-400 [&_a]:underline [&_a]:hover:text-sky-300"
 			>
-				<EditorContent editor={editor} className="h-full w-full" />
+				<EditorContent editor={editor} />
 			</div>
 		</div>
 	);
