@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 interface CompaniesDropDownProps {
 	company: string;
-    setCompany: (company:string, companyLogo:string) => void;
+	setCompany: (company: string, companyLogo: string) => void;
 }
 
 interface Logo {
@@ -11,21 +12,24 @@ interface Logo {
 	name: string;
 }
 
-export default function CompaniesDropDown({ company, setCompany }: CompaniesDropDownProps) {
+export default function CompaniesDropDown({
+	company,
+	setCompany
+}: CompaniesDropDownProps) {
 	const [logos, setLogos] = useState<Logo[]>([]);
 
 	async function getLogos() {
-		const res = await fetch(`https://api.logo.dev/search?q=${company}`, {
-			headers: { Authorization: `Bearer: sk_KcbCNzr4Q_m_Ma8GfBnFXA` }
-		})
-			.then(response => {
-				return response.json();
-			})
-			.then(data => {
-				return data;
+		try {
+			const res = await axios.get(`https://api.logo.dev/search?q=${company}`, {
+				headers: {
+					Authorization: `Bearer ${import.meta.env.VITE_LOGO_DEV_SECRET_KEY}`
+				}
 			});
 
-		setLogos(res);
+			setLogos(res.data);
+		} catch (error) {
+			console.error("Error fetching logos:", error);
+		}
 	}
 
 	useEffect(() => {
@@ -37,7 +41,10 @@ export default function CompaniesDropDown({ company, setCompany }: CompaniesDrop
 			{logos.length > 0 ? (
 				logos.map((logo: Logo) => {
 					return (
-						<div className="flex items-center hover:cursor-pointer hover:bg-slate-800" onClick = {() => setCompany(logo.name, logo.logo_url)}>
+						<div
+							className="flex items-center hover:cursor-pointer hover:bg-slate-800"
+							onClick={() => setCompany(logo.name, logo.logo_url)}
+						>
 							<div className="w-8 h-8 m-1">
 								<img
 									src={logo.logo_url}
