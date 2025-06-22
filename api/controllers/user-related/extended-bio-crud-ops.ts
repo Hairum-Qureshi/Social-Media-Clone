@@ -115,10 +115,6 @@ const addExtendedBioWorkExperience = async (
 	res: Response
 ): Promise<void> => {
 	try {
-		// TODO - need to add guards such as making sure the user's 'end date' isn't greater than their start date for ex.
-		// TODO - need to prevent empty inputs
-		// TODO - add check where if currently working is false, make sure the user provides both start and end dates
-
 		const {
 			isCurrentlyWorkingHere,
 			jobTitle,
@@ -152,6 +148,7 @@ const addExtendedBioWorkExperience = async (
 			"ol",
 			"ul"
 		];
+
 		const sanitizedHTML: string = sanitizeEditorContent(
 			experience,
 			ALLOWED_TAGS,
@@ -275,10 +272,6 @@ const editExtendedBioWorkExperience = async (
 	res: Response
 ): Promise<void> => {
 	try {
-		// TODO - need to add guards such as making sure the user's 'end date' isn't greater than their start date for ex.
-		// TODO - need to prevent empty inputs
-		// TODO - add check where if currently working is false, make sure the user provides both start and end dates
-
 		const { workExperienceID } = req.params;
 
 		const {
