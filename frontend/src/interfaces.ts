@@ -244,6 +244,7 @@ export interface ProfileTools {
 		isCurrentlyWorkingHere: boolean,
 		jobTitle: string,
 		companyName: string,
+		companyLogo: string,
 		location: string,
 		startDate: string,
 		endDate: string,
