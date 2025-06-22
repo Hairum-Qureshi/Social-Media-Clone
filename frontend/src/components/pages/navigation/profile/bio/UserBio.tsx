@@ -9,7 +9,6 @@ import WorkHistory from "./WorkHistory";
 
 export default function UserBio() {
 	const { userData } = useAuthContext()!;
-	const [, setEditorVisibility] = useState(false);
 	const { extendedBio } = useProfile();
 
 	// TODO - add a loading animation when the save button is pressed
@@ -19,6 +18,8 @@ export default function UserBio() {
 	// TODO - need to prevent empty inputs
 	// TODO - need to add 'read more' to work history divs
 	// ! formatDateRange() function does not work
+	// TODO - hide "add work experience" div if the current user is not on their extended bio page
+	// ! The pencil icon for the extended bio does not stay horizontally aligned
 
 	const location = useLocation();
 	const [pathname, setPathname] = useState(location.pathname.split("/"));
@@ -73,16 +74,31 @@ export default function UserBio() {
 				</div>
 				{pathname[1] === userData?.username && pathname[1] !== "settings" && (
 					<div className="ml-auto border border-white rounded-lg p-0.5 w-16 text-center">
-						<button
-							onClick={() => !isAnotherUserProfile && setEditorVisibility(true)}
-						>
+						<button onClick={() => (window.location.href = "/settings/bio")}>
 							Edit
 						</button>
 					</div>
 				)}
 			</div>
-			<AboutBio isAnotherUserProfile={isAnotherUserProfile} />
-			<WorkHistory />
+			{isAnotherUserProfile &&
+			!extendedBio.extendedBio &&
+			extendedBio.workExperience.length === 0 ? (
+				<div className="p-3 my-28 mx-20">
+					<h1 className="font-bold text-4xl">
+						This user currently does not have an expanded bio
+					</h1>
+					<p className="text-base text-zinc-500 mt-3">
+						Try searching for another.
+					</p>
+				</div>
+			) : (
+				<>
+					<AboutBio isAnotherUserProfile={isAnotherUserProfile} />
+					{isAnotherUserProfile
+						? extendedBio?.workExperience.length !== 0 && <WorkHistory />
+						: !isAnotherUserProfile && <WorkHistory />}
+				</>
+			)}
 		</div>
 	);
 }
