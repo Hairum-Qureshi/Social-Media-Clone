@@ -11,7 +11,8 @@ const workHistorySchema = new Schema(
 			type: String
 		},
 		companyLogo: {
-			type: String
+			type: String,
+			default: "../assets/no-logo.jpg"
 		},
 		jobTitle: {
 			type: String
