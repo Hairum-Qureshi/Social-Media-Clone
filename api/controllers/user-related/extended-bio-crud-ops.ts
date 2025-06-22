@@ -129,7 +129,7 @@ const addExtendedBioWorkExperience = async (
 		} = req.body;
 
 		const sanitizedExperience = sanitizeHtml(experience, {
-			allowedTags: ["b", "br", "em", "i", "s", "strong", "u", "ol", "ul"]
+			allowedTags: ["p", "b", "br", "em", "i", "s", "strong", "u", "ol", "ul"]
 		});
 
 		const currUID: Types.ObjectId = req.user._id;
