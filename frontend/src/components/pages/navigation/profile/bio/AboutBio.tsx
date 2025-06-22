@@ -8,15 +8,14 @@ import {
 	faTrashCan
 } from "@fortawesome/free-solid-svg-icons";
 import TipTapEditor from "./editor/TipTapEditor";
-import { AboutBioProps, EditorTypes } from "../../../../../interfaces";
+import { EditorTypes, ExtendedBioSectionProp } from "../../../../../interfaces";
 import { useLocation } from "react-router-dom";
 
-export default function AboutBio({isAnotherUserProfile}: AboutBioProps) {
+export default function AboutBio({isAnotherUserProfile}: ExtendedBioSectionProp) {
 	const [showEditor, setEditorVisibility] = useState(false);
     const location = useLocation();
 	const [pathname] = useState(location.pathname.split("/"));
 	const { userData } = useAuthContext()!;
-	const pathnameLength = location.pathname.split("/").length;
 	const [editorContent, setEditorContent] = useState("");
 
 	const { addExtendedBio, deleteExtendedBio, extendedBio } = useProfile();
