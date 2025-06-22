@@ -13,15 +13,18 @@ const notificationSchema = new Schema(
 			ref: "User",
 			required: true
 		},
-        notifType: {
-            type: String,
-            required: true,
-            enum: ["LIKE", "COMMENT", "FOLLOW", "MESSAGE"]
-        },
-        read: {
-            type: Boolean,
-            default: false
-        }
+		notifType: {
+			type: String,
+			required: true,
+			enum: ["LIKE", "COMMENT", "FOLLOW", "MESSAGE"]
+		},
+		read: {
+			type: Boolean,
+			default: false
+		},
+		link: {
+			type: String
+		}
 	},
 	{
 		timestamps: true
