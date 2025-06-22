@@ -128,6 +128,10 @@ const addExtendedBioWorkExperience = async (
 			experience
 		} = req.body;
 
+		const sanitizedExperience = sanitizeHtml(experience, {
+			allowedTags: ["b", "br", "em", "i", "s", "strong", "u", "ol", "ul"]
+		});
+
 		const currUID: Types.ObjectId = req.user._id;
 
 		const workHistory: IWorkHistory = await WorkHistory.create({
@@ -138,7 +142,7 @@ const addExtendedBioWorkExperience = async (
 			currentlyWorkingThere: isCurrentlyWorkingHere,
 			startDate,
 			endDate: !isCurrentlyWorkingHere ? endDate : "",
-			description: experience
+			description: sanitizedExperience
 		});
 
 		const updatedUser: IUser = (await User.findByIdAndUpdate(
