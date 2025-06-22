@@ -11,6 +11,7 @@ import post from "./routes/post";
 import notification from "./routes/notification";
 import message from "./routes/message";
 import { app, server } from "./socket";
+import path from "path";
 
 dotenv.config();
 colors.enable();
@@ -31,6 +32,9 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+const assetsPath = path.join(process.cwd(), 'assets');
+app.use('/assets', express.static(assetsPath));
 
 app.use("/api/auth", authentication);
 app.use("/api/user", user);
