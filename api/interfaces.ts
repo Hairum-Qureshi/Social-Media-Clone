@@ -103,6 +103,7 @@ export interface INotification {
 	to: Types.ObjectId;
 	notifType: NotificationTypes;
 	read: boolean;
+	link: string;
 	createdAt: Date;
 	updatedAt: Date;
 }
