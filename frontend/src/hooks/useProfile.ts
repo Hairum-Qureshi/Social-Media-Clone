@@ -350,6 +350,7 @@ export default function useProfile(): ProfileTools {
 			isCurrentlyWorkingHere,
 			jobTitle,
 			companyName,
+			companyLogo,
 			location,
 			startDate,
 			endDate,
@@ -358,6 +359,7 @@ export default function useProfile(): ProfileTools {
 			isCurrentlyWorkingHere: boolean;
 			jobTitle: string;
 			companyName: string;
+			companyLogo: string;
 			location: string;
 			startDate: string;
 			endDate: string;
@@ -371,6 +373,7 @@ export default function useProfile(): ProfileTools {
 					isCurrentlyWorkingHere,
 					jobTitle,
 					companyName,
+					companyLogo,
 					location,
 					startDate,
 					endDate,
@@ -389,6 +392,7 @@ export default function useProfile(): ProfileTools {
 		isCurrentlyWorkingHere: boolean,
 		jobTitle: string,
 		companyName: string,
+		companyLogo: string,
 		location: string,
 		startDate: string,
 		endDate: string,
@@ -398,6 +402,7 @@ export default function useProfile(): ProfileTools {
 			isCurrentlyWorkingHere,
 			jobTitle,
 			companyName,
+			companyLogo,
 			location,
 			startDate,
 			endDate,
