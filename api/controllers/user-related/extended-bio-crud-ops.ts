@@ -122,6 +122,7 @@ const addExtendedBioWorkExperience = async (
 			isCurrentlyWorkingHere,
 			jobTitle,
 			companyName,
+			companyLogo,
 			location,
 			startDate,
 			endDate,
@@ -137,6 +138,10 @@ const addExtendedBioWorkExperience = async (
 		const workHistory: IWorkHistory = await WorkHistory.create({
 			user: currUID,
 			company: companyName,
+			companyLogo:
+				!companyLogo.trim() || !companyLogo
+					? "https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg"
+					: companyLogo,
 			jobTitle,
 			location,
 			currentlyWorkingThere: isCurrentlyWorkingHere,
