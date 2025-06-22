@@ -64,7 +64,7 @@ export interface WorkHistory {
 	companyLogo: string;
 	location: string;
 	jobTitle: string;
-	currentlyWorkThere: boolean;
+	currentlyWorkingThere: boolean;
 	startDate: string;
 	endDate: string;
 	description: string;
