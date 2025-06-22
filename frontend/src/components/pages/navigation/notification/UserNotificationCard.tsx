@@ -18,7 +18,7 @@ export default function UserNotificationCard({
 	notifDate,
 	notifID
 }: UserNotificationCardProps) {
-	const {  deleteNotification } = useNotifications();
+	const { deleteNotification } = useNotifications();
 
 	return (
 		<div className="w-full border-2 border-gray-700 lg:text-2xl text-xl">
@@ -52,8 +52,17 @@ export default function UserNotificationCard({
 							<span className="text-gray-600 mr-3 lg:text-base text-sm">
 								{moment(notifDate).fromNow()}
 							</span>
-							<span className="text-lg">
-								<FontAwesomeIcon icon={faTrash} onClick = {() => deleteNotification(notifID)} />
+							<span
+								className="text-lg"
+								onClick={e => {
+									e.preventDefault();
+									e.stopPropagation();
+								}}
+							>
+								<FontAwesomeIcon
+									icon={faTrash}
+									onClick={() => deleteNotification(notifID)}
+								/>
 							</span>
 						</div>
 					</span>
