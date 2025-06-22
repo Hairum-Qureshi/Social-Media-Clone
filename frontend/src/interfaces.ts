@@ -426,10 +426,6 @@ export interface WorkHistoryFormProps {
 	workHistoryToEdit: WorkHistory | undefined;
 }
 
-export interface AboutBioProps {
-	isAnotherUserProfile: boolean;
-}
-
-export interface WorkHistoryProps {
+export interface ExtendedBioSectionProp {
 	isAnotherUserProfile: boolean;
 }
