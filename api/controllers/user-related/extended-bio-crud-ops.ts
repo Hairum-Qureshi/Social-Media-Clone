@@ -116,6 +116,7 @@ const addExtendedBioWorkExperience = async (
 	try {
 		// TODO - need to add guards such as making sure the user's 'end date' isn't greater than their start date for ex.
 		// TODO - need to prevent empty inputs
+		// TODO - add check where if currently working is false, make sure the user provides both start and end dates
 
 		const {
 			isCurrentlyWorkingHere,
@@ -127,6 +128,11 @@ const addExtendedBioWorkExperience = async (
 			endDate,
 			experience
 		} = req.body;
+
+		if (!jobTitle || !companyName || !location || !startDate) {
+			res.status(400).json({ message: "Please fill in all required fields" });
+			return;
+		}
 
 		const ALLOWED_TAGS = [
 			"p",
@@ -153,7 +159,7 @@ const addExtendedBioWorkExperience = async (
 			company: companyName,
 			companyLogo:
 				!companyLogo.trim() || !companyLogo
-					? "https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg"
+					? `${process.env.BACKEND_URL}/assets/no-logo.jpg`
 					: companyLogo,
 			jobTitle,
 			location,
@@ -265,7 +271,7 @@ const editExtendedBioWorkExperience = async (
 	try {
 		// TODO - need to add guards such as making sure the user's 'end date' isn't greater than their start date for ex.
 		// TODO - need to prevent empty inputs
-		// TODO - sanitize the experience
+		// TODO - add check where if currently working is false, make sure the user provides both start and end dates
 
 		const { workExperienceID } = req.params;
 
@@ -280,7 +286,37 @@ const editExtendedBioWorkExperience = async (
 			experience
 		} = req.body;
 
+		if (!jobTitle || !companyName || !location || !startDate) {
+			res.status(400).json({ message: "Please fill in all required fields" });
+			return;
+		}
 
+		const logo = await WorkHistory.findById({ _id: workExperienceID }).select(
+			"companyLogo"
+		);
+
+		const updatedWorkHistory: IWorkHistory =
+			(await WorkHistory.findByIdAndUpdate(
+				workExperienceID,
+				{
+					isCurrentlyWorkingHere,
+					jobTitle,
+					companyName,
+					companyLogo: !companyLogo
+						? logo?.companyLogo
+						: companyLogo || `${process.env.BACKEND_URL}/assets/no-logo.jpg`,
+					location,
+					startDate,
+					endDate,
+					experience
+				},
+				{
+					new: true
+				}
+			)) as IWorkHistory;
+
+		res.status(200).json(updatedWorkHistory);
+		return;
 	} catch (error) {
 		console.error(
 			"Error in extended-bio-crud-ops.ts file, editExtendedBioWorkExperience function controller"
