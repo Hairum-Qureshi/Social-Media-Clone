@@ -1,36 +1,36 @@
 import { Request, Response } from "express";
 import { Types } from "mongoose";
-import sanitizeHtml from "sanitize-html";
 import User from "../../models/User";
 import { IUser, IWorkHistory } from "../../interfaces";
 import WorkHistory from "../../models/WorkHistory";
-
-const ALLOWED_HTML_TAGS = [
-	"h1",
-	"h2",
-	"h3",
-	"h4",
-	"h5",
-	"h6",
-	"blockquote",
-	"li",
-	"ol",
-	"p",
-	"ul",
-	"a",
-	"b",
-	"br",
-	"em",
-	"i",
-	"s",
-	"strong",
-	"u"
-];
+import { sanitizeEditorContent } from "../../lib/utils/sanitizeHTML";
 
 const addExtendedBio = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { extendedBioContent } = req.body;
 		const currUID: Types.ObjectId = req.user._id;
+
+		const ALLOWED_HTML_TAGS = [
+			"h1",
+			"h2",
+			"h3",
+			"h4",
+			"h5",
+			"h6",
+			"blockquote",
+			"li",
+			"ol",
+			"p",
+			"ul",
+			"a",
+			"b",
+			"br",
+			"em",
+			"i",
+			"s",
+			"strong",
+			"u"
+		];
 
 		if (extendedBioContent.length === 0 || extendedBioContent.length === 7) {
 			// the bio is empty (have to use 7 because even if there's no text, there's still <p></p> tags left)
@@ -40,17 +40,16 @@ const addExtendedBio = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		const cleanHTML = sanitizeHtml(extendedBioContent, {
-			allowedTags: ALLOWED_HTML_TAGS,
-			allowedAttributes: {
-				a: ["href"]
-			}
-		});
+		const sanitizedHTML: string = sanitizeEditorContent(
+			extendedBioContent,
+			ALLOWED_HTML_TAGS,
+			true
+		);
 
 		const updatedUser = await User.findByIdAndUpdate(
 			currUID,
 			{
-				extendedBio: cleanHTML
+				extendedBio: sanitizedHTML
 			},
 			{
 				new: true
@@ -129,9 +128,23 @@ const addExtendedBioWorkExperience = async (
 			experience
 		} = req.body;
 
-		const sanitizedExperience = sanitizeHtml(experience, {
-			allowedTags: ["p", "b", "br", "em", "i", "s", "strong", "u", "ol", "ul"]
-		});
+		const ALLOWED_TAGS = [
+			"p",
+			"b",
+			"br",
+			"em",
+			"i",
+			"s",
+			"strong",
+			"u",
+			"ol",
+			"ul"
+		];
+		const sanitizedHTML: string = sanitizeEditorContent(
+			experience,
+			ALLOWED_TAGS,
+			false
+		);
 
 		const currUID: Types.ObjectId = req.user._id;
 
@@ -147,7 +160,7 @@ const addExtendedBioWorkExperience = async (
 			currentlyWorkingThere: isCurrentlyWorkingHere,
 			startDate,
 			endDate: !isCurrentlyWorkingHere ? endDate : "",
-			description: sanitizedExperience
+			description: sanitizedHTML
 		});
 
 		const updatedUser: IUser = (await User.findByIdAndUpdate(
@@ -245,10 +258,44 @@ const getExtendedBioData = async (
 	}
 };
 
+const editExtendedBioWorkExperience = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		// TODO - need to add guards such as making sure the user's 'end date' isn't greater than their start date for ex.
+		// TODO - need to prevent empty inputs
+		// TODO - sanitize the experience
+
+		const { workExperienceID } = req.params;
+
+		const {
+			isCurrentlyWorkingHere,
+			jobTitle,
+			companyName,
+			companyLogo,
+			location,
+			startDate,
+			endDate,
+			experience
+		} = req.body;
+
+
+	} catch (error) {
+		console.error(
+			"Error in extended-bio-crud-ops.ts file, editExtendedBioWorkExperience function controller"
+				.red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
 export {
 	addExtendedBio,
 	deleteExtendedBio,
 	addExtendedBioWorkExperience,
 	deleteExtendedBioWorkExperience,
-	getExtendedBioData
+	getExtendedBioData,
+	editExtendedBioWorkExperience
 };
