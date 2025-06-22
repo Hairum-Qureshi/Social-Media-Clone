@@ -250,6 +250,17 @@ export interface ProfileTools {
 		endDate: string,
 		experience: string
 	) => void;
+	updateExtendedBioWorkExperience: (
+		workHistoryID: string,
+		isCurrentlyWorkingHere: boolean,
+		jobTitle: string,
+		companyName: string,
+		companyLogo: string,
+		location: string,
+		startDate: string,
+		endDate: string,
+		experience: string
+	) => void;
 	extendedBio: {
 		extendedBio: string;
 		userData: {
