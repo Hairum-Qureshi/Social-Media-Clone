@@ -13,12 +13,10 @@ export default function UserBio() {
 
 	// TODO - add a loading animation when the save button is pressed
 	// TODO - make it so that you can click anywhere in the editor and be able to type instead of just the beginning
-	// TODO - have it so that if the URL contains another user's username, display their bio; it currently just shows the current user's
 	// TODO - need to add elapsed time from start date to end date
 	// TODO - need to prevent empty inputs
 	// TODO - need to add 'read more' to work history divs
 	// ! formatDateRange() function does not work
-	// TODO - hide "add work experience" div if the current user is not on their extended bio page
 	// ! The pencil icon for the extended bio does not stay horizontally aligned
 
 	const location = useLocation();
@@ -95,8 +93,12 @@ export default function UserBio() {
 				<>
 					<AboutBio isAnotherUserProfile={isAnotherUserProfile} />
 					{isAnotherUserProfile
-						? extendedBio?.workExperience.length !== 0 && <WorkHistory />
-						: !isAnotherUserProfile && <WorkHistory />}
+						? extendedBio?.workExperience.length !== 0 && (
+								<WorkHistory isAnotherUserProfile={true} />
+						  )
+						: !isAnotherUserProfile && (
+								<WorkHistory isAnotherUserProfile={false} />
+						  )}
 				</>
 			)}
 		</div>
