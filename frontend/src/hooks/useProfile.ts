@@ -388,6 +388,51 @@ export default function useProfile(): ProfileTools {
 		}
 	});
 
+	const { mutate: updateExtendedBioWorkExperienceMutate } = useMutation({
+		mutationFn: async ({
+			workHistoryID,
+			isCurrentlyWorkingHere,
+			jobTitle,
+			companyName,
+			companyLogo,
+			location,
+			startDate,
+			endDate,
+			experience
+		}: {
+			workHistoryID: string;
+			isCurrentlyWorkingHere: boolean;
+			jobTitle: string;
+			companyName: string;
+			companyLogo: string;
+			location: string;
+			startDate: string;
+			endDate: string;
+			experience: string;
+		}) => {
+			const response = await axios.patch(
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/user/update-profile/extended-bio/work-experience/edit/${workHistoryID}`,
+				{
+					isCurrentlyWorkingHere,
+					jobTitle,
+					companyName,
+					companyLogo,
+					location,
+					startDate,
+					endDate,
+					experience
+				},
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["extendedBio", username] });
+		}
+	});
+
 	const addExtendedBioWorkExperience = (
 		isCurrentlyWorkingHere: boolean,
 		jobTitle: string,
@@ -399,6 +444,30 @@ export default function useProfile(): ProfileTools {
 		experience: string
 	) => {
 		extendedBioWorkExperienceMutate({
+			isCurrentlyWorkingHere,
+			jobTitle,
+			companyName,
+			companyLogo,
+			location,
+			startDate,
+			endDate,
+			experience
+		});
+	};
+
+	const updateExtendedBioWorkExperience = (
+		workHistoryID: string,
+		isCurrentlyWorkingHere: boolean,
+		jobTitle: string,
+		companyName: string,
+		companyLogo: string,
+		location: string,
+		startDate: string,
+		endDate: string,
+		experience: string
+	) => {
+		updateExtendedBioWorkExperienceMutate({
+			workHistoryID,
 			isCurrentlyWorkingHere,
 			jobTitle,
 			companyName,
@@ -444,6 +513,7 @@ export default function useProfile(): ProfileTools {
 		addExtendedBio,
 		deleteExtendedBio,
 		addExtendedBioWorkExperience,
+		updateExtendedBioWorkExperience,
 		extendedBio,
 		deleteWorkExperienceByID
 	};
