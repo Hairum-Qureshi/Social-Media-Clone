@@ -57,11 +57,9 @@ export default function AboutBio({isAnotherUserProfile}: AboutBioProps) {
 						setEditorVisibility(true);
 					}}
 				>
-					{pathnameLength === 3 &&
-					pathname[1] !== userData?.username &&
-					!extendedBio?.extendedBio ? (
+					{isAnotherUserProfile && !extendedBio?.extendedBio ? (
 						<p className="text-base">
-							{pathname[1]} currently hasn't written a bio
+							{extendedBio?.userData.username} currently hasn't written a bio
 						</p>
 					) : (
 						!userData?.extendedBio && (
