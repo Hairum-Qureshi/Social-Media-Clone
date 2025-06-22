@@ -266,7 +266,6 @@ const retweetPost = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { postID } = req.params;
 		const currUID: Types.ObjectId = req.user._id;
-
 	} catch (error) {
 		console.error(
 			"Error in post.ts file, retweetPost function controller".red.bold,
