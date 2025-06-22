@@ -1,5 +1,19 @@
 import { Response } from "express";
 
+function isValidDateRange(start: string, end: string): boolean {
+	const startDate = parseMonthYear(start);
+	const endDate = parseMonthYear(end);
+
+	if (!startDate || !endDate) return false; // invalid inputs
+
+	return endDate >= startDate;
+}
+
+function parseMonthYear(input: string): Date | null {
+	const parsed = new Date(input);
+	return isNaN(parsed.getTime()) ? null : parsed;
+}
+
 export function extendedBioChecks(
 	jobTitle: string,
 	companyName: String,
@@ -9,7 +23,12 @@ export function extendedBioChecks(
 	endDate: string,
 	res: Response
 ) {
-	if (!jobTitle || !companyName || !location || !startDate) {
+	if (
+		!jobTitle.trim() ||
+		!companyName.trim() ||
+		!location.trim() ||
+		!startDate
+	) {
 		res.status(400).json({ message: "Please fill in all required fields" });
 		return;
 	}
@@ -30,5 +49,13 @@ export function extendedBioChecks(
 		// This case may never happen because the frontend disables the drop downs for the end dates; however, it's added just incase the user somehow bypasses it in the frontend
 		res.status(400).json({ message: "Please remove the end date" });
 		return;
+	}
+
+	if (!isCurrentlyWorkingHere) {
+		// ensures chronological date consistency (i.e. end date cannot be less than start date)
+		if (!isValidDateRange(startDate, endDate)) {
+			res.status(400).json({ message: "Invalid date range" });
+			return;
+		}
 	}
 }
