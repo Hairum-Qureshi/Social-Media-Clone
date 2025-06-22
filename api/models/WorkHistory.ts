@@ -11,9 +11,7 @@ const workHistorySchema = new Schema(
 			type: String
 		},
 		companyLogo: {
-			type: String,
-			default:
-				"https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg"
+			type: String
 		},
 		jobTitle: {
 			type: String
