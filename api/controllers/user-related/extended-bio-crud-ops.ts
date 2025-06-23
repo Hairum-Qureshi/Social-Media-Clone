@@ -33,7 +33,7 @@ const addExtendedBio = async (req: Request, res: Response): Promise<void> => {
 			"u"
 		];
 
-		if (extendedBioContent.length === 0 || extendedBioContent.length === 7) {
+		if (!extendedBioContent.length || extendedBioContent.length === 7) {
 			// the bio is empty (have to use 7 because even if there's no text, there's still <p></p> tags left)
 			res.status(400).json({
 				message: "Extended bio cannot be empty"
@@ -80,7 +80,7 @@ const deleteExtendedBio = async (
 
 		if (
 			!currUserData?.extendedBio ||
-			currUserData?.extendedBio.length === 0 ||
+			!currUserData?.extendedBio.length ||
 			currUserData?.extendedBio.length === 7
 		) {
 			res.status(400).json({ message: "Extended bio is already empty" });
@@ -273,6 +273,7 @@ const editExtendedBioWorkExperience = async (
 ): Promise<void> => {
 	try {
 		const { workExperienceID } = req.params;
+		// ! Cannot send headers error
 
 		const {
 			isCurrentlyWorkingHere,
