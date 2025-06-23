@@ -4,7 +4,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import useSocketContext from "../contexts/SocketIOContext";
 import { useNavigate } from "react-router-dom";
-import { set } from "idb-keyval";
 
 interface AuthTools {
 	signUp: (
@@ -39,7 +38,6 @@ export default function useAuth(): AuthTools {
 
 	const { connectSocket, disconnectSocket } = useSocketContext()!;
 	const navigate = useNavigate();
-	const STORAGE_KEY = "private-key";
 
 	const {
 		mutate: signUpMutate,
@@ -57,7 +55,6 @@ export default function useAuth(): AuthTools {
 					}
 				);
 
-				await set(STORAGE_KEY, response.data.privateKey);
 				navigate(`/${response.data.userData.username}`);
 				return response;
 			} catch (error) {
