@@ -45,7 +45,7 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 								icon={faXmark}
 								onClick={() => {
 									closeModal();
-									if (location.pathname.includes("messages/compose")) {
+									if (path.includes("messages/compose")) {
 										navigate("/messages", { replace: true });
 									} else {
 										navigate(-1);
