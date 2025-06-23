@@ -3,10 +3,12 @@ import { Response } from "express";
 function isValidDateRange(start: string, end: string): boolean {
 	const startDate = parseMonthYear(start);
 	const endDate = parseMonthYear(end);
+	const now = new Date();
 
-	if (!startDate || !endDate) return false; // invalid inputs
+	if (!startDate || !endDate) return false;
 
-	return endDate >= startDate;
+	// End date cannot be before start OR in the future
+	return endDate >= startDate && endDate <= now;
 }
 
 function parseMonthYear(input: string): Date | null {
