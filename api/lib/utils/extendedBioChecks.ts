@@ -22,7 +22,7 @@ export function extendedBioChecks(
 	isCurrentlyWorkingHere: boolean,
 	endDate: string,
 	res: Response
-): boolean {
+): { errorExists: boolean; statusCode: number; errorMessage: string } {
 	// By default, the start and end years are already provided, but the months are not
 
 	const emptyStartDate =
@@ -34,6 +34,8 @@ export function extendedBioChecks(
 		endDate.split(" ")[1] === new Date().getFullYear().toString();
 
 	let errorExists = false;
+	let statusCode = 200;
+	let errorMessage = "";
 
 	if (
 		!jobTitle ||
@@ -49,30 +51,38 @@ export function extendedBioChecks(
 	}
 
 	if (!isCurrentlyWorkingHere && (emptyStartDate || emptyEndDate)) {
-		res.status(400).json({
-			message: "Please make sure to provide both start and end dates"
-		});
+		// res.status(400).json({
+		// 	message: "Please make sure to provide both start and end dates"
+		// });
 		errorExists = true;
+		statusCode = 400;
+		errorMessage = "Please make sure to provide both start and end dates";
 	}
 
 	if (isCurrentlyWorkingHere && emptyStartDate) {
-		res.status(400).json({ message: "Please provide a start date" });
+		// res.status(400).json({ message: "Please provide a start date" });
 		errorExists = true;
+		statusCode = 400;
+		errorMessage = "Please provide a start date";
 	}
 
 	if (isCurrentlyWorkingHere && !emptyEndDate) {
 		// This case may never happen because the frontend disables the drop downs for the end dates; however, it's added just incase the user somehow bypasses it in the frontend
-		res.status(400).json({ message: "Please remove the end date" });
+		// res.status(400).json({ message: "Please remove the end date" });
 		errorExists = true;
+		statusCode = 400;
+		errorMessage = "Please remove the end date";
 	}
 
 	if (!isCurrentlyWorkingHere) {
 		// ensures chronological date consistency (i.e. end date cannot be less than start date)
 		if (!isValidDateRange(startDate, endDate)) {
-			res.status(400).json({ message: "Invalid date range" });
+			// res.status(400).json({ message: "Invalid date range" });
 			errorExists = true;
+			statusCode = 400;
+			errorMessage = "Invalid date range";
 		}
 	}
 
-	return errorExists;
+	return { errorExists, statusCode, errorMessage };
 }
