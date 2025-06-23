@@ -42,7 +42,7 @@ app.use("/api/posts", post);
 app.use("/api/notifications", notification);
 app.use('/api/messages', message);
 
-const PORT: number = +process.env.PORT! || 3000;
+const PORT: number = +process.env.PORT! || 2000;
 
 server.listen(PORT, () => {
 	const connectToMongoDB = async () => {
