@@ -14,13 +14,15 @@ export const SocketProvider = ({ children }: ContextProps) => {
 	const { userData } = useAuthContext()!;
 	const typingTimeout = useRef<ReturnType<typeof setInterval> | null>(null);
 	const isTyping = useRef(false);
+	const [typingIndicatorChatID, setTypingIndicatorChatID] = useState("");
 
 	const connectSocket = () => {
+		if (!userData?._id) return;
+
 		const socket = io(import.meta.env.VITE_BACKEND_BASE_URL, {
-			query: {
-				userID: userData?._id
-			}
+			query: { userID: userData._id }
 		});
+
 		socketRef.current = socket;
 
 		socket.on("onlineUsers", (userIDs: string[]) => {
@@ -31,13 +33,15 @@ export const SocketProvider = ({ children }: ContextProps) => {
 			setReceivedMessage(message);
 		});
 
-		socket.on("typingStatus", ({ typingUser, isTyping }) => {
+		socket.on("typingStatus", ({ chatID, typingUser, isTyping }) => {
+			setTypingIndicatorChatID(chatID);
 			setTypingUser(typingUser);
 			setUserIsTyping(isTyping);
 		});
 	};
 
 	function handleTypingIndicator(
+		chatID: string,
 		members: string[],
 		senderUID: string | undefined
 	) {
@@ -46,6 +50,7 @@ export const SocketProvider = ({ children }: ContextProps) => {
 		if (!isTyping.current) {
 			isTyping.current = true;
 			socketRef.current.emit("typingIndicator", {
+				chatID,
 				members,
 				senderUID,
 				is_typing: true
@@ -59,6 +64,7 @@ export const SocketProvider = ({ children }: ContextProps) => {
 		typingTimeout.current = setTimeout(() => {
 			isTyping.current = false;
 			socketRef.current?.emit("typingIndicator", {
+				chatID,
 				members,
 				senderUID,
 				is_typing: false
@@ -91,6 +97,7 @@ export const SocketProvider = ({ children }: ContextProps) => {
 		activeUsers,
 		receivedMessage,
 		handleTypingIndicator,
+		typingIndicatorChatID,
 		userIsTyping,
 		typingUser
 	};
