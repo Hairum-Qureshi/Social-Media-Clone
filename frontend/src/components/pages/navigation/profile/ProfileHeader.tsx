@@ -165,11 +165,12 @@ export default function ProfileHeader({
 					<div className="mx-5 my-2">
 						<div>
 							<div dangerouslySetInnerHTML={{ __html: sanitizedBio }} />
-							{userData?.extendedBio && (
-								<Link to={`/${userData?.username}/bio`}>
-									<p className="text-sky-500 underline">View More</p>
-								</Link>
-							)}
+							{profileData?.extendedBio &&
+								profileData?.extendedBio.length !== 7 && (
+									<Link to={`/${location.pathname.split("/")[1]}/bio`}>
+										<p className="text-sky-500 underline">View More</p>
+									</Link>
+								)}
 						</div>
 						<div className="mt-3 text-gray-500">
 							<span>
