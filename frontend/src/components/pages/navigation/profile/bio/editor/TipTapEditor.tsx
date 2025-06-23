@@ -69,6 +69,7 @@ export default function TipTapEditor({
                 [&_ol]:list-decimal [&_ol]:pl-6
                 [&_li]:mb-1
                 [&_a]:text-sky-400 [&_a]:underline [&_a]:hover:text-sky-300"
+				onClick={() => editor?.commands.focus()}
 			>
 				<EditorContent editor={editor} />
 			</div>
