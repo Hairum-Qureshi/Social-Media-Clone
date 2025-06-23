@@ -440,3 +440,14 @@ export interface WorkHistoryFormProps {
 export interface ExtendedBioSectionProp {
 	isAnotherUserProfile: boolean;
 }
+
+export interface CompaniesDropDownProps {
+	company: string;
+	setCompany: (company: string, companyLogo: string) => void;
+}
+
+export interface Logo {
+	domain: string;
+	logo_url: string;
+	name: string;
+}
