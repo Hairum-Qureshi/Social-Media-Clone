@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useProfile from "../../../../../hooks/useProfile";
 import {
 	ExtendedBioSectionProp,
-	WorkHistory as IWorkHistory,
+	WorkHistory as IWorkHistory
 } from "../../../../../interfaces";
 import { formatDateRange } from "../../../../../utils/formatDateRange";
 import useAuthContext from "../../../../../contexts/AuthContext";
@@ -30,6 +30,8 @@ export default function WorkHistory({
 		setShowWorkHistory(false);
 	}
 
+	// ! if you're on 'http://localhost:5173/el.xer/bio', the 'Add Experience' button shouldn't be displayed
+
 	const { extendedBio, deleteWorkExperienceByID } = useProfile();
 	const { userData } = useAuthContext()!;
 
@@ -40,7 +42,7 @@ export default function WorkHistory({
 			const toEdit: IWorkHistory = workHistory[workHistoryIndex];
 			setWorkHistoryToEdit(toEdit);
 		}
-	}, [workHistoryIndex]);
+	}, [workHistoryIndex, extendedBio?.workExperience]);
 
 	// TODO - make edit work history feature work
 
@@ -88,7 +90,8 @@ export default function WorkHistory({
 													</p>
 													<p className="text-sm text-zinc-400">
 														{workExperience.startDate}&nbsp;-&nbsp;
-														{!workExperience.endDate
+														{!workExperience.endDate ||
+														!workExperience.endDate.split(" ")[0]
 															? "Present"
 															: workExperience.endDate}
 														{workExperience.endDate && (
