@@ -23,29 +23,37 @@ export function extendedBioChecks(
 	endDate: string,
 	res: Response
 ) {
+	// By default, the start and end years are already provided, but the months are not
+	const emptyStartDate =
+		!startDate.split(" ")[0] &&
+		startDate.split(" ")[1] === new Date().getFullYear().toString(); // if no month is provided and just the current year
+	const emptyEndDate =
+		!endDate.split(" ")[0] &&
+		endDate.split(" ")[1] === new Date().getFullYear().toString(); // if no month is provided and just the current year
+
 	if (
 		!jobTitle.trim() ||
 		!companyName.trim() ||
 		!location.trim() ||
-		!startDate
+		emptyStartDate
 	) {
 		res.status(400).json({ message: "Please fill in all required fields" });
 		return;
 	}
 
-	if (!isCurrentlyWorkingHere && (!startDate || !endDate)) {
+	if (!isCurrentlyWorkingHere && (emptyStartDate || emptyEndDate)) {
 		res.status(400).json({
 			message: "Please make sure to provide both start and end dates"
 		});
 		return;
 	}
 
-	if (isCurrentlyWorkingHere && !startDate) {
+	if (isCurrentlyWorkingHere && emptyStartDate) {
 		res.status(400).json({ message: "Please provide a start date" });
 		return;
 	}
 
-	if (isCurrentlyWorkingHere && endDate) {
+	if (isCurrentlyWorkingHere && !emptyEndDate) {
 		// This case may never happen because the frontend disables the drop downs for the end dates; however, it's added just incase the user somehow bypasses it in the frontend
 		res.status(400).json({ message: "Please remove the end date" });
 		return;
