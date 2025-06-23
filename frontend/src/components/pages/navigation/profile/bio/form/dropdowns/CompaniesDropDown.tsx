@@ -1,16 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
-interface CompaniesDropDownProps {
-	company: string;
-	setCompany: (company: string, companyLogo: string) => void;
-}
-
-interface Logo {
-	domain: string;
-	logo_url: string;
-	name: string;
-}
+import { CompaniesDropDownProps, Logo } from "../../../../../../../interfaces";
 
 export default function CompaniesDropDown({
 	company,
