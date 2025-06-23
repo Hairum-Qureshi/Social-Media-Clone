@@ -100,7 +100,7 @@ export default function WorkHistoryForm({
 				<input
 					type="text"
 					id="jobTitle"
-					placeholder="Job Title"
+					placeholder="Job Title (required)"
 					className="peer p-2 w-full rounded-md outline-none border border-slate-500 bg-transparent text-white"
 					value={jobTitle}
 					onChange={e => setJobTitle(e.target.value)}
@@ -110,7 +110,7 @@ export default function WorkHistoryForm({
 				<input
 					type="text"
 					id="company"
-					placeholder="Company"
+					placeholder="Company (required)"
 					className="peer p-2 w-full rounded-md outline-none border border-slate-500 bg-transparent text-white"
 					value={companyName}
 					onChange={e => setCompanyName(e.target.value)}
@@ -124,7 +124,7 @@ export default function WorkHistoryForm({
 				<input
 					type="text"
 					id="location"
-					placeholder="Location"
+					placeholder="Location (required)"
 					className="peer p-2 w-full rounded-md outline-none border border-slate-500 bg-transparent text-white"
 					value={location}
 					onChange={e => setLocation(e.target.value)}
@@ -133,7 +133,7 @@ export default function WorkHistoryForm({
 			<div className="flex items-center">
 				<input
 					type="checkbox"
-					placeholder="Job Title"
+					placeholder="Job Title (required)"
 					className="border border-slate-500 w-3.5 h-3.5"
 					onChange={() => {
 						setIsCurrentlyWorkingHere(!isCurrentlyWorkingHere);
@@ -144,12 +144,14 @@ export default function WorkHistoryForm({
 					checked={isCurrentlyWorkingHere}
 				/>
 				<label htmlFor="" className="ml-2">
-					Currently work here
+					Currently work here <span className="text-red-600">*</span>
 				</label>
 			</div>
 			<div>
 				<div className="w-full mt-4">
-					<h3 className="font-semibold text-lg">Start Date</h3>
+					<h3 className="font-semibold text-lg">
+						Start Date <span className="text-red-600">*</span>
+					</h3>
 					<div className="flex mt-3">
 						<div className="w-1/2 relative hover:cursor-pointer">
 							<div
@@ -200,7 +202,10 @@ export default function WorkHistoryForm({
 			</div>
 			<div>
 				<div className="w-full my-4">
-					<h3 className="font-semibold text-lg">End Date</h3>
+					<h3 className="font-semibold text-lg">
+						End Date{" "}
+						{!isCurrentlyWorkingHere && <span className="text-red-600">*</span>}
+					</h3>
 					<div className="flex mt-3">
 						<div className="w-1/2 relative hover:cursor-pointer">
 							<div
@@ -272,7 +277,7 @@ export default function WorkHistoryForm({
 			<div className="flex mt-2">
 				{workHistoryToEdit ? (
 					<button
-						className="p-1 rounded-md bg-sky-500 w-28 ml-auto"
+						className="p-1 rounded-md bg-sky-500 w-28 ml-auto disabled:bg-sky-800 disabled:cursor-not-allowed"
 						onClick={() => {
 							updateExtendedBioWorkExperience(
 								workHistoryToEdit?._id,
@@ -287,12 +292,20 @@ export default function WorkHistoryForm({
 							);
 							hideWorkHistoryForm();
 						}}
+						disabled={
+							!jobTitle ||
+							!companyName ||
+							!location ||
+							(!isCurrentlyWorkingHere
+								? !chosenEndMonth
+								: !chosenStartMonth && !chosenEndMonth)
+						}
 					>
 						Update
 					</button>
 				) : (
 					<button
-						className="p-1 rounded-md bg-sky-500 w-28 ml-auto"
+						className="p-1 rounded-md bg-sky-500 w-28 ml-auto disabled:bg-sky-800 disabled:cursor-not-allowed"
 						onClick={() => {
 							addExtendedBioWorkExperience(
 								isCurrentlyWorkingHere,
@@ -306,6 +319,14 @@ export default function WorkHistoryForm({
 							);
 							hideWorkHistoryForm();
 						}}
+						disabled={
+							!jobTitle ||
+							!companyName ||
+							!location ||
+							(!isCurrentlyWorkingHere
+								? !chosenEndMonth
+								: !chosenStartMonth && !chosenEndMonth)
+						}
 					>
 						Add
 					</button>
