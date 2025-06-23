@@ -126,7 +126,7 @@ const addExtendedBioWorkExperience = async (
 			experience
 		} = req.body;
 
-		extendedBioChecks(
+		const { errorExists, statusCode, errorMessage } = extendedBioChecks(
 			jobTitle,
 			companyName,
 			location,
@@ -135,6 +135,11 @@ const addExtendedBioWorkExperience = async (
 			endDate,
 			res
 		);
+
+		if (errorExists) {
+			res.status(statusCode).json({ message: errorMessage });
+			return;
+		}
 
 		const ALLOWED_TAGS = [
 			"p",
@@ -273,7 +278,6 @@ const editExtendedBioWorkExperience = async (
 ): Promise<void> => {
 	try {
 		const { workExperienceID } = req.params;
-		// ! Cannot send headers error
 
 		const {
 			isCurrentlyWorkingHere,
@@ -286,7 +290,7 @@ const editExtendedBioWorkExperience = async (
 			experience
 		} = req.body;
 
-		extendedBioChecks(
+		const { errorExists, statusCode, errorMessage } = extendedBioChecks(
 			jobTitle,
 			companyName,
 			location,
@@ -295,6 +299,11 @@ const editExtendedBioWorkExperience = async (
 			endDate,
 			res
 		);
+
+		if (errorExists) {
+			res.status(statusCode).json({ message: errorMessage });
+			return;
+		}
 
 		const logo = await WorkHistory.findById({ _id: workExperienceID }).select(
 			"companyLogo"
