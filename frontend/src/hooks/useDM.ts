@@ -55,12 +55,8 @@ export default function useDM(): DMTools {
 
 	useEffect(() => {
 		if (receivedMessage) {
-			messages.push(receivedMessage);
 			queryClient.invalidateQueries({
 				queryKey: ["messages"]
-			});
-			queryClient.invalidateQueries({
-				queryKey: ["conversations"]
 			});
 		}
 	}, [receivedMessage]);
@@ -89,7 +85,6 @@ export default function useDM(): DMTools {
 				{ withCredentials: true }
 			);
 
-			console.log(">", response.data);
 			return response.data;
 		},
 		onSuccess: () => {
@@ -125,8 +120,7 @@ export default function useDM(): DMTools {
 						},
 						attachments: [],
 						conversationID,
-						createdAt: new Date(),
-						encryptedAESKeys: {}
+						createdAt: new Date()
 					}
 				]
 			);
