@@ -4,13 +4,11 @@ import bcrypt from "bcrypt";
 import { IUser } from "../interfaces";
 import generateAndSetCookie from "../lib/utils/generateCookie";
 import getUserData from "../lib/utils/getUserData";
-import { generateKeyPair } from "../lib/utils/generateKeyPair";
 
 const signUp = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { fullName, username, email, password } = req.body;
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		const { publicKeyPem, privateKeyPem } = generateKeyPair();
 
 		if (!emailRegex.test(email)) {
 			res.status(400).json({ error: "Invalid email" });
@@ -43,14 +41,11 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
 			username,
 			fullName,
 			password: hashedPassword,
-			email,
-			publicKey: publicKeyPem
+			email
 		});
 
 		generateAndSetCookie(user._id, res);
-		res
-			.status(200)
-			.json({ userData: getUserData(user), privateKey: privateKeyPem });
+		res.status(200).json({ userData: getUserData(user) });
 	} catch (error) {
 		console.error(
 			"Error in authentication.ts file, signUp function controller".red.bold,
