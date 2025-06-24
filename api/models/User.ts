@@ -90,11 +90,6 @@ const userSchema = new Schema(
 			ref: "Conversation",
 			default: []
 		},
-		publicKey: {
-			type: String,
-			required: true,
-			isUnique: true
-		},
 		extendedBio: {
 			type: String
 		},
