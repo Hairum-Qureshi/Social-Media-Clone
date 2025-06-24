@@ -1,13 +1,8 @@
 import { Types } from "mongoose";
 
-export interface UserKeyData {
-	_id: Types.ObjectId;
-	publicKey: string;
-}
-
 export interface IConversation {
 	_id: Types.ObjectId;
-	users: Types.ObjectId[] | UserKeyData[];
+	users: Types.ObjectId[]
 	isGroupchat: boolean;
 	groupName: string;
 	groupPhoto: string;
@@ -59,7 +54,6 @@ export interface IUser {
 	numFollowing: number;
 	isVerified: boolean;
 	conversations: IConversation[];
-	publicKey: string;
 	extendedBio: string;
 	workHistory: IWorkHistory[];
 	createdAt: Date;
@@ -83,7 +77,6 @@ export interface UserData {
 	numFollowing: number;
 	isVerified: boolean;
 	conversations: IConversation[];
-	publicKey: string;
 	extendedBio: string;
 	workHistory: IWorkHistory[];
 	createdAt: Date;
@@ -141,12 +134,6 @@ export interface IMessage {
 	attachments: string[];
 	conversationID: Types.ObjectId;
 	createdAt: Date;
-	encryptedAESKey: string;
-}
-
-export interface KeyPair {
-	publicKeyPem: string;
-	privateKeyPem: string;
 }
 
 export interface PostImage {
