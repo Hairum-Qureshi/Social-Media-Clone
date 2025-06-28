@@ -96,6 +96,10 @@ const userSchema = new Schema(
 		workHistory: {
 			type: [Types.ObjectId],
 			ref: "WorkHistory"
+		},
+		dmRequests: {
+			type: [Types.ObjectId],
+			ref: "Conversation"
 		}
 	},
 	{
