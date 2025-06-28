@@ -5,6 +5,7 @@ import { Types } from "mongoose";
 import Conversation from "../models/inbox/Conversation";
 import Message from "../models/inbox/Message";
 import { getSocketIDbyUID, io } from "../socket";
+import { sendEmailNotification } from "../lib/utils/sendEmailNotification";
 
 const getSearchedUsers = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -74,7 +75,7 @@ function findID(
 
 const createDM = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const { searchedUsers } = req.body;
+		const { searchedUsers } = req.body; // TODO - have it send back the user ID as well
 		const fullNames: string[] = [];
 		const currUID: Types.ObjectId = req.user._id;
 
@@ -82,33 +83,32 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 			fullNames.push(user.fullName);
 		});
 
+		// ! - I feel this is an inefficient method because multiple users can have the same first + last name
 		if (fullNames.length === 1) {
 			// it's a DM
 
-			// get the username's ID:
-			const [friendUID]: Types.ObjectId[] = await User.find({
+			// get the username's data:
+			const friendData: IUser = (await User.findOne({
 				fullName: fullNames[0]
-			})
-				.lean()
-				.select("_id");
+			}).lean()) as IUser;
 
 			// check if the current user follows the other user
 			let isFollowing = false;
 			let friendIsAFollower = false;
 
-			const isFollowingUID = findID(req.user.following, friendUID);
+			const isFollowingUID = findID(req.user.following, friendData._id);
 			if (isFollowingUID) {
 				isFollowing =
 					isFollowingUID.toString().replace(/ObjectId\("(.*)"\)/, "$1") ===
-					friendUID._id.toString().replace(/ObjectId\("(.*)"\)/, "$1");
+					friendData._id.toString().replace(/ObjectId\("(.*)"\)/, "$1");
 			}
 
 			// check if the other user follows the current user
-			const isAFollowerUID = findID(req.user.followers, friendUID._id);
+			const isAFollowerUID = findID(req.user.followers, friendData._id);
 			if (isAFollowerUID) {
 				friendIsAFollower =
 					isAFollowerUID.toString().replace(/ObjectId\("(.*)"\)/, "$1") ===
-					friendUID._id.toString().replace(/ObjectId\("(.*)"\)/, "$1");
+					friendData._id.toString().replace(/ObjectId\("(.*)"\)/, "$1");
 			}
 
 			// check if they both follow each other (no DM request)
@@ -116,7 +116,7 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 				// no DM request
 				// create a conversation and return it to the current user
 				const conversation: IConversation = await Conversation.create({
-					users: [currUID, friendUID],
+					users: [currUID, friendData._id],
 					isGroupchat: false
 				});
 
@@ -139,7 +139,7 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 				// add conversation to the friend's list of conversations too
 				await User.findByIdAndUpdate(
 					{
-						_id: friendUID._id
+						_id: friendData._id
 					},
 					{
 						$push: {
@@ -161,8 +161,66 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 
 				res.status(200).send(conversationData);
 			} else {
-				// send a DM request
+				// TODO - if the user whose received the DM request accepts it, you'll need to update it for both the user and the DM request receiver so that it no longer is a DM request
+				// send a DM request and make sure to update the user's dmRequest object too (the one who's receiving the request)
 				// maybe send a notification?
+				// send an email to the user whose received the DM request too
+
+				// prevent a a duplicate Conversation by first checking if a DM request by the current user to their friend exists
+				const existingDMRequest: IConversation | undefined =
+					(await Conversation.findOne({
+						isDMRequest: true,
+						requestedBy: currUID,
+						requestedTo: friendData._id
+					})) as IConversation | undefined;
+
+				if (!existingDMRequest) {
+					const dmRequestConversation: IConversation =
+						await Conversation.create({
+							users: [currUID, friendData._id],
+							isDMRequest: true,
+							requestedBy: currUID,
+							requestedTo: friendData._id
+						});
+
+					await User.findByIdAndUpdate(
+						{ _id: friendData._id },
+						{
+							$addToSet: {
+								dmRequests: dmRequestConversation._id
+							}
+						},
+						{
+							new: true
+						}
+					).lean();
+
+					const conversation: IConversation = await Conversation.create({
+						users: [currUID, friendData._id],
+						isDMRequest: true,
+						requestedBy: currUID,
+						requestedTo: friendData._id
+					});
+
+					const updatedUser: IUser = (await User.findByIdAndUpdate(
+						{
+							_id: currUID
+						},
+						{
+							$addToSet: {
+								conversations: conversation._id
+							}
+						},
+						{
+							new: true
+						}
+					)) as IUser;
+
+					res.status(201).json(updatedUser);
+					return;
+				} else {
+					// await sendEmailNotification(req.user.email, friendData.email, friendData.fullName, "");
+				}
 			}
 		}
 
@@ -215,10 +273,21 @@ const getConversationChat = async (
 
 const postMessage = async (req: Request, res: Response): Promise<void> => {
 	try {
+		// ! NOTE - this code handles the case if it's a 2-person DM, but it doesn't handle if it's a group chat
+		// ! Doesn't handle attachments
+
 		const { message, sender, attachments } = req.body;
 		const { conversationID } = req.params;
 
-		// TODO - this code handles the case if it's a 2-person DM, but it doesn't handle if it's a group chat:
+		const conversation: IConversation | undefined = (await Conversation.findOne(
+			{ _id: conversationID }
+		)) as IConversation | undefined;
+
+		if (!conversation) {
+			res.status(404).json({ message: "Conversation not found" });
+			return;
+		}
+
 		const participants: IConversation = (await Conversation.findById({
 			_id: conversationID
 		})
@@ -226,20 +295,47 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 			.select("-__v -password -conversations")
 			.lean()) as IConversation;
 
-		const participants_filtered = participants.users.filter(
+		const participants_filtered: IUser[] = participants.users.filter(
 			user => !user._id.equals(req.user._id)
-		);
+		) as unknown as IUser[];
+
+		if (conversation.isDMRequest) {
+			const requestMessage: IMessage = await Message.create({
+				message,
+				sender,
+				conversationID
+			});
+
+			await Conversation.findByIdAndUpdate(
+				{
+					_id: conversationID
+				},
+				{
+					$addToSet: {
+						messages: requestMessage._id
+					}
+				}
+			);
+
+			await sendEmailNotification(
+				req.user.email,
+				participants_filtered[0].email,
+				participants_filtered[0].fullName,
+				message,
+				req.user.username
+			);
+			return;
+		}
 
 		const receiverSocketID: string = getSocketIDbyUID(
 			participants_filtered[0]._id.toString()
 		);
 
-
 		// TODO - handle case if the user uploads any images too!
 		const postedMessage: IMessage = await Message.create({
 			message,
 			sender,
-			conversationID,
+			conversationID
 		});
 
 		await Conversation.findByIdAndUpdate(
