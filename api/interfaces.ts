@@ -56,6 +56,7 @@ export interface IUser {
 	conversations: IConversation[];
 	extendedBio: string;
 	workHistory: IWorkHistory[];
+	dmRequests: IConversation[];
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -79,6 +80,7 @@ export interface UserData {
 	conversations: IConversation[];
 	extendedBio: string;
 	workHistory: IWorkHistory[];
+	dmRequests: IConversation[];
 	createdAt: Date;
 	updatedAt: Date;
 }
