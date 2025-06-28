@@ -1,7 +1,7 @@
-import { UserData } from "../interfaces";
+import { UserData, UserData_Conversation } from "../interfaces";
 
 export default function isFollowing(
-	profile: UserData | undefined,
+	profile: UserData | UserData_Conversation | undefined,
 	currUID: string | undefined
 ): boolean {
 	if (profile && profile._id !== currUID) {
