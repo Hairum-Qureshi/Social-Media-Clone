@@ -105,7 +105,6 @@ export interface Message {
 	attachments: string[];
 	conversationID: string;
 	createdAt: Date;
-	encryptedAESKeys: Record<string, string>;
 }
 
 export interface ContextProps {
@@ -311,6 +310,32 @@ export interface ProfilePreviewProps {
 	currUID: string;
 }
 
+interface DMRequest {
+	_id: string;
+	users: [
+		{
+			_id: string;
+			username: string;
+			fullName: string;
+			profilePicture: string;
+		}
+	];
+	isGroupchat: boolean;
+	media: string[];
+	isDMRequest: boolean;
+	requestedBy: {
+		_id: string;
+		username: string;
+		fullName: string;
+		profilePicture: string;
+	};
+	requestedTo: string;
+	messages: Message[];
+	createdAt: Date;
+	updatedAt: Date;
+	latestMessage: string;
+}
+
 export interface DMTools {
 	createDM: (searchedUsers: UserTagData[]) => void;
 	conversations: Conversation[];
@@ -320,6 +345,7 @@ export interface DMTools {
 		conversationID: string
 	) => void;
 	messages: Message[];
+	dmRequests: DMRequest[];
 }
 
 export interface SocketContextData {
