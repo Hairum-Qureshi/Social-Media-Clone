@@ -195,20 +195,13 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 						}
 					).lean();
 
-					const conversation: IConversation = await Conversation.create({
-						users: [currUID, friendData._id],
-						isDMRequest: true,
-						requestedBy: currUID,
-						requestedTo: friendData._id
-					});
-
 					const updatedUser: IUser = (await User.findByIdAndUpdate(
 						{
 							_id: currUID
 						},
 						{
 							$addToSet: {
-								conversations: conversation._id
+								conversations: dmRequestConversation._id
 							}
 						},
 						{
@@ -300,6 +293,7 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 		) as unknown as IUser[];
 
 		if (conversation.isDMRequest) {
+			// ! minor issue where an email is sent for every message the user sends in their DM request
 			const requestMessage: IMessage = await Message.create({
 				message,
 				sender,
@@ -313,7 +307,8 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 				{
 					$addToSet: {
 						messages: requestMessage._id
-					}
+					},
+					latestMessage: message
 				}
 			);
 
@@ -372,10 +367,29 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+const getDMRequests = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const currUID: Types.ObjectId = req.user._id;
+		const DMRequestConversations: IConversation[] = await Conversation.find({
+			users: { $in: [currUID] },
+			isDMRequest: true
+		}).populate("messages");
+
+		res.status(200).send(DMRequestConversations);
+	} catch (error) {
+		console.error(
+			"Error in messages.ts file, getDMRequests function controller".red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
 export {
 	getSearchedUsers,
 	getAllConversations,
 	createDM,
 	getConversationChat,
-	postMessage
+	postMessage,
+	getDMRequests
 };
