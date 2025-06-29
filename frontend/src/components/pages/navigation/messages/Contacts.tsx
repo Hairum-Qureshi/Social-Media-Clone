@@ -1,6 +1,6 @@
 import { faEnvelope, faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import UserSearchModal from "./modal/UserSearchModal";
 import { useState } from "react";
 import useDM from "../../../../hooks/useDM";
@@ -17,16 +17,16 @@ interface ContactsProps {
 }
 
 export default function Contacts({ setConvo }: ContactsProps) {
-	const path = window.location.pathname;
+	const location = useLocation();
 	const [openModal, setOpenModal] = useState(
-		path.includes("/compose") || false
+		location.pathname.includes("/compose") || false
 	);
 
 	function closeModal() {
 		setOpenModal(false);
 	}
 
-	const { conversations } = useDM();
+	const { conversations, dmRequests } = useDM();
 	const { userData } = useAuthContext()!;
 
 	return (
@@ -60,7 +60,13 @@ export default function Contacts({ setConvo }: ContactsProps) {
 						</div>
 						<div>
 							<p className="flex items-center">Message Requests</p>
-							<p className="text-sm text-zinc-500">3 pending requests</p>
+							<p className="text-sm text-zinc-500">
+								{!dmRequests || !dmRequests.length
+									? "No Pending Requests"
+									: dmRequests.length === 1
+									? "1 Pending Request"
+									: `${dmRequests.length} Pending Requests`}
+							</p>
 						</div>
 					</div>
 				</Link>
