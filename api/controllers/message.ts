@@ -300,7 +300,7 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 				conversationID
 			});
 
-			await Conversation.findByIdAndUpdate(
+			const updatedConvo: IConversation = (await Conversation.findByIdAndUpdate(
 				{
 					_id: conversationID
 				},
@@ -309,16 +309,22 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 						messages: requestMessage._id
 					},
 					latestMessage: message
+				},
+				{
+					new: true
 				}
-			);
+			)) as IConversation;
 
-			await sendEmailNotification(
-				req.user.email,
-				participants_filtered[0].email,
-				participants_filtered[0].fullName,
-				message,
-				req.user.username
-			);
+			if (updatedConvo.messages.length === 1) {
+				await sendEmailNotification(
+					req.user.email,
+					participants_filtered[0].email,
+					participants_filtered[0].fullName,
+					message,
+					req.user.username
+				);
+			}
+
 			return;
 		}
 
