@@ -370,12 +370,30 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 const getDMRequests = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const currUID: Types.ObjectId = req.user._id;
-		const DMRequestConversations: IConversation[] = await Conversation.find({
-			users: { $in: [currUID] },
-			isDMRequest: true
-		}).populate("messages");
-
-		res.status(200).send(DMRequestConversations);
+		const result = await User.findById(currUID)
+			.select("dmRequests -_id")
+			.populate({
+				path: "dmRequests",
+				populate: [
+					{
+						path: "requestedBy",
+						select: "username profilePicture fullName"
+					},
+					{
+						path: "users",
+						select: "username profilePicture fullName"
+					},
+					{
+						path: "messages",
+						select: "-updatedAt -conversationID -__v",
+						populate: {
+							path: "sender",
+							select: "username profilePicture fullName" // or whatever fields you need
+						}
+					}
+				]
+			});
+		res.status(200).json(result);
 	} catch (error) {
 		console.error(
 			"Error in messages.ts file, getDMRequests function controller".red.bold,
