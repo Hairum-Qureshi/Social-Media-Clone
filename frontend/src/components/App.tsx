@@ -94,6 +94,14 @@ export default function App() {
 								}
 							/>
 							<Route
+								path="/messages/requests/:conversationID/:userIDs"
+								element={
+									<ProtectedRoutesGuard>
+										<Requests />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
 								path="/bookmarks"
 								element={
 									<ProtectedRoutesGuard>
