@@ -383,23 +383,26 @@ const getDMRequests = async (req: Request, res: Response): Promise<void> => {
 				populate: [
 					{
 						path: "requestedBy",
-						select: "username profilePicture fullName"
+						select:
+							"_id username fullName profilePicture isVerified bio numFollowers followers createdAt"
 					},
 					{
 						path: "users",
-						select: "username profilePicture fullName"
+						select:
+							"_id username fullName profilePicture isVerified bio numFollowers followers createdAt"
 					},
 					{
 						path: "messages",
-						select: "-updatedAt -conversationID -__v",
+						select: "-updatedAt -__v",
 						populate: {
 							path: "sender",
-							select: "username profilePicture fullName" // or whatever fields you need
+							select:
+								"_id username fullName profilePicture isVerified bio numFollowers followers createdAt"
 						}
 					}
 				]
 			});
-		res.status(200).json(result);
+		res.status(200).json(result?.dmRequests || []);
 	} catch (error) {
 		console.error(
 			"Error in messages.ts file, getDMRequests function controller".red.bold,
