@@ -31,18 +31,6 @@ export interface EditorOptionsProps {
 	buttonText: string;
 }
 
-export interface UserData_Conversation {
-	_id: string;
-	username: string;
-	fullName: string;
-	profilePicture: string;
-	isVerified: boolean;
-	createdAt: Date;
-	bio: string;
-	numFollowers: number;
-	followers: UserData[];
-}
-
 export interface Conversation {
 	_id: string;
 	users: UserData_Conversation[];
@@ -53,7 +41,7 @@ export interface Conversation {
 	latestMessage: string;
 	isDMRequest: boolean;
 	requestedBy: UserData_Conversation;
-	requestedTo: UserData_Conversation;
+	requestedTo: string;
 	messages: Message[];
 }
 
@@ -95,13 +83,21 @@ export interface UserData {
 	updatedAt: Date;
 }
 
+export interface UserData_Conversation {
+	_id: string;
+	username: string;
+	fullName: string;
+	profilePicture: string;
+	isVerified: boolean;
+	bio: string;
+	numFollowers: number;
+	followers: UserData[];
+	createdAt: Date;
+}
+
 export interface Message {
 	message: string;
-	sender: {
-		_id: string;
-		username: string;
-		profilePicture: string;
-	};
+	sender: UserData_Conversation;
 	attachments: string[];
 	conversationID: string;
 	createdAt: Date;
@@ -283,7 +279,7 @@ export interface ContactProps {
 export interface ConversationProps {
 	defaultSubtext: string;
 	showHeaderText: boolean;
-	conversation: Conversation | undefined;
+	conversation: Conversation | DMRequest | undefined;
 }
 
 export interface InboxFooterProps {
@@ -300,40 +296,29 @@ export enum Status {
 }
 
 export interface InboxHeaderProps {
-	conversation: Conversation;
+	conversation: Conversation | DMRequest;
 	currUID: string;
 	status: Status;
 }
 
-export interface ProfilePreviewProps {
-	conversation: Conversation;
-	currUID: string;
-}
-
-interface DMRequest {
+export interface DMRequest {
 	_id: string;
-	users: [
-		{
-			_id: string;
-			username: string;
-			fullName: string;
-			profilePicture: string;
-		}
-	];
+	users: UserData_Conversation[];
 	isGroupchat: boolean;
 	media: string[];
 	isDMRequest: boolean;
-	requestedBy: {
-		_id: string;
-		username: string;
-		fullName: string;
-		profilePicture: string;
-	};
+	requestedBy: UserData_Conversation;
 	requestedTo: string;
 	messages: Message[];
 	createdAt: Date;
 	updatedAt: Date;
 	latestMessage: string;
+}
+
+
+export interface ProfilePreviewProps {
+	conversation: Conversation | DMRequest;
+	currUID: string;
 }
 
 export interface DMTools {
