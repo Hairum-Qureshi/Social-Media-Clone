@@ -305,6 +305,8 @@ export interface DMRequest {
 	_id: string;
 	users: UserData_Conversation[];
 	isGroupchat: boolean;
+	groupPhoto?: string;
+	groupName?: string;
 	media: string[];
 	isDMRequest: boolean;
 	requestedBy: UserData_Conversation;
@@ -314,7 +316,6 @@ export interface DMRequest {
 	updatedAt: Date;
 	latestMessage: string;
 }
-
 
 export interface ProfilePreviewProps {
 	conversation: Conversation | DMRequest;
