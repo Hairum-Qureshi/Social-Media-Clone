@@ -280,6 +280,7 @@ export interface ConversationProps {
 	defaultSubtext: string;
 	showHeaderText: boolean;
 	conversation: Conversation | DMRequest | undefined;
+	isDMRequest?: boolean;
 }
 
 export interface InboxFooterProps {
