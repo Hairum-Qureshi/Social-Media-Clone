@@ -8,7 +8,7 @@ export default function ProfilePreview({
 	conversation,
 	currUID
 }: ProfilePreviewProps) {
-	// TODO - add logic to remove the 'user is not following you' message once the other user has approved their DM request
+	// TODO - add logic to remove the 'a DM request has been sent to them' message once the other user has approved their DM request
 
 	const location = useLocation();
 
