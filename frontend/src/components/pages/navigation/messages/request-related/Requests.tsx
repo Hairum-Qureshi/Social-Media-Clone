@@ -24,15 +24,15 @@ export default function Requests() {
 						</p>
 					</div>
 				) : (
-					dmRequests.map((dm: DMRequest, index: number) => {
+					dmRequests.map((dm: DMRequest) => {
 						return (
 							<div className="text-white">
 								<Link
-									to={`/messages/requests/${dm.messages[index].conversationID}/${userData?._id}-${dm.requestedBy._id}`}
+									to={`/messages/requests/${dm.messages[0].conversationID}/${userData?._id}-${dm.requestedBy._id}`}
 									onClick={() => setDMRequest(dm)}
 								>
 									<DM
-										conversationID={dm.messages[index].conversationID}
+										conversationID={dm.messages[0].conversationID}
 										username={dm.requestedBy.username}
 										pfp={dm.requestedBy.profilePicture}
 										fullName={dm.requestedBy.fullName}
