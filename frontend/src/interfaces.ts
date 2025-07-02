@@ -469,3 +469,9 @@ export interface Logo {
 export interface DMRequestFooterProps {
 	username: string | undefined;
 }
+
+export interface ChatBubbleProps {
+	you: boolean;
+	message: string;
+	timestamp: Date;
+}
