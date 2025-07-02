@@ -9,7 +9,7 @@ import ProfilePreview from "./inbox/ProfilePreview";
 import InboxFooter from "./inbox/InboxFooter";
 import useDM from "../../../../hooks/useDM";
 import useSocketContext from "../../../../contexts/SocketIOContext";
-import DMRequestFooter from "./DMRequestFooter";
+import DMRequestFooter from "../messages/request-related/DMRequestFooter";
 
 export default function Conversation({
 	defaultSubtext,
@@ -117,7 +117,9 @@ export default function Conversation({
 					</div>
 				)}
 
-			{isDMRequest && <DMRequestFooter username={conversation?.requestedBy.fullName} />}
+			{isDMRequest && (
+				<DMRequestFooter username={conversation?.requestedBy.fullName} />
+			)}
 
 			{location.pathname.split("/").length !== 2 &&
 				!isDMRequest &&
