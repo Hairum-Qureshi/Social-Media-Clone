@@ -1,3 +1,4 @@
+import { useLocation } from "react-router-dom";
 import { ProfilePreviewProps } from "../../../../../interfaces";
 import checkFollowingStatus from "../../../../../utils/checkFollowingStatus";
 import getFriend from "../../../../../utils/getFriend";
@@ -8,7 +9,9 @@ export default function ProfilePreview({
 	currUID
 }: ProfilePreviewProps) {
 	// TODO - add logic to remove the 'user is not following you' message once the other user has approved their DM request
-	
+
+	const location = useLocation();
+
 	return (
 		<div className="p-3 w-full min-h-1/3 h-auto hover:bg-slate-800 hover:cursor-pointer">
 			<div className="mt-5">
@@ -55,12 +58,23 @@ export default function ProfilePreview({
 						{!checkFollowingStatus(
 							getFriend(conversation?.users, currUID),
 							currUID
-						) && (
-							<div className="bg-sky-950 mt-3 rounded-md p-1 text-base">
-								@{getFriend(conversation?.users, currUID).username} isn't
-								following you. A DM request has been sent to them.
-							</div>
-						)}
+						) &&
+							!location.pathname.includes("/messages/requests") && (
+								<div className="bg-sky-950 mt-3 rounded-md p-1 text-base">
+									@{getFriend(conversation?.users, currUID).username} isn't
+									following you. A DM request has been sent to them.
+								</div>
+							)}
+						{!checkFollowingStatus(
+							getFriend(conversation?.users, currUID),
+							currUID
+						) &&
+							location.pathname.includes("/messages/requests") && (
+								<div className="bg-sky-950 mt-3 rounded-md p-1 text-base">
+									@{getFriend(conversation?.users, currUID).username} isn't
+									following you.
+								</div>
+							)}
 					</div>
 				</div>
 			</div>
