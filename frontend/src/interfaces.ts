@@ -465,3 +465,7 @@ export interface Logo {
 	logo_url: string;
 	name: string;
 }
+
+export interface DMRequestFooterProps {
+	username: string | undefined;
+}
