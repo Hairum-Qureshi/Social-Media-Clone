@@ -34,7 +34,8 @@ const getDMRequests = async (req: Request, res: Response): Promise<void> => {
 		res.status(200).json(result?.dmRequests || []);
 	} catch (error) {
 		console.error(
-			"Error in messages.ts file, getDMRequests function controller".red.bold,
+			"Error in handle-dm-requests.ts file, getDMRequests function controller"
+				.red.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });
@@ -45,7 +46,8 @@ const acceptDMRequest = async (req: Request, res: Response): Promise<void> => {
 	try {
 	} catch (error) {
 		console.error(
-			"Error in messages.ts file, acceptDMRequest function controller".red.bold,
+			"Error in handle-dm-requests.ts file, acceptDMRequest function controller"
+				.red.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });
