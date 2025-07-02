@@ -92,6 +92,7 @@ export interface UserData_Conversation {
 	bio: string;
 	numFollowers: number;
 	followers: UserData[];
+	following: UserData[];
 	createdAt: Date;
 }
 
