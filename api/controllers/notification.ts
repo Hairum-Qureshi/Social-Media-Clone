@@ -75,6 +75,7 @@ const deleteNotification = async (
 const deleteNotifications = async (req: Request, res: Response) => {
 	try {
 		const currUID: Types.ObjectId = req.user._id;
+
 		await Notification.deleteMany({
 			to: currUID
 		});
