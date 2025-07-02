@@ -1,34 +1,31 @@
 import useAuthContext from "../../../../contexts/AuthContext";
 import getFriend from "../../../../utils/getFriend";
 import { Link, useLocation } from "react-router-dom";
-import { ConversationProps, Message } from "../../../../interfaces";
+import { ConversationProps, Message, Status } from "../../../../interfaces";
 import { useEffect, useRef, useState } from "react";
 import ChatBubble from "./ChatBubble";
 import InboxHeader from "./inbox/InboxHeader";
 import ProfilePreview from "./inbox/ProfilePreview";
 import InboxFooter from "./inbox/InboxFooter";
 import useDM from "../../../../hooks/useDM";
+import useSocketContext from "../../../../contexts/SocketIOContext";
+import DMRequestFooter from "./DMRequestFooter";
 
 export default function Conversation({
 	defaultSubtext,
 	showHeaderText = true,
-	conversation
+	conversation,
+	isDMRequest = false
 }: ConversationProps) {
 	const { userData } = useAuthContext()!;
 	const location = useLocation();
 	const [uploadedImage, setUploadedImage] = useState<string>("");
 	const contentEditableDivRef = useRef<HTMLDivElement>(null);
+	const { activeUsers } = useSocketContext()!;
 
-	// TODO - add delete button on pasted image image
 	// TODO - add GIF functionality
-	// TODO - add emoji functionality
-	// TODO - add an activity status
-	// TODO - add a message functionality
 	// TODO - add an upload image functionality
 	// TODO - add logic to render out 'M', 'K', etc. if the user has millions or thousands of followers
-	// TODO - have it autoscroll to the bottom as new messages are added
-	// TODO - clear input on message send
-	// TODO - add logic to render out the appropriate convos per chat ID
 
 	function handlePaste(e: React.ClipboardEvent<HTMLDivElement>) {
 		const image = e.clipboardData || window.Clipboard;
@@ -81,7 +78,17 @@ export default function Conversation({
 				conversation &&
 				userData && (
 					<div className="w-full h-full overflow-y-auto">
-						<InboxHeader conversation={conversation} currUID={userData?._id} />
+						<InboxHeader
+							conversation={conversation}
+							currUID={userData?._id}
+							status={
+								activeUsers.includes(
+									getFriend(conversation.users, userData?._id)._id
+								)
+									? Status.Online
+									: Status.Offline
+							}
+						/>
 						<Link
 							to={`/${getFriend(conversation?.users, userData?._id).username}`}
 						>
@@ -90,14 +97,18 @@ export default function Conversation({
 								currUID={userData?._id}
 							/>
 						</Link>
-						<div className="overflow-y-auto pb-14">
+						<div
+							className={`overflow-y-auto ${
+								!isDMRequest ? "pb-14" : "pb-48"
+							} w-full max-w-full`}
+						>
 							{messages &&
 								messages?.map((message: Message) => {
 									return (
 										<ChatBubble
 											you={message.sender._id === userData?._id}
 											message={message.message}
-											timestamp={"1:04 AM"}
+											timestamp={message.createdAt}
 										/>
 									);
 								})}
@@ -105,7 +116,11 @@ export default function Conversation({
 						</div>
 					</div>
 				)}
+
+			{isDMRequest && <DMRequestFooter username={conversation?.requestedBy.fullName} />}
+
 			{location.pathname.split("/").length !== 2 &&
+				!isDMRequest &&
 				conversation &&
 				userData && (
 					<InboxFooter
@@ -113,6 +128,7 @@ export default function Conversation({
 						deleteImage={deleteImage}
 						contentEditableDivRef={contentEditableDivRef}
 						handlePaste={handlePaste}
+						members={conversation.users}
 					/>
 				)}
 		</div>
