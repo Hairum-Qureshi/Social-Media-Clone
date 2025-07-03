@@ -117,8 +117,13 @@ export default function Conversation({
 					</div>
 				)}
 
-			{isDMRequest && (
-				<DMRequestFooter username={conversation?.requestedBy.fullName} />
+			{conversation && userData && isDMRequest && (
+				<DMRequestFooter
+					username={conversation.requestedBy.fullName}
+					dmRequestID={conversation.messages[0].conversationID}
+					requestedByUID={conversation.requestedBy._id}
+					currUID={userData._id}
+				/>
 			)}
 
 			{location.pathname.split("/").length !== 2 &&
