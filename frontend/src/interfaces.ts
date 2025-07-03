@@ -334,6 +334,7 @@ export interface DMTools {
 	) => void;
 	messages: Message[];
 	dmRequests: DMRequest[];
+	acceptDMRequest: (dmRequestID: string) => void;
 }
 
 export interface SocketContextData {
