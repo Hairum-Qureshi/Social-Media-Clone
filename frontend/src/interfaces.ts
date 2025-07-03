@@ -467,7 +467,10 @@ export interface Logo {
 }
 
 export interface DMRequestFooterProps {
-	username: string | undefined;
+	username: string;
+	dmRequestID: string;
+	requestedByUID: string;
+	currUID: string;
 }
 
 export interface ChatBubbleProps {
