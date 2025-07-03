@@ -1,4 +1,4 @@
-import { DMRequestFooterProps } from "../../../../interfaces";
+import { DMRequestFooterProps } from "../../../../../interfaces";
 
 export default function DMRequestFooter({ username }: DMRequestFooterProps) {
 	return (
