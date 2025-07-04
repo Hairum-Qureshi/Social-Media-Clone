@@ -131,5 +131,35 @@ export default function useDM(): DMTools {
 		if (!message) alert("Please provide a message");
 	}
 
-	return { createDM, conversations, sendMessage, messages };
+	const { data: dmRequests } = useQuery({
+		queryKey: ["dmRequests"],
+		queryFn: async () => {
+			const response = await axios.get(
+				`${import.meta.env.VITE_BACKEND_BASE_URL}/api/messages/dm-requests`,
+				{ withCredentials: true }
+			);
+			return response.data || [];
+		}
+	});
+
+	const { mutate:acceptDMRequestMutate } = useMutation({
+		mutationFn: async ({ dmRequestID }: { dmRequestID: string }) => {
+			const response = await axios.patch(
+				`${import.meta.env.VITE_BACKEND_BASE_URL}/api/messages/dm-requests/${dmRequestID}/accept`,
+				{  },
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["dmRequests"] });
+			queryClient.invalidateQueries({ queryKey: ["conversations"] });
+		}
+	});
+
+	const acceptDMRequest = (dmRequestID:string) => {
+		acceptDMRequestMutate({ dmRequestID });
+	};
+
+	return { createDM, conversations, sendMessage, messages, dmRequests, acceptDMRequest };
 }
