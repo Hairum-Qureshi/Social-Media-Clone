@@ -5,16 +5,16 @@ import UserSearchModal from "./modal/UserSearchModal";
 import { useState } from "react";
 import useDM from "../../../../hooks/useDM";
 import DM from "./DM";
-import { Conversation, UserData_Conversation } from "../../../../interfaces";
+import {
+	ContactsProps,
+	Conversation,
+	UserData_Conversation
+} from "../../../../interfaces";
 import useAuthContext from "../../../../contexts/AuthContext";
 
 // TODO - may need to add specific logic for displaying group chats
 // TODO - remove hardcoded "3 pending requests" and add logic so it only displays the number of requests if the user has any requests
 // !BUG - message stuff is still appearing when you go view DM requests
-
-interface ContactsProps {
-	setConvo: (conversation: Conversation) => void;
-}
 
 export default function Contacts({ setConvo }: ContactsProps) {
 	const location = useLocation();
@@ -28,6 +28,9 @@ export default function Contacts({ setConvo }: ContactsProps) {
 
 	const { conversations, dmRequests } = useDM();
 	const { userData } = useAuthContext()!;
+
+	const pendingCount =
+		dmRequests?.reduce((count, req) => count + req.messages.length, 0) || 0;
 
 	return (
 		<>
@@ -61,11 +64,11 @@ export default function Contacts({ setConvo }: ContactsProps) {
 						<div>
 							<p className="flex items-center">Message Requests</p>
 							<p className="text-sm text-zinc-500">
-								{!dmRequests || !dmRequests.length
+								{pendingCount === 0
 									? "No Pending Requests"
-									: dmRequests.length === 1
-									? "1 Pending Request"
-									: `${dmRequests.length} Pending Requests`}
+									: `${pendingCount} Pending Request${
+											pendingCount > 1 ? "s" : ""
+									  }`}
 							</p>
 						</div>
 					</div>
