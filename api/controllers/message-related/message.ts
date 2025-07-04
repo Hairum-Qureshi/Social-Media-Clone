@@ -111,10 +111,27 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 					friendData._id.toString().replace(/ObjectId\("(.*)"\)/, "$1");
 			}
 
+			const existingConversation: IConversation | undefined =
+				(await Conversation.findOne({
+					users: { $all: [String(currUID), String(friendData._id)] },
+					isGroupchat: false
+				}).lean()) as IConversation | undefined;
+
 			// check if they both follow each other (no DM request)
 			if (isFollowing && friendIsAFollower) {
 				// no DM request
 				// create a conversation and return it to the current user
+
+				// check if the users already have a conversation
+				if (existingConversation) {
+					// TODO - maybe send back the conversation so that if the user deleted it from their convo list, it'll appear again for them
+					console.log("ran");
+					res
+						.status(200)
+						.send("You already have a conversation with this user");
+					return;
+				}
+
 				const conversation: IConversation = await Conversation.create({
 					users: [currUID, friendData._id],
 					isGroupchat: false
@@ -161,12 +178,18 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 
 				res.status(200).send(conversationData);
 			} else {
-				// TODO - if the user whose received the DM request accepts it, you'll need to update it for both the user and the DM request receiver so that it no longer is a DM request
 				// send a DM request and make sure to update the user's dmRequest object too (the one who's receiving the request)
 				// maybe send a notification?
-				// send an email to the user whose received the DM request too
+				// first check if the two have a conversation with each other already
+				if (existingConversation) {
+					// TODO - maybe send back the conversation so that if the user deleted it from their convo list, it'll appear again for them
+					res
+						.status(200)
+						.send("You already have a conversation with this user");
+					return;
+				}
 
-				// prevent a a duplicate Conversation by first checking if a DM request by the current user to their friend exists
+				// prevent a a duplicate DM request by first checking if a DM request by the current user to their friend exists
 				const existingDMRequest: IConversation | undefined =
 					(await Conversation.findOne({
 						isDMRequest: true,
