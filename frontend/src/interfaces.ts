@@ -479,3 +479,7 @@ export interface ChatBubbleProps {
 	message: string;
 	timestamp: Date;
 }
+
+export interface ContactsProps {
+	setConvo: (conversation: Conversation) => void;
+}
