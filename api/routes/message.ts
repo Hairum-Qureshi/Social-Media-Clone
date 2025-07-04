@@ -11,6 +11,7 @@ import {
 	acceptDMRequest,
 	getDMRequests
 } from "../controllers/message-related/dm-request-related/handle-dm-requests";
+import checkOwner from "../middleware/checkOwner";
 
 const router = express.Router();
 
@@ -24,11 +25,10 @@ router.get(
 router.post("/create", checkAuthStatus, createDM);
 router.post("/new-message/:conversationID", checkAuthStatus, postMessage);
 router.get("/dm-requests", checkAuthStatus, getDMRequests);
-
-// TODO - add middleware to prevent another user from accepting/declining another user's DM request
 router.patch(
 	"/dm-requests/:requestID/accept",
 	checkAuthStatus,
+	checkOwner("DM Request"),
 	acceptDMRequest
 );
 
