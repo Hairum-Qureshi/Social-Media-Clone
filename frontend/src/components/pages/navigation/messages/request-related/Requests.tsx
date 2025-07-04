@@ -12,6 +12,8 @@ export default function Requests() {
 	const { userData } = useAuthContext()!;
 	const [dmRequest, setDMRequest] = useState<DMRequest>();
 
+	console.log(dmRequests);
+
 	return (
 		<div className="bg-black inline-flex w-full">
 			<div className="border border-slate-600 w-5/12 flex-shrink-0">
@@ -24,23 +26,25 @@ export default function Requests() {
 						</p>
 					</div>
 				) : (
-					dmRequests.map((dm: DMRequest) => {
-						return (
-							<div className="text-white">
-								<Link
-									to={`/messages/requests/${dm.messages[0].conversationID}/${userData?._id}-${dm.requestedBy._id}`}
-									onClick={() => setDMRequest(dm)}
-								>
-									<DM
-										conversationID={dm.messages[0].conversationID}
-										username={dm.requestedBy.username}
-										pfp={dm.requestedBy.profilePicture}
-										fullName={dm.requestedBy.fullName}
-										latestMessage={dm.latestMessage}
-									/>
-								</Link>
-							</div>
-						);
+					dmRequests?.map((dm: DMRequest) => {
+						if (dm.messages.length) {
+							return (
+								<div className="text-white">
+									<Link
+										to={`/messages/requests/${dm.messages[0].conversationID}/${userData?._id}-${dm.requestedBy._id}`}
+										onClick={() => setDMRequest(dm)}
+									>
+										<DM
+											conversationID={dm.messages[0].conversationID}
+											username={dm.requestedBy.username}
+											pfp={dm.requestedBy.profilePicture}
+											fullName={dm.requestedBy.fullName}
+											latestMessage={dm.latestMessage}
+										/>
+									</Link>
+								</div>
+							);
+						}
 					})
 				)}
 			</div>
