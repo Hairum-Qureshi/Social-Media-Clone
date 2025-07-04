@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 import Post from "../models/Post";
 import WorkHistory from "../models/WorkHistory";
 import { IPost, IWorkHistory } from "../interfaces";
+import Conversation from "../models/inbox/Conversation";
 
 export default function checkOwner(
 	resourceType: string
@@ -23,6 +24,8 @@ export default function checkOwner(
 			const resourceID =
 				resourceType === "post"
 					? req.params.postID
+					: resourceType === "DM Request"
+					? req.params.requestID
 					: req.params.workExperienceID;
 
 			if (resourceType !== "post" && !Types.ObjectId.isValid(resourceID)) {
@@ -39,6 +42,19 @@ export default function checkOwner(
 				}
 
 				if (!post.user.equals(currUID)) {
+					res.status(403).json({ message: "Forbidden: not the owner" });
+					return;
+				}
+			}
+
+			if (resourceType === "DM Request") {
+				const dmRequest = await Conversation.findById(resourceID);
+				if (!dmRequest) {
+					res.status(404).json({ message: "DM Request not found" });
+					return;
+				}
+
+				if (!dmRequest.requestedTo.equals(currUID)) {
 					res.status(403).json({ message: "Forbidden: not the owner" });
 					return;
 				}
