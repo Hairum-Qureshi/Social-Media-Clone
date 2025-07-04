@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { Types } from "mongoose";
 import User from "../../../models/User";
+import Conversation from "../../../models/inbox/Conversation";
+import { IConversation } from "../../../interfaces";
 
 const getDMRequests = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -44,6 +46,39 @@ const getDMRequests = async (req: Request, res: Response): Promise<void> => {
 
 const acceptDMRequest = async (req: Request, res: Response): Promise<void> => {
 	try {
+		const { requestID } = req.params;
+		const currUID: Types.ObjectId = req.user._id;
+
+		const convo = await Conversation.findById({ _id: requestID });
+		if (!convo) {
+			res.status(404).json({ message: "Conversation not found" });
+			return;
+		}
+
+		const updatedConversation: IConversation =
+			(await Conversation.findByIdAndUpdate(
+				{ _id: requestID },
+				{
+					isDMRequest: false
+				},
+				{ new: true }
+			)) as IConversation;
+
+		await User.findByIdAndUpdate(
+			{
+				_id: updatedConversation.requestedTo._id || currUID
+			},
+			{
+				$pull: {
+					dmRequests: updatedConversation._id
+				},
+				$addToSet: {
+					conversations: updatedConversation._id
+				}
+			}
+		);
+
+		res.status(200).json(updatedConversation);
 	} catch (error) {
 		console.error(
 			"Error in handle-dm-requests.ts file, acceptDMRequest function controller"
