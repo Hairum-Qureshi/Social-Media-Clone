@@ -316,7 +316,6 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 		) as unknown as IUser[];
 
 		if (conversation.isDMRequest) {
-			// ! minor issue where an email is sent for every message the user sends in their DM request
 			const requestMessage: IMessage = await Message.create({
 				message,
 				sender,
