@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import Post from "../models/Post";
 import WorkHistory from "../models/WorkHistory";
-import { IPost, IWorkHistory } from "../interfaces";
+import { IPost, IUser, IWorkHistory } from "../interfaces";
 import Conversation from "../models/inbox/Conversation";
+import User from "../models/User";
 
 export default function checkOwner(
 	resourceType: string
@@ -26,6 +27,8 @@ export default function checkOwner(
 					? req.params.postID
 					: resourceType === "DM Request"
 					? req.params.requestID
+					: resourceType === "Conversation"
+					? req.params.conversationID
 					: req.params.workExperienceID;
 
 			if (resourceType !== "post" && !Types.ObjectId.isValid(resourceID)) {
@@ -56,6 +59,22 @@ export default function checkOwner(
 
 				if (!dmRequest.requestedTo.equals(currUID)) {
 					res.status(403).json({ message: "Forbidden: not the owner" });
+					return;
+				}
+			}
+
+			if (resourceType === "Conversation") {
+				const user: IUser = (await User.findById(currUID)!) as IUser;
+				if (
+					!(user.conversations as unknown as Types.ObjectId[]).includes(
+						new mongoose.Types.ObjectId(resourceID)
+					)
+				) {
+					res
+						.status(403)
+						.json({
+							message: "Forbidden: conversation does not belong to you"
+						});
 					return;
 				}
 			}
