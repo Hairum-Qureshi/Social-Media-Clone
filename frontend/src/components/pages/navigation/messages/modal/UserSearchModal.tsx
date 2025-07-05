@@ -36,7 +36,7 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 	// TODO - add a border shadow around the modal
 
 	return (
-		<div className="w-2/5 ml-20 border border-slate-700 rounded-xl h-3/4 absolute top-24 bg-black shadow-lg shadow-black flex flex-col">
+		<div className="w-2/5 ml-20 border border-slate-700 rounded-xl h-3/4 absolute top-24 bg-black shadow-lg shadow-black flex flex-col z-10">
 			<div className="w-full p-2 text-white flex items-center my-2">
 				<span className="text-xl ml-2 hover:cursor-pointer">
 					{!path.includes("/group") ? (
