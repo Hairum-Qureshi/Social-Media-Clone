@@ -275,7 +275,8 @@ export interface ContactProps {
 	pfp: string;
 	fullName: string;
 	latestMessage: string;
-}
+	activeConversationID: string | null;
+	setActiveConversationID: (id: string | null) => void;}
 
 export interface ConversationProps {
 	defaultSubtext: string;
