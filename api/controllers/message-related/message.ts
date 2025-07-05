@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { IConversation, IMessage, IUser } from "../../interfaces";
 import User from "../../models/User";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import Conversation from "../../models/inbox/Conversation";
 import Message from "../../models/inbox/Message";
 import { getSocketIDbyUID, io } from "../../socket";
@@ -404,10 +404,69 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+const deleteConversation = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const { conversationID } = req.params;
+		const currUID: Types.ObjectId = req.user._id;
+
+		// checks if the other members of this conversation are still apart of it; if not, delete the conversation
+		// if the rest are still apart of it, just remove the current user from the conversation
+
+		const conversation: IConversation = (await Conversation.findById(
+			conversationID
+		).populate({
+			path: "users",
+			select: "_id"
+		})) as IConversation;
+
+		conversation.users.forEach(async (userID: Types.ObjectId) => {
+			const bools: boolean[] = [];
+			// don't want to count the current user
+			if (userID._id !== currUID) {
+				const user: IUser = (await User.findById(userID._id)) as IUser;
+				if (user) {
+					// check if they still have this conversation ID in their list of conversations
+					const bool = (
+						user.conversations as unknown as Types.ObjectId[]
+					).includes(new mongoose.Types.ObjectId(conversationID));
+					bools.push(bool);
+				}
+			}
+			const allFalse: boolean = bools.every(bool => bool === false);
+			if (allFalse) {
+				// all other users have left the conversation, so delete the conversation
+				await Conversation.findByIdAndDelete(conversationID);
+			} else {
+				// not every user in the conversation has left, so just remove the current user from the conversation
+				await Conversation.findById(
+					{ _id: currUID },
+					{
+						$pull: {
+							conversations: conversationID
+						}
+					}
+				);
+			}
+		});
+		res.status(200).json({ message: "Conversation deleted" });
+	} catch (error) {
+		console.error(
+			"Error in messages.ts file, deleteConversation function controller".red
+				.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
 export {
 	getSearchedUsers,
 	getAllConversations,
 	createDM,
 	getConversationChat,
-	postMessage
+	postMessage,
+	deleteConversation
 };
