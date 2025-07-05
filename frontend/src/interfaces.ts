@@ -276,7 +276,8 @@ export interface ContactProps {
 	fullName: string;
 	latestMessage: string;
 	activeConversationID: string | null;
-	setActiveConversationID: (id: string | null) => void;}
+	setActiveConversationID: (id: string | null) => void;
+}
 
 export interface ConversationProps {
 	defaultSubtext: string;
@@ -336,6 +337,7 @@ export interface DMTools {
 	messages: Message[];
 	dmRequests: DMRequest[];
 	acceptDMRequest: (dmRequestID: string) => void;
+	deleteConversation: (conversationID: string) => void;
 }
 
 export interface SocketContextData {
