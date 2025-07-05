@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -38,6 +38,7 @@ export default function useAuth(): AuthTools {
 
 	const { connectSocket, disconnectSocket } = useSocketContext()!;
 	const navigate = useNavigate();
+	const queryClient = useQueryClient();
 
 	const {
 		mutate: signUpMutate,
@@ -130,6 +131,11 @@ export default function useAuth(): AuthTools {
 					});
 				}
 			}
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({
+				queryKey: ["user"]
+			});
 		}
 	});
 
