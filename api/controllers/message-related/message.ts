@@ -52,7 +52,16 @@ const getAllConversations = async (
 			})
 			.lean();
 
-		res.status(200).send(conversations?.conversations);
+		if (!conversations?.conversations || !conversations?.conversations.length) {
+			res.status(404).json([]);
+		}
+
+		const sortedConversations: IConversation[] =
+			conversations?.conversations.sort((a, b) => {
+				return a.createdAt < b.createdAt ? 1 : -1;
+			}) as IConversation[];
+
+		res.status(200).send(sortedConversations);
 	} catch (error) {
 		console.error(
 			"Error in messages.ts file, getConversations function controller".red
