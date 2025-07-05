@@ -142,11 +142,13 @@ export default function useDM(): DMTools {
 		}
 	});
 
-	const { mutate:acceptDMRequestMutate } = useMutation({
+	const { mutate: acceptDMRequestMutate } = useMutation({
 		mutationFn: async ({ dmRequestID }: { dmRequestID: string }) => {
 			const response = await axios.patch(
-				`${import.meta.env.VITE_BACKEND_BASE_URL}/api/messages/dm-requests/${dmRequestID}/accept`,
-				{  },
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/messages/dm-requests/${dmRequestID}/accept`,
+				{},
 				{ withCredentials: true }
 			);
 			return response.data;
@@ -157,9 +159,47 @@ export default function useDM(): DMTools {
 		}
 	});
 
-	const acceptDMRequest = (dmRequestID:string) => {
+	const acceptDMRequest = (dmRequestID: string) => {
 		acceptDMRequestMutate({ dmRequestID });
 	};
 
-	return { createDM, conversations, sendMessage, messages, dmRequests, acceptDMRequest };
+	const { mutate: deleteConversationMutation } = useMutation({
+		mutationFn: async ({ conversationID }: { conversationID: string }) => {
+			try {
+				const response = await axios.delete(
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/messages/conversations/${conversationID}`,
+					{ withCredentials: true }
+				);
+
+				return response.data;
+			} catch (error) {
+				console.error("Error deleting:", error);
+				throw new Error("Failed to delete notification");
+			}
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["conversations"] });
+		}
+	});
+
+	const deleteConversation = (conversationID: string) => {
+		const confirmation = confirm(
+			"Are you sure you would like to delete this conversation?"
+		);
+		if (!confirmation) return;
+
+		deleteConversationMutation({ conversationID });
+	};
+
+	return {
+		createDM,
+		conversations,
+		sendMessage,
+		messages,
+		dmRequests,
+		acceptDMRequest,
+		deleteConversation
+	};
 }
