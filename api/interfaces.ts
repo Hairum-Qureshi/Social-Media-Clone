@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 
 export interface IConversation {
 	_id: Types.ObjectId;
-	users: Types.ObjectId[]
+	users: Types.ObjectId[];
 	isGroupchat: boolean;
 	groupName: string;
 	groupPhoto: string;
@@ -18,6 +18,8 @@ export interface IConversation {
 			profilePicture: string;
 		}
 	];
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 export interface IWorkHistory {
