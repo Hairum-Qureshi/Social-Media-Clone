@@ -146,11 +146,7 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 					isGroupchat: false
 				});
 
-				// TODO make sure to not add duplicate conversations
-				// TODO maybe change is to that a conversation is created only when either user sends a message
-
 				// add conversation to the current user's list of conversations
-
 				await User.findByIdAndUpdate(
 					{
 						_id: currUID
@@ -187,14 +183,28 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 
 				res.status(200).send(conversationData);
 			} else {
-				// send a DM request and make sure to update the user's dmRequest object too (the one who's receiving the request)
-				// maybe send a notification?
+				// logic for DM requests
 				// first check if the two have a conversation with each other already
 				if (existingConversation) {
-					// TODO - maybe send back the conversation so that if the user deleted it from their convo list, it'll appear again for them
-					res
-						.status(200)
-						.send("You already have a conversation with this user");
+					// check if the current user removed this conversation ID from their conversations list
+					const user: IUser = (await User.findById(currUID)) as IUser;
+					const conversationExists = (
+						user.conversations as unknown as Types.ObjectId[]
+					).includes(existingConversation._id);
+					if (!conversationExists) {
+						// add conversation to the current user's list of conversations
+						await User.findByIdAndUpdate(
+							{ _id: currUID },
+							{
+								$addToSet: {
+									conversations: existingConversation._id
+								}
+							}
+						);
+					}
+					// this code will restore the conversation the user previously had with another user but had deleted it; however, if the other user(s) also removed the conversation ID from their conversations list, then the conversation will be deleted
+
+					res.status(200).send(existingConversation);
 					return;
 				}
 
@@ -441,7 +451,7 @@ const deleteConversation = async (
 				await Conversation.findByIdAndDelete(conversationID);
 			} else {
 				// not every user in the conversation has left, so just remove the current user from the conversation
-				await Conversation.findById(
+				await User.findByIdAndUpdate(
 					{ _id: currUID },
 					{
 						$pull: {
