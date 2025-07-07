@@ -4,12 +4,14 @@ import axios from "axios";
 import useAuthContext from "../contexts/AuthContext";
 import useSocketContext from "../contexts/SocketIOContext";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function useDM(): DMTools {
 	const queryClient = useQueryClient();
 	const { userData } = useAuthContext()!;
 	const convoID: string = window.location.pathname.split("/")[3];
 	const { receivedMessage } = useSocketContext()!;
+	const navigate = useNavigate();
 
 	const { data: conversations = [] } = useQuery({
 		queryKey: ["conversations"],
@@ -181,6 +183,7 @@ export default function useDM(): DMTools {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["conversations"] });
+			navigate("/messages");
 		}
 	});
 
