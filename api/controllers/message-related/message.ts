@@ -38,9 +38,7 @@ const getAllConversations = async (
 	try {
 		const uid: Types.ObjectId = req.user._id;
 
-		const conversations = await User.findById({
-			_id: uid
-		})
+		const user:IUser = await User.findById(uid)
 			.select("-__v")
 			.populate({
 				path: "conversations",
@@ -50,19 +48,18 @@ const getAllConversations = async (
 						"_id username fullName profilePicture isVerified createdAt bio numFollowers followers"
 				}
 			})
-			.lean();
+			.lean() as IUser;
 
-		if (!conversations?.conversations || !conversations?.conversations.length) {
-			res.status(404).json([]);
+		if (!user.conversations || user.conversations.length === 0) {
+			res.status(200).json([]);
 			return;
 		}
 
-		const sortedConversations: IConversation[] =
-			conversations?.conversations.sort((a, b) => {
-				return a.createdAt < b.createdAt ? 1 : -1;
-			}) as IConversation[];
+		const sortedConversations = user.conversations.sort((a, b) =>
+			a.createdAt < b.createdAt ? 1 : -1
+		);
 
-		res.status(200).send(sortedConversations);
+		res.status(200).json(sortedConversations);
 	} catch (error) {
 		console.error(
 			"Error in messages.ts file, getConversations function controller".red
@@ -423,6 +420,8 @@ const deleteConversation = async (
 		const { conversationID } = req.params;
 		const currUID: Types.ObjectId = req.user._id;
 
+		// ! Issue - when you delete a conversation, it doesn't delete the conversation from the user's list of conversations (via the frontend)
+
 		// checks if the other members of this conversation are still apart of it; if not, delete the conversation
 		// if the rest are still apart of it, just remove the current user from the conversation
 
@@ -433,36 +432,54 @@ const deleteConversation = async (
 			select: "_id"
 		})) as IConversation;
 
-		conversation.users.forEach(async (userID: Types.ObjectId) => {
-			const bools: boolean[] = [];
-			// don't want to count the current user
-			if (userID._id !== currUID) {
-				const user: IUser = (await User.findById(userID._id)) as IUser;
+		if (!conversation) {
+			res.status(404).json({ message: "Conversation not found" });
+			return;
+		}
+
+		let allOthersHaveLeft = true;
+
+		for (const userID of conversation.users) {
+			if (!userID._id.equals(currUID)) {
+				const user = await User.findById(userID._id);
 				if (user) {
-					// check if they still have this conversation ID in their list of conversations
-					const bool = (
+					const hasConversation = (
 						user.conversations as unknown as Types.ObjectId[]
 					).includes(new mongoose.Types.ObjectId(conversationID));
-					bools.push(bool);
+					if (hasConversation) {
+						allOthersHaveLeft = false;
+						break;
+					}
 				}
 			}
-			const allFalse: boolean = bools.every(bool => bool === false);
-			if (allFalse) {
-				// all other users have left the conversation, so delete the conversation
-				await Conversation.findByIdAndDelete(conversationID);
-			} else {
-				// not every user in the conversation has left, so just remove the current user from the conversation
-				await User.findByIdAndUpdate(
-					{ _id: currUID },
-					{
-						$pull: {
-							conversations: conversationID
-						}
+		}
+
+		if (allOthersHaveLeft) {
+			if (!conversation.messages.length && conversation.isDMRequest) {
+				// if the user has sent no message for this conversation and has deleted the conversation, then delete the DM request that was sent to the other user as well (remember that a DM request is sent regardless if the user sent a message or not)
+				await User.findByIdAndUpdate(conversation.requestedTo, {
+					$pull: {
+						dmRequests: conversationID
 					}
-				);
+				});
 			}
-		});
-		res.status(200).json({ message: "Conversation deleted" });
+
+			await User.findByIdAndUpdate(currUID, {
+				$pull: {
+					conversations: conversationID
+				}
+			});
+
+			await Conversation.findByIdAndDelete(conversationID);
+		} else {
+			await User.findByIdAndUpdate(currUID, {
+				$pull: {
+					conversations: conversationID
+				}
+			});
+		}
+
+		res.status(200).json({ message: "Conversation deleted or user removed" });
 	} catch (error) {
 		console.error(
 			"Error in messages.ts file, deleteConversation function controller".red
