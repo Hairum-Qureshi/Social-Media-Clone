@@ -28,6 +28,7 @@ export default function useUserSearch(): UserSearchTools {
 				else
 					setSearchedUsers([
 						{
+							_id: user._id,
 							pfp: user.profilePicture,
 							fullName: user.fullName
 						}
@@ -47,6 +48,7 @@ export default function useUserSearch(): UserSearchTools {
 					setSearchedUsers([
 						...searchedUsers,
 						{
+							_id: user._id,
 							pfp: user.profilePicture,
 							fullName: user.fullName
 						}
