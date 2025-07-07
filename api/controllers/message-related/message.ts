@@ -54,6 +54,7 @@ const getAllConversations = async (
 
 		if (!conversations?.conversations || !conversations?.conversations.length) {
 			res.status(404).json([]);
+			return;
 		}
 
 		const sortedConversations: IConversation[] =
