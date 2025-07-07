@@ -195,6 +195,7 @@ export interface UserSearchModalProps {
 }
 
 export interface UserTagData {
+	_id: string;
 	pfp: string;
 	fullName: string;
 }
