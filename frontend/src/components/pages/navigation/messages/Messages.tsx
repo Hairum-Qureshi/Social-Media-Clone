@@ -3,16 +3,24 @@ import Contacts from "./Contacts";
 import Conversation from "./Conversation";
 import { Conversation as IConversation } from "../../../../interfaces";
 import useDM from "../../../../hooks/useDM";
+import { useLocation } from "react-router-dom";
 
 export default function Messages() {
-	const [conversation, setConversation] = useState<IConversation>();
-	const pathname: string[] = window.location.pathname.split("/");
+	const [conversation, setConversation] = useState<IConversation | undefined>();
+	const location = useLocation();
+	const pathname: string[] = location.pathname.split("/");
 
 	function setConvo(conversation: IConversation) {
 		setConversation(conversation);
 	}
 
 	const { conversations } = useDM();
+
+	useEffect(() => {
+		if (conversation && location.pathname === "/messages") {
+			setConversation(undefined);
+		}
+	}, [location]);
 
 	useEffect(() => {
 		if (pathname.length === 5) {
