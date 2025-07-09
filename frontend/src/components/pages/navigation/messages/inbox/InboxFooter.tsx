@@ -12,7 +12,7 @@ import {
 } from "../../../../../interfaces";
 import { useState } from "react";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
-import useDM from "../../../../../hooks/useDM";
+import useDM from "../../../../../hooks/dms-related/useDM";
 import useSocketContext from "../../../../../contexts/SocketIOContext";
 import useAuthContext from "../../../../../contexts/AuthContext";
 
