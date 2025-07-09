@@ -1,17 +1,17 @@
 import express from "express";
 import checkAuthStatus from "../middleware/checkAuthStatus";
-import {
-	getAllConversations,
-	getSearchedUsers,
-	createDM,
-	getConversationChat,
-	postMessage
-} from "../controllers/message-related/message";
+import { createDM, postMessage } from "../controllers/message-related/message";
 import {
 	acceptDMRequest,
 	getDMRequests
-} from "../controllers/message-related/dm-request-related/handle-dm-requests";
+} from "../controllers/message-related/handle-dm-requests";
 import checkOwner from "../middleware/checkOwner";
+import {
+	deleteConversation,
+	getAllConversations,
+	getConversationChat,
+	getSearchedUsers
+} from "../controllers/message-related/conversation-related";
 
 const router = express.Router();
 
@@ -30,6 +30,18 @@ router.patch(
 	checkAuthStatus,
 	checkOwner("DM Request"),
 	acceptDMRequest
+);
+// router.delete(
+// 	"/dm-requests/:requestID",
+// 	checkAuthStatus,
+// 	checkOwner("DM Request"),
+// 	acceptDMRequest
+// );
+router.delete(
+	"/conversations/:conversationID",
+	checkAuthStatus,
+	checkOwner("Conversation"),
+	deleteConversation
 );
 
 export default router;
