@@ -2,11 +2,11 @@ import { AdminData } from "../interfaces";
 
 export function checkIfAdmin(
 	admins: AdminData[],
-	currUID: string | undefined
+	uid: string | undefined
 ): boolean {
-	if (currUID) {
+	if (uid) {
 		return admins.some((admin: AdminData) => {
-			return admin._id === currUID;
+			return admin._id === uid;
 		});
 	}
 
