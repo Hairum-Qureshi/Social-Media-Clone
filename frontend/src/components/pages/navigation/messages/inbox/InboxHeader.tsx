@@ -8,19 +8,27 @@ import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 export default function InboxHeader({
 	conversation,
 	currUID,
-	status
+	status,
+	setShowInfoPanel,
+	showInfoPanel
 }: InboxHeaderProps) {
 	return (
 		<div className="w-full p-2 font-semibold sticky top-0 bg-black">
 			{conversation?.isGroupchat ? (
-				<>
+				<div className="flex items-center">
 					<img
 						src={conversation?.groupPhoto}
 						alt="User pfp"
 						className="w-8 h-8 rounded-full object-cover mr-3"
 					/>
 					<p>{conversation.groupName}</p>
-				</>
+					<span
+						className="ml-auto text-lg hover:cursor-pointer"
+						onClick={() => setShowInfoPanel(!showInfoPanel)}
+					>
+						<FontAwesomeIcon icon={faCircleInfo} />
+					</span>
+				</div>
 			) : (
 				<div className="flex items-center">
 					<img
@@ -36,7 +44,10 @@ export default function InboxHeader({
 							<span className="text-red-600 font-light ml-5">Offline</span>
 						)}
 					</p>
-					<span className="ml-auto text-lg hover:cursor-pointer">
+					<span
+						className="ml-auto text-lg hover:cursor-pointer"
+						onClick={() => setShowInfoPanel(!showInfoPanel)}
+					>
 						<FontAwesomeIcon icon={faCircleInfo} />
 					</span>
 				</div>
