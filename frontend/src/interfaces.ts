@@ -324,11 +324,18 @@ export interface DMRequest {
 	media: string[];
 	isDMRequest: boolean;
 	requestedBy: UserData_Conversation;
-	requestedTo: string;
+	requestedTo: string[];
 	messages: Message[];
 	createdAt: Date;
 	updatedAt: Date;
 	latestMessage: string;
+	admin: {
+		_id: string;
+		username: string;
+		profilePicture: string;
+		fullName: string;
+		isVerified: boolean;
+	};
 }
 
 export interface ProfilePreviewProps {
