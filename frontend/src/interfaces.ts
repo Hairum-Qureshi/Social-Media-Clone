@@ -41,7 +41,7 @@ export interface Conversation {
 	latestMessage: string;
 	isDMRequest: boolean;
 	requestedBy: UserData_Conversation;
-	requestedTo: string;
+	requestedTo: string[];
 	messages: Message[];
 	isAdmin: boolean;
 }
