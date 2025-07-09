@@ -43,7 +43,11 @@ const conversationSchema = new Schema(
 				ref: "Message",
 				default: []
 			}
-		]
+		],
+		isAdmin: {
+			type: Boolean,
+			default: false
+		}
 	},
 	{
 		timestamps: true
