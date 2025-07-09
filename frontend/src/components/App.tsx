@@ -12,7 +12,7 @@ import ProtectedRoutesGuard from "./ProtectedRoutesGuard";
 import { AuthProvider } from "../contexts/AuthContext";
 import { SocketProvider } from "../contexts/SocketIOContext";
 import PostDetails from "./post/PostDetails";
-import Requests from "./pages/navigation/messages/Requests";
+import Requests from "./pages/navigation/messages/request-related/Requests";
 import ProfileConnections from "./pages/navigation/profile/ProfileConnections";
 import PostImageDetails from "./post/PostImageDetails";
 import { PostModalProvider } from "../contexts/PostModalContext";
@@ -63,6 +63,14 @@ export default function App() {
 							/>
 							<Route
 								path="/messages/compose"
+								element={
+									<ProtectedRoutesGuard>
+										<Messages />
+									</ProtectedRoutesGuard>
+								}
+							/>
+							<Route
+								path="/messages/conversation/:conversationID"
 								element={
 									<ProtectedRoutesGuard>
 										<Messages />
