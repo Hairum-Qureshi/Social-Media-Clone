@@ -18,7 +18,7 @@ export interface IConversation {
 			profilePicture: string;
 		}
 	],
-	isAdmin: boolean;
+	admin: Types.ObjectId;
 	createdAt: Date;
 	updatedAt: Date;
 }
