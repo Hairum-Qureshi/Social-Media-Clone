@@ -473,9 +473,8 @@ export interface Logo {
 }
 
 export interface DMRequestFooterProps {
-	username: string;
 	dmRequestID: string;
-	requestedByUID: string;
+	dmRequestData: DMRequest | Conversation;
 	currUID: string;
 }
 
