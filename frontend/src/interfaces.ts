@@ -498,3 +498,7 @@ export interface ChatBubbleProps {
 export interface ContactsProps {
 	setConvo: (conversation: Conversation) => void;
 }
+
+export interface InboxInfoPanelProps {
+	conversationData: Conversation | DMRequest;
+}
