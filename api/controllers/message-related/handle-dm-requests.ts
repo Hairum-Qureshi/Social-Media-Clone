@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { Types } from "mongoose";
-import User from "../../../models/User";
-import Conversation from "../../../models/inbox/Conversation";
-import { IConversation } from "../../../interfaces";
+import User from "../../models/User";
+import Conversation from "../../models/inbox/Conversation";
+import { IConversation, IUser } from "../../interfaces";
 
 const getDMRequests = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -88,5 +88,45 @@ const acceptDMRequest = async (req: Request, res: Response): Promise<void> => {
 		res.status(500).json({ message: (error as Error).message });
 	}
 };
+
+export async function createDMRequest(
+	currUID: Types.ObjectId,
+	uids: string[]
+): Promise<IUser> {
+	const dmRequestConversation: IConversation = await Conversation.create({
+		users: [currUID, uids[0]],
+		isDMRequest: true,
+		requestedBy: currUID,
+		requestedTo: uids[0]
+	});
+
+	await User.findByIdAndUpdate(
+		{ _id: uids[0] },
+		{
+			$addToSet: {
+				dmRequests: dmRequestConversation._id
+			}
+		},
+		{
+			new: true
+		}
+	).lean();
+
+	const updatedUser: IUser = (await User.findByIdAndUpdate(
+		{
+			_id: currUID
+		},
+		{
+			$addToSet: {
+				conversations: dmRequestConversation._id
+			}
+		},
+		{
+			new: true
+		}
+	)) as IUser;
+
+	return updatedUser;
+}
 
 export { getDMRequests, acceptDMRequest };
