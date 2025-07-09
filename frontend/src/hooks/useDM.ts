@@ -25,10 +25,16 @@ export default function useDM(): DMTools {
 	});
 
 	const { mutate } = useMutation({
-		mutationFn: async ({ searchedUsers }: { searchedUsers: UserTagData[] }) => {
+		mutationFn: async ({
+			searchedUsers,
+			groupChatName
+		}: {
+			searchedUsers: UserTagData[];
+			groupChatName?: string;
+		}) => {
 			const response = await axios.post(
 				`${import.meta.env.VITE_BACKEND_BASE_URL}/api/messages/create`,
-				{ searchedUsers },
+				{ searchedUsers, groupChatName },
 				{ withCredentials: true }
 			);
 			return response.data;
@@ -38,8 +44,8 @@ export default function useDM(): DMTools {
 		}
 	});
 
-	const createDM = (searchedUsers: UserTagData[]) => {
-		mutate({ searchedUsers });
+	const createDM = (searchedUsers: UserTagData[], groupChatName?: string) => {
+		mutate({ searchedUsers, groupChatName });
 	};
 
 	const { data: messages = [] } = useQuery({
