@@ -43,6 +43,7 @@ export interface Conversation {
 	requestedBy: UserData_Conversation;
 	requestedTo: string;
 	messages: Message[];
+	isAdmin: boolean;
 }
 
 export interface WorkHistory {
