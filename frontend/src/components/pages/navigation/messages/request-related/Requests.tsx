@@ -12,8 +12,6 @@ export default function Requests() {
 	const { userData } = useAuthContext()!;
 	const [dmRequest, setDMRequest] = useState<DMRequest>();
 
-	console.log(dmRequests);
-
 	return (
 		<div className="bg-black inline-flex w-full">
 			<div className="border border-slate-600 w-5/12 flex-shrink-0">
@@ -36,9 +34,15 @@ export default function Requests() {
 									>
 										<DM
 											conversationID={dm.messages[0].conversationID}
-											username={dm.requestedBy.username}
-											pfp={dm.requestedBy.profilePicture}
-											fullName={dm.requestedBy.fullName}
+											username={dm.isGroupchat ? "" : dm.requestedBy.username}
+											pfp={
+												dm.isGroupchat
+													? dm.groupPhoto!
+													: dm.requestedBy.profilePicture
+											}
+											fullName={
+												dm.isGroupchat ? dm.groupName! : dm.requestedBy.fullName
+											}
 											latestMessage={dm.latestMessage}
 										/>
 									</Link>
