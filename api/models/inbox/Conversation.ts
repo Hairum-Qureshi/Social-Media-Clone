@@ -34,7 +34,7 @@ const conversationSchema = new Schema(
 			ref: "User"
 		},
 		requestedTo: {
-			type: Types.ObjectId,
+			type: [Types.ObjectId],
 			ref: "User"
 		},
 		messages: [
