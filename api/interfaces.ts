@@ -18,7 +18,7 @@ export interface IConversation {
 			profilePicture: string;
 		}
 	],
-	admin: Types.ObjectId;
+	admins: Types.ObjectId[];
 	createdAt: Date;
 	updatedAt: Date;
 }
