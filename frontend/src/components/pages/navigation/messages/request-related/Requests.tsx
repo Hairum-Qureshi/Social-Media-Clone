@@ -12,11 +12,15 @@ export default function Requests() {
 	const { userData } = useAuthContext()!;
 	const [dmRequest, setDMRequest] = useState<DMRequest>();
 
+	const filteredDMRequests = dmRequests?.filter(
+		(dmRequest: DMRequest) => dmRequest.messages.length !== 0
+	);
+
 	return (
 		<div className="bg-black inline-flex w-full">
 			<div className="border border-slate-600 w-5/12 flex-shrink-0">
 				<UserRequest />
-				{!dmRequests || !dmRequests.length ? (
+				{!filteredDMRequests || !filteredDMRequests.length ? (
 					<div className="text-zinc-500 m-10">
 						<p>
 							Message requests from people you don't follow live here. To reply
@@ -29,7 +33,7 @@ export default function Requests() {
 							return (
 								<div className="text-white">
 									<Link
-										to={`/messages/requests/${dm.messages[0].conversationID}/${userData?._id}-${dm.requestedBy._id}`}
+										to={dm.isGroupchat ? `/messages/requests/${dm.messages[0].conversationID}` : `/messages/requests/${dm.messages[0].conversationID}/${dm.requestedBy._id}-${userData?._id}`}
 										onClick={() => setDMRequest(dm)}
 									>
 										<DM
