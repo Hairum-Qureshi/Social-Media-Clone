@@ -31,6 +31,14 @@ export interface EditorOptionsProps {
 	buttonText: string;
 }
 
+export interface AdminData {
+	_id: string;
+	username: string;
+	profilePicture: string;
+	fullName: string;
+	isVerified: boolean;
+}
+
 export interface Conversation {
 	_id: string;
 	users: UserData_Conversation[];
@@ -43,15 +51,7 @@ export interface Conversation {
 	requestedBy: UserData_Conversation;
 	requestedTo: string[];
 	messages: Message[];
-	admins: [
-		{
-			_id: string;
-			username: string;
-			profilePicture: string;
-			fullName: string;
-			isVerified: boolean;
-		}
-	];
+	admins: AdminData[];
 }
 
 export interface WorkHistory {
@@ -331,15 +331,7 @@ export interface DMRequest {
 	createdAt: Date;
 	updatedAt: Date;
 	latestMessage: string;
-	admins: [
-		{
-			_id: string;
-			username: string;
-			profilePicture: string;
-			fullName: string;
-			isVerified: boolean;
-		}
-	];
+	admins: AdminData[];
 }
 
 export interface ProfilePreviewProps {
