@@ -6,7 +6,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ContactProps } from "../../../../interfaces";
 import useSocketContext from "../../../../contexts/SocketIOContext";
-import useDM from "../../../../hooks/useDM";
+import useDM from "../../../../hooks/dms-related/useDM";
 
 export default function DM({
 	conversationID,
