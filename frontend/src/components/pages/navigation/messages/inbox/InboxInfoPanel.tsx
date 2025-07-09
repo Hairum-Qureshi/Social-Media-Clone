@@ -5,7 +5,7 @@ import {
 	UserData_Conversation
 } from "../../../../../interfaces";
 import { checkIfAdmin } from "../../../../../utils/checkIfAdmin";
-import { faCrown } from "@fortawesome/free-solid-svg-icons";
+import { faBan, faCrown } from "@fortawesome/free-solid-svg-icons";
 import useSocketContext from "../../../../../contexts/SocketIOContext";
 import livePulseGIF from "../../../../../assets/green-live-pulse.gif";
 
@@ -90,11 +90,19 @@ export default function InboxInfoPanel({
 							)}
 							{checkIfAdmin(conversationData.admins, userData?._id) && // current user is admin
 								!checkIfAdmin(conversationData.admins, user._id) && ( // target user is not admin
-									<div
-										className="ml-auto border border-sky-400 w-7 h-7 flex items-center justify-center rounded-md p-1"
-										title="Make admin"
-									>
-										<FontAwesomeIcon icon={faCrown} className="text-white" />
+									<div className="ml-auto flex">
+										<div
+											className="border border-red-500 w-7 h-7 flex items-center justify-center rounded-md p-1 text-red-500 mr-2"
+											title="Kick user"
+										>
+											<FontAwesomeIcon icon={faBan} />
+										</div>
+										<div
+											className="border border-sky-400 w-7 h-7 flex items-center justify-center rounded-md p-1"
+											title="Make admin"
+										>
+											<FontAwesomeIcon icon={faCrown} className="text-white" />
+										</div>
 									</div>
 								)}
 						</div>
