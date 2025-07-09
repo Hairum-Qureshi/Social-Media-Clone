@@ -44,9 +44,9 @@ const conversationSchema = new Schema(
 				default: []
 			}
 		],
-		isAdmin: {
-			type: Boolean,
-			default: false
+		admin: {
+			type: Types.ObjectId,
+			ref: "User"
 		}
 	},
 	{
