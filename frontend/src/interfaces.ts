@@ -493,6 +493,7 @@ export interface ChatBubbleProps {
 	you: boolean;
 	message: string;
 	timestamp: Date;
+	isSystem?: boolean;
 }
 
 export interface ContactsProps {
