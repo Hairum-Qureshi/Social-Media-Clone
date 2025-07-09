@@ -64,19 +64,14 @@ const acceptDMRequest = async (req: Request, res: Response): Promise<void> => {
 				{ new: true }
 			)) as IConversation;
 
-		await User.findByIdAndUpdate(
-			{
-				_id: updatedConversation.requestedTo._id || currUID
+		await User.findByIdAndUpdate(currUID, {
+			$pull: {
+				dmRequests: updatedConversation._id
 			},
-			{
-				$pull: {
-					dmRequests: updatedConversation._id
-				},
-				$addToSet: {
-					conversations: updatedConversation._id
-				}
+			$addToSet: {
+				conversations: updatedConversation._id
 			}
-		);
+		});
 
 		res.status(200).json(updatedConversation);
 	} catch (error) {
