@@ -311,6 +311,8 @@ export interface InboxHeaderProps {
 	conversation: Conversation | DMRequest;
 	currUID: string;
 	status: Status;
+	setShowInfoPanel: (show: boolean) => void;
+	showInfoPanel: boolean;
 }
 
 export interface DMRequest {
