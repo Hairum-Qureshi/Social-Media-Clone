@@ -12,6 +12,7 @@ import {
 	getConversationChat,
 	getSearchedUsers
 } from "../controllers/message-related/conversation-related";
+import { makeAdmin } from "../controllers/message-related/groupchat-related";
 
 const router = express.Router();
 
@@ -42,6 +43,13 @@ router.delete(
 	checkAuthStatus,
 	checkOwner("Conversation"),
 	deleteConversation
+);
+
+// TODO - you may need to add a middleware to check if the user is an admin
+router.patch(
+	"/conversations/:conversationID/make-admin",
+	checkAuthStatus,
+	makeAdmin
 );
 
 export default router;
