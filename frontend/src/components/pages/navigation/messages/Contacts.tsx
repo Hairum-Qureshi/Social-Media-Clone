@@ -13,7 +13,6 @@ import {
 import useAuthContext from "../../../../contexts/AuthContext";
 
 // TODO - may need to add specific logic for displaying group chats
-// TODO - remove hardcoded "3 pending requests" and add logic so it only displays the number of requests if the user has any requests
 // !BUG - message stuff is still appearing when you go view DM requests
 
 export default function Contacts({ setConvo }: ContactsProps) {
@@ -21,6 +20,9 @@ export default function Contacts({ setConvo }: ContactsProps) {
 	const [openModal, setOpenModal] = useState(
 		location.pathname.includes("/compose") || false
 	);
+	const [activeConversationID, setActiveConversationID] = useState<
+		string | null
+	>(null);
 
 	function closeModal() {
 		setOpenModal(false);
@@ -91,26 +93,50 @@ export default function Contacts({ setConvo }: ContactsProps) {
 							</Link>
 						</div>
 					) : (
-						conversations?.map((conversation: Conversation) =>
-							conversation.users.map((user: UserData_Conversation) => {
-								if (user._id !== userData?._id) {
-									return (
-										<Link
-											to={`/messages/conversation/${conversation._id}/${userData?._id}-${user._id}`}
-											onClick={() => setConvo(conversation)}
-										>
-											<DM
-												username={user.username}
-												pfp={user.profilePicture}
-												fullName={user.fullName}
-												latestMessage={conversation.latestMessage}
-												conversationID={conversation._id}
-											/>
-										</Link>
-									);
-								}
-							})
-						)
+						conversations?.map((conversation: Conversation) => {
+							if (conversation.isGroupchat) {
+								return (
+									<Link
+										to={`/messages/conversation/${conversation._id}`}
+										onClick={() => setConvo(conversation)}
+									>
+										<DM
+											username={""}
+											pfp={conversation.groupPhoto}
+											fullName={conversation.groupName}
+											latestMessage={conversation.latestMessage}
+											conversationID={conversation._id}
+											activeConversationID={activeConversationID}
+											setActiveConversationID={setActiveConversationID}
+										/>
+									</Link>
+								);
+							} else {
+								// Find the *other* user in the DM (i.e. not the current user)
+								const otherUser = conversation.users.find(
+									(user: UserData_Conversation) => user._id !== userData?._id
+								);
+
+								if (!otherUser) return null;
+
+								return (
+									<Link
+										to={`/messages/conversation/${conversation._id}/${userData?._id}-${otherUser._id}`}
+										onClick={() => setConvo(conversation)}
+									>
+										<DM
+											username={otherUser.username}
+											pfp={otherUser.profilePicture}
+											fullName={otherUser.fullName}
+											latestMessage={conversation.latestMessage}
+											conversationID={conversation._id}
+											activeConversationID={activeConversationID}
+											setActiveConversationID={setActiveConversationID}
+										/>
+									</Link>
+								);
+							}
+						})
 					)}
 				</div>
 			</div>
