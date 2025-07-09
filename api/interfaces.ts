@@ -10,7 +10,7 @@ export interface IConversation {
 	latestMessage: string;
 	isDMRequest: boolean;
 	requestedBy: Types.ObjectId;
-	requestedTo: Types.ObjectId;
+	requestedTo: Types.ObjectId[];
 	messages: [
 		{
 			_id: Types.ObjectId;
