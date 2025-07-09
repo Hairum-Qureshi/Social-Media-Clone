@@ -1,6 +1,7 @@
 import {
 	faArrowLeft,
 	faMagnifyingGlass,
+	faPencil,
 	faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import { faXmark } from "@fortawesome/free-solid-svg-icons/faXmark";
@@ -15,6 +16,7 @@ import {
 	UserTagData
 } from "../../../../../interfaces";
 import useDM from "../../../../../hooks/useDM";
+import { useState } from "react";
 
 export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 	const {
@@ -30,6 +32,7 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 	} = useUserSearch();
 
 	const navigate = useNavigate();
+	const [groupChatName, setGroupChatName] = useState("");
 
 	const { createDM } = useDM();
 
@@ -66,11 +69,11 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 					className="ml-auto px-5 py-1 rounded-full bg-white text-black disabled:bg-gray-500 hover:cursor-pointer"
 					disabled={
 						path.includes("/group")
-							? searchedUsers.length < 2
-							: searchedUsers.length !== 1
+							? groupChatName.trim() === "" || searchedUsers.length < 2
+							: groupChatName.trim() === "" || searchedUsers.length !== 1
 					}
 					onClick={() => {
-						createDM(searchedUsers);
+						createDM(searchedUsers, groupChatName);
 						closeModal();
 					}}
 				>
@@ -92,6 +95,20 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 					value={searchedUser}
 				/>
 			</div>
+			{path.includes("/group") && (
+				<div className="w-full text-white flex items-center border-b-2 border-b-slate-700">
+					<span className="text-sky-500 mx-4 text-lg">
+						<FontAwesomeIcon icon={faPencil} />
+					</span>
+					<input
+						type="text"
+						className="w-full p-2 placeholder-gray-500 text-base outline-none bg-transparent"
+						placeholder="Group chat name"
+						onChange={e => setGroupChatName(e.target.value)}
+						value={groupChatName}
+					/>
+				</div>
+			)}
 			{searchedUsers.length > 0 && (
 				<div className="text-white p-1 flex flex-wrap items-center w-full border-b-2 border-b-slate-700 overflow-y-auto">
 					{searchedUsers.map((searchedUser: UserTagData, index: number) => {
@@ -120,7 +137,7 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 				{searching || (returnedUsers.length !== 0 && searchedUser) ? (
 					<>
 						{searching ? (
-							<h1 className="text-center">Searching...</h1>
+							<h1 className="text-center mt-5">Searching...</h1>
 						) : (
 							returnedUsers.map((user: UserData) => (
 								<div
