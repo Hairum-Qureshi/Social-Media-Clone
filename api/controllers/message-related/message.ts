@@ -18,9 +18,47 @@ function findID(
 	return foundID ? foundID._id : undefined;
 }
 
+async function reAddConversation(
+	currUID: Types.ObjectId,
+	conversation: IConversation,
+	DMSenderRemovedRequest: boolean,
+	isGroupChat: boolean = false
+) {
+	// helper function for re-adding existing conversations that were removed by the user from their list of convos
+	let conditionalResIDs: Types.ObjectId[];
+
+	if (isGroupChat && !DMSenderRemovedRequest) {
+		conditionalResIDs = conversation.requestedTo;
+	} else if (!DMSenderRemovedRequest && !isGroupChat) {
+		conditionalResIDs = [currUID];
+	} else {
+		conditionalResIDs = [conversation.requestedBy];
+	}
+
+	for (let i = 0; i < conditionalResIDs.length; i++) {
+		const user: IUser = (await User.findById(conditionalResIDs[i])) as IUser;
+		const conversationExists = (
+			user.conversations as unknown as Types.ObjectId[]
+		).includes(conversation._id);
+		if (!conversationExists) {
+			// add conversation to the current user's list of conversations
+			await User.findByIdAndUpdate(
+				{
+					_id: conditionalResIDs[i]
+				},
+				{
+					$addToSet: {
+						conversations: conversation._id
+					}
+				}
+			);
+		}
+	}
+}
+
 const createDM = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const { searchedUsers } = req.body;
+		const { searchedUsers, groupChatName } = req.body;
 		const uids: string[] = [];
 		const currUID: Types.ObjectId = req.user._id;
 
@@ -111,11 +149,23 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 					_id: conversation._id
 				})
 					.select("-__v")
-					.populate({
-						path: "users",
-						select:
-							"_id username fullName profilePicture isVerified createdAt bio numFollowers followers"
-					})
+					.populate([
+						{
+							path: "conversations",
+							populate: {
+								path: "users",
+								select:
+									"_id username fullName profilePicture isVerified createdAt bio numFollowers followers"
+							}
+						},
+						{
+							path: "conversations",
+							populate: {
+								path: "admins",
+								select: "_id username fullName profilePicture isVerified"
+							}
+						}
+					])
 					.lean();
 
 				res.status(200).send(conversationData);
@@ -123,23 +173,8 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 				// logic for DM requests
 				// first check if the two have a conversation with each other already
 				if (existingConversation) {
-					// check if the current user removed this conversation ID from their conversations list
-					const user: IUser = (await User.findById(currUID)) as IUser;
-					const conversationExists = (
-						user.conversations as unknown as Types.ObjectId[]
-					).includes(existingConversation._id);
-					if (!conversationExists) {
-						// add conversation to the current user's list of conversations
-						await User.findByIdAndUpdate(
-							{ _id: currUID },
-							{
-								$addToSet: {
-									conversations: existingConversation._id
-								}
-							}
-						);
-					}
 					// this code will restore the conversation the user previously had with another user but had deleted it; however, if the other user(s) also removed the conversation ID from their conversations list, then the conversation will be deleted
+					await reAddConversation(currUID, existingConversation, false);
 
 					res.status(200).send(existingConversation);
 					return;
@@ -150,7 +185,8 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 					(await Conversation.findOne({
 						isDMRequest: true,
 						requestedBy: currUID,
-						requestedTo: uids[0]
+						requestedTo: uids[0],
+						isGroupchat: false
 					})) as IConversation | undefined;
 
 				if (!existingDMRequest) {
@@ -166,7 +202,73 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 
 		if (uids.length >= 2) {
 			// it's a group chat
-			console.log(uids);
+
+			// TODO - will need to replicate logic for checking if a group chat with the same users already exists (or consider allowing duplicate group chats with the same users)
+
+			// TODO - implement the following group chat settings buttons:
+			// * allowing a user to leave a group chat (if the number of users goes down to 2, set "isGroupChat" to false; think about what to do if the user is the only one left in the group chat)
+			//   * IF THE ADMIN leaves the group chat, implement a system to set the next user the admin
+			//   * Add "username has left the group" message to the group chat
+			// * the admin is able to set other users as admins
+			// * the admin is able to remove other users from the group chat
+
+			if (!groupChatName?.trim()) {
+				// frontend already makes sure this is provided, however, if the user *somehow* bypasses the frontend check, this is a safeguard
+				res.status(400).json({ message: "Group chat name is required" });
+				return;
+			}
+
+			const conversation = await Conversation.create({
+				users: [currUID, ...uids],
+				isGroupchat: true,
+				requestedBy: currUID,
+				requestedTo: uids,
+				groupName: groupChatName,
+				groupPhoto:
+					"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5pAGZJFq85GbVccaGjwx2leGMdCpyAjeFa_MMt6K5gT8cyVYv5jXi_bSqqtOCJaS0qdM&usqp=CAU",
+				admins: currUID
+			});
+
+			for (let i = 0; i < uids.length; i++) {
+				const userByID: IUser | null = await User.findOne({
+					_id: currUID,
+					followers: uids[i]
+				});
+
+				const isAFollower = userByID?.followers.includes(
+					new mongoose.Types.ObjectId(uids[i])
+				);
+
+				await Conversation.findByIdAndUpdate(conversation._id, {
+					isDMRequest: isAFollower
+				});
+
+				if (!isAFollower) {
+					await User.findByIdAndUpdate(uids[i], {
+						$addToSet: {
+							dmRequests: conversation._id
+						}
+					});
+				} else {
+					await User.findByIdAndUpdate(uids[i], {
+						$addToSet: {
+							conversations: conversation._id
+						}
+					});
+				}
+
+				// TODO - will also need to prevent duplicate convos/group chats!
+			}
+
+			await User.findByIdAndUpdate(currUID, {
+				$addToSet: {
+					conversations: conversation._id
+				}
+			});
+
+			res.status(200).send(conversation);
+
+			// send a DM request to user(s) within the group chat that are not following the current user
 		}
 	} catch (error) {
 		console.error(
@@ -179,11 +281,11 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 
 const postMessage = async (req: Request, res: Response): Promise<void> => {
 	try {
-		// ! NOTE - this code handles the case if it's a 2-person DM, but it doesn't handle if it's a group chat
-		// ! Doesn't handle attachments
+		// TODO - make it handle attachments
 
 		const { message, sender, attachments } = req.body;
 		const { conversationID } = req.params;
+		const currUID: Types.ObjectId = req.user._id;
 
 		const conversation: IConversation | undefined = (await Conversation.findOne(
 			{ _id: conversationID }
@@ -228,21 +330,37 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 			)) as IConversation;
 
 			if (updatedConvo.messages.length === 1) {
-				await sendEmailNotification(
-					req.user.email,
-					participants_filtered[0].email,
-					participants_filtered[0].fullName,
-					message,
-					req.user.username
-				);
+				if (updatedConvo.isGroupchat) {
+					for (let i = 0; i < participants_filtered.length; i++) {
+						// TODO - you might need to alter this code because it might still send a 'DM Request' email to users that are already following the current user
+						await sendEmailNotification(
+							participants_filtered[i].email,
+							participants_filtered[i].fullName,
+							message,
+							req.user.username,
+							`${req.user.fullName} (@${req.user.email}) wants to add you to a group conversation on X-Clone!`
+						);
+					}
+				} else {
+					await sendEmailNotification(
+						participants_filtered[0].email,
+						participants_filtered[0].fullName,
+						message,
+						req.user.username
+					);
+				}
 			}
 
 			return;
 		}
 
-		const receiverSocketID: string = getSocketIDbyUID(
-			participants_filtered[0]._id.toString()
-		);
+		if (conversation.isGroupchat) {
+			// if a user who's in a group chat decides to remove that group chat from their list of conversations, then the group chat will be re-added to their list of conversations when another user sends a message in that group chat
+			await reAddConversation(currUID, conversation, false, true);
+		} else {
+			// When the user sends a DM request and then deletes it, the receiver receives the DM request and if they accept itand if they send a message back, the convo the DM sender deleted will be re-added to their list of convos; however, if the receiver just accepted it but did not send a message back, then the convo is not re-added to the sender's list of convos
+			await reAddConversation(currUID, conversation, true);
+		}
 
 		// TODO - handle case if the user uploads any images too!
 		const postedMessage: IMessage = await Message.create({
@@ -272,8 +390,26 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 				select: "_id username profilePicture"
 			});
 
-		if (receiverSocketID)
-			io.to(receiverSocketID).emit("newMessage", foundPostedMessage);
+		if (conversation.isGroupchat) {
+			for (let i = 0; i < participants_filtered.length; i++) {
+				const socketID = getSocketIDbyUID(
+					participants_filtered[i]._id.toString()
+				);
+				if (socketID) {
+					io.to(socketID).emit("newMessage", foundPostedMessage);
+				}
+			}
+		} else {
+			const socketID = getSocketIDbyUID(
+				participants_filtered[0]._id.toString()
+			);
+			if (socketID) {
+				io.to(socketID).emit("newMessage", foundPostedMessage);
+			}
+		}
+
+		// if (receiverSocketID)
+		// 	io.to(receiverSocketID).emit("newMessage", foundPostedMessage);
 
 		res.status(201).json(foundPostedMessage);
 	} catch (error) {
