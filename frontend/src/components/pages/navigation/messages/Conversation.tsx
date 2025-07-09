@@ -89,14 +89,18 @@ export default function Conversation({
 									: Status.Offline
 							}
 						/>
-						<Link
-							to={`/${getFriend(conversation?.users, userData?._id).username}`}
-						>
-							<ProfilePreview
-								conversation={conversation}
-								currUID={userData?._id}
-							/>
-						</Link>
+						{!conversation.isGroupchat && (
+							<Link
+								to={`/${
+									getFriend(conversation?.users, userData?._id).username
+								}`}
+							>
+								<ProfilePreview
+									conversation={conversation}
+									currUID={userData?._id}
+								/>
+							</Link>
+						)}
 						<div
 							className={`overflow-y-auto ${
 								!isDMRequest ? "pb-14" : "pb-48"
