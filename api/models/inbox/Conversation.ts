@@ -44,8 +44,8 @@ const conversationSchema = new Schema(
 				default: []
 			}
 		],
-		admin: {
-			type: Types.ObjectId,
+		admins: {
+			type: [Types.ObjectId],
 			ref: "User"
 		}
 	},
