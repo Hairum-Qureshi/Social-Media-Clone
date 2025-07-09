@@ -10,6 +10,7 @@ import InboxFooter from "./inbox/InboxFooter";
 import useDM from "../../../../hooks/useDM";
 import useSocketContext from "../../../../contexts/SocketIOContext";
 import DMRequestFooter from "../messages/request-related/DMRequestFooter";
+import InboxInfoPanel from "./inbox/InboxInfoPanel";
 
 export default function Conversation({
 	defaultSubtext,
@@ -22,6 +23,7 @@ export default function Conversation({
 	const [uploadedImage, setUploadedImage] = useState<string>("");
 	const contentEditableDivRef = useRef<HTMLDivElement>(null);
 	const { activeUsers } = useSocketContext()!;
+	const [showInfoPanel, setShowInfoPanel] = useState(false);
 
 	// TODO - add GIF functionality
 	// TODO - add an upload image functionality
@@ -58,89 +60,102 @@ export default function Conversation({
 		bottomDivRef?.current?.scrollIntoView({ behavior: "smooth" });
 	}, [messages]);
 
+	useEffect(() => {
+		setShowInfoPanel(false);
+	}, [location.pathname]);
+
 	return (
-		<div
-			className={`${
-				location.pathname.split("/").length === 2 && "flex"
-			} h-screen`}
-		>
-			<div className="m-auto w-2/3">
-				{location.pathname.split("/").length === 2 && (
-					<>
-						{showHeaderText && (
-							<h2 className="font-bold text-4xl">Select a message</h2>
-						)}
-						<p className="text-zinc-500 mt-3">{defaultSubtext}</p>
-					</>
-				)}
-			</div>
-			{location.pathname.split("/").length !== 2 &&
-				conversation &&
-				userData && (
-					<div className="w-full h-full overflow-y-auto">
-						<InboxHeader
-							conversation={conversation}
-							currUID={userData?._id}
-							status={
-								activeUsers.includes(
-									getFriend(conversation.users, userData?._id)._id
-								)
-									? Status.Online
-									: Status.Offline
-							}
-						/>
-						{!conversation.isGroupchat && (
-							<Link
-								to={`/${
-									getFriend(conversation?.users, userData?._id).username
-								}`}
+		<div className="flex">
+			<div
+				className={`${
+					location.pathname.split("/").length === 2 && "flex"
+				} h-screen flex-grow flex-col`}
+			>
+				<div className="m-auto w-2/3">
+					{location.pathname.split("/").length === 2 && (
+						<>
+							{showHeaderText && (
+								<h2 className="font-bold text-4xl">Select a message</h2>
+							)}
+							<p className="text-zinc-500 mt-3">{defaultSubtext}</p>
+						</>
+					)}
+				</div>
+				{location.pathname.split("/").length !== 2 &&
+					conversation &&
+					userData && (
+						<div className="w-full h-full overflow-y-auto">
+							<InboxHeader
+								conversation={conversation}
+								currUID={userData?._id}
+								status={
+									activeUsers.includes(
+										getFriend(conversation.users, userData?._id)._id
+									)
+										? Status.Online
+										: Status.Offline
+								}
+								setShowInfoPanel={setShowInfoPanel}
+								showInfoPanel={showInfoPanel}
+							/>
+							{!conversation.isGroupchat && (
+								<Link
+									to={`/${
+										getFriend(conversation?.users, userData?._id).username
+									}`}
+								>
+									<ProfilePreview
+										conversation={conversation}
+										currUID={userData?._id}
+									/>
+								</Link>
+							)}
+							<div
+								className={`overflow-y-auto ${
+									!isDMRequest ? "pb-14" : "pb-48"
+								} w-full max-w-full`}
 							>
-								<ProfilePreview
-									conversation={conversation}
-									currUID={userData?._id}
-								/>
-							</Link>
-						)}
-						<div
-							className={`overflow-y-auto ${
-								!isDMRequest ? "pb-14" : "pb-48"
-							} w-full max-w-full`}
-						>
-							{messages &&
-								messages?.map((message: Message) => {
-									return (
-										<ChatBubble
-											you={message.sender._id === userData?._id}
-											message={message.message}
-											timestamp={message.createdAt}
-										/>
-									);
-								})}
-							<div ref={bottomDivRef}></div>
+								{messages &&
+									messages?.map((message: Message) => {
+										return (
+											<ChatBubble
+												you={message.sender._id === userData?._id}
+												message={message.message}
+												timestamp={message.createdAt}
+											/>
+										);
+									})}
+								<div ref={bottomDivRef}></div>
+							</div>
 						</div>
-					</div>
-				)}
+					)}
 
-			{conversation && userData && isDMRequest && (
-				<DMRequestFooter
-					dmRequestID={conversation.messages[0].conversationID}
-					dmRequestData={conversation}
-					currUID={userData._id}
-				/>
-			)}
-
-			{location.pathname.split("/").length !== 2 &&
-				!isDMRequest &&
-				conversation &&
-				userData && (
-					<InboxFooter
-						uploadedImage={uploadedImage}
-						deleteImage={deleteImage}
-						contentEditableDivRef={contentEditableDivRef}
-						handlePaste={handlePaste}
-						members={conversation.users}
+				{conversation && userData && isDMRequest && (
+					<DMRequestFooter
+						dmRequestID={conversation.messages[0].conversationID}
+						dmRequestData={conversation}
+						currUID={userData._id}
 					/>
 				)}
+
+				{location.pathname.split("/").length !== 2 &&
+					!isDMRequest &&
+					conversation &&
+					userData && (
+						<InboxFooter
+							uploadedImage={uploadedImage}
+							deleteImage={deleteImage}
+							contentEditableDivRef={contentEditableDivRef}
+							handlePaste={handlePaste}
+							members={conversation.users}
+						/>
+					)}
+			</div>
+			{showInfoPanel && conversation && (
+				<div className={`${conversation?.isGroupchat ? "w-1/2" : "w-3/5"} ml-auto border-2 border-slate-600`}>
+					<InboxInfoPanel conversationData = {conversation} />
+				</div>
+			)}
 		</div>
 	);
 }
