@@ -123,9 +123,8 @@ export default function Conversation({
 
 			{conversation && userData && isDMRequest && (
 				<DMRequestFooter
-					username={conversation.requestedBy.fullName}
 					dmRequestID={conversation.messages[0].conversationID}
-					requestedByUID={conversation.requestedBy._id}
+					dmRequestData={conversation}
 					currUID={userData._id}
 				/>
 			)}
