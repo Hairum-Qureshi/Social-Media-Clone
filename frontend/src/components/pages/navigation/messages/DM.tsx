@@ -15,7 +15,7 @@ export default function DM({
 	fullName,
 	latestMessage,
 	activeConversationID,
-	setActiveConversationID
+	setActiveConversationID,
 }: ContactProps) {
 	const { typingIndicatorChatID, userIsTyping, typingUser } =
 		useSocketContext()!;
@@ -45,7 +45,10 @@ export default function DM({
 				</div>
 				<div className="w-full relative">
 					<div className="ml-3 -mt-1 flex">
-						{fullName}&nbsp;<span className="text-gray-500">@{username}</span>
+						{fullName}&nbsp;
+						<span className="text-gray-500">
+							{!username ? "" : `@${username}`}
+						</span>
 						<div className="ml-auto" onClick={e => handleOptionsClick(e)}>
 							{!isOptionsOpen && <FontAwesomeIcon icon={faEllipsis} />}
 						</div>
