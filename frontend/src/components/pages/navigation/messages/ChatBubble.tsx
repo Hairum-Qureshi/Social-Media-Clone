@@ -14,7 +14,7 @@ export default function ChatBubble({
 
 	return isSystem ? (
 		<div>
-			<div className="w-full flex justify-center">
+			<div className="w-full flex justify-center mt-3">
 				<div
 					className="bg-sky-950 w-11/12 text-sky-300 text-sm italic px-3 py-1.5 rounded-sm border border-sky-500 shadow-sm"
 					title={moment(timestamp).fromNow()}
