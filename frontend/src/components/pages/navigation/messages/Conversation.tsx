@@ -7,7 +7,7 @@ import ChatBubble from "./ChatBubble";
 import InboxHeader from "./inbox/InboxHeader";
 import ProfilePreview from "./inbox/ProfilePreview";
 import InboxFooter from "./inbox/InboxFooter";
-import useDM from "../../../../hooks/useDM";
+import useDM from "../../../../hooks/dms-related/useDM";
 import useSocketContext from "../../../../contexts/SocketIOContext";
 import DMRequestFooter from "../messages/request-related/DMRequestFooter";
 import InboxInfoPanel from "./inbox/InboxInfoPanel";
@@ -152,7 +152,7 @@ export default function Conversation({
 					)}
 			</div>
 			{conversation && showInfoPanel && (
-				<div className="w-72 border-l border-slate-600 bg-zinc-900 shrink-0">
+				<div className="w-72 border-l border-slate-600 bg-zinc-900 shrink-0 relative">
 					<InboxInfoPanel conversationData={conversation} />
 				</div>
 			)}
