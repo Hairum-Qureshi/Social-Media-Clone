@@ -152,16 +152,18 @@ const deleteConversation = async (
 						dmRequests: conversationID
 					}
 				});
-				console.log("ran");
-			}
-
-			await User.findByIdAndUpdate(currUID, {
-				$pull: {
-					conversations: conversationID
+			} else {
+				if (conversation.isDMRequest) {
+					// if the conversation is a DM request, then remove it from the requestedBy user's dmRequests
+					await User.findByIdAndUpdate(currUID, {
+						$pull: {
+							conversations: conversationID
+						}
+					});
+				} else {
+					await Conversation.findByIdAndDelete(conversationID);
 				}
-			});
-
-			await Conversation.findByIdAndDelete(conversationID);
+			}
 		} else {
 			await User.findByIdAndUpdate(currUID, {
 				$pull: {
