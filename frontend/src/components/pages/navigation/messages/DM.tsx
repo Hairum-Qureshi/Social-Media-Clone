@@ -25,7 +25,7 @@ export default function DM({
 	const handleOptionsClick = (e: React.MouseEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
-		setActiveConversationID(conversationID);
+		if (setActiveConversationID) setActiveConversationID(conversationID);
 	};
 
 	const { deleteConversation } = useDM();
@@ -33,7 +33,7 @@ export default function DM({
 	return (
 		<div
 			className="w-full p-3 bg-zinc-800 border-r-2 border-r-sky-600 hover:bg-zinc-900 hover:cursor-pointer"
-			onClick={() => setActiveConversationID(null)}
+			onClick={() => setActiveConversationID && setActiveConversationID(null)}
 		>
 			<div className="flex items-center">
 				<div className="w-10 h-10 rounded-full flex-shrink-0">
