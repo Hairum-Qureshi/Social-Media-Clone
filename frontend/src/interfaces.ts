@@ -329,7 +329,7 @@ export interface ProfilePreviewProps {
 }
 
 export interface DMTools {
-	createDM: (searchedUsers: UserTagData[]) => void;
+	createDM: (searchedUsers: UserTagData[], groupChatName?: string) => void;
 	conversations: Conversation[];
 	sendMessage: (
 		message: string | undefined,
