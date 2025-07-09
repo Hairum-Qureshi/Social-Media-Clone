@@ -14,13 +14,13 @@ function callEmailAuth(): nodemailer.Transporter {
 	return transporter;
 }
 
-export async function sendEmailNotification(fromEmail:string, toEmail:string, toName:string, message:string, fromUsername:string) {
+export async function sendEmailNotification(fromEmail:string, toEmail:string, toName:string, message:string, fromUsername:string, subject?:string) {
 	try {
 		const transporter = callEmailAuth();
 		await transporter.sendMail({
 			from: fromEmail,
 			to: `${toName} <${toEmail}>`,
-			subject: `@${fromUsername} sent you a DM request on X-Clone!`,
+			subject: subject ? subject : `@${fromUsername} sent you a DM request on X-Clone!`,
 			text: message 
 		});
 	} catch (error) {
