@@ -6,69 +6,7 @@ import Conversation from "../../models/inbox/Conversation";
 import Message from "../../models/inbox/Message";
 import { getSocketIDbyUID, io } from "../../socket";
 import { sendEmailNotification } from "../../lib/utils/sendEmailNotification";
-
-const getSearchedUsers = async (req: Request, res: Response): Promise<void> => {
-	try {
-		const { searchedUser } = req.body;
-		const currUser = req.user;
-
-		const users: IUser[] = (await User.find({
-			_id: { $ne: currUser._id }, // exclude the current user
-			$or: [
-				{ username: { $regex: searchedUser, $options: "i" } }, // case-insensitive
-				{ fullName: { $regex: searchedUser, $options: "i" } }
-			]
-		})) as IUser[];
-
-		res.status(200).send(users);
-	} catch (error) {
-		console.error(
-			"Error in messages.ts file, getSearchedUsers function controller".red
-				.bold,
-			error
-		);
-		res.status(500).json({ message: (error as Error).message });
-	}
-};
-
-const getAllConversations = async (
-	req: Request,
-	res: Response
-): Promise<void> => {
-	try {
-		const uid: Types.ObjectId = req.user._id;
-
-		const user:IUser = await User.findById(uid)
-			.select("-__v")
-			.populate({
-				path: "conversations",
-				populate: {
-					path: "users",
-					select:
-						"_id username fullName profilePicture isVerified createdAt bio numFollowers followers"
-				}
-			})
-			.lean() as IUser;
-
-		if (!user.conversations || user.conversations.length === 0) {
-			res.status(200).json([]);
-			return;
-		}
-
-		const sortedConversations = user.conversations.sort((a, b) =>
-			a.createdAt < b.createdAt ? 1 : -1
-		);
-
-		res.status(200).json(sortedConversations);
-	} catch (error) {
-		console.error(
-			"Error in messages.ts file, getConversations function controller".red
-				.bold,
-			error
-		);
-		res.status(500).json({ message: (error as Error).message });
-	}
-};
+import { createDMRequest } from "./handle-dm-requests";
 
 function findID(
 	uidArray: Types.ObjectId[],
@@ -82,45 +20,50 @@ function findID(
 
 const createDM = async (req: Request, res: Response): Promise<void> => {
 	try {
-		const { searchedUsers } = req.body; // TODO - have it send back the user ID as well
-		const fullNames: string[] = [];
+		const { searchedUsers } = req.body;
+		const uids: string[] = [];
 		const currUID: Types.ObjectId = req.user._id;
 
-		searchedUsers.forEach((user: { pfp: string; fullName: string }) => {
-			fullNames.push(user.fullName);
-		});
+		searchedUsers.forEach(
+			(user: { _id: string; pfp: string; fullName: string }) => {
+				if (user._id !== currUID.toString()) {
+					uids.push(user._id);
+				}
+			}
+		);
 
-		// ! - I feel this is an inefficient method because multiple users can have the same first + last name
-		if (fullNames.length === 1) {
+		if (uids.length === 1) {
 			// it's a DM
-
-			// get the username's data:
-			const friendData: IUser = (await User.findOne({
-				fullName: fullNames[0]
-			}).lean()) as IUser;
 
 			// check if the current user follows the other user
 			let isFollowing = false;
 			let friendIsAFollower = false;
 
-			const isFollowingUID = findID(req.user.following, friendData._id);
+			const isFollowingUID = findID(
+				req.user.following,
+				new mongoose.Types.ObjectId(uids[0])
+			);
+
 			if (isFollowingUID) {
 				isFollowing =
 					isFollowingUID.toString().replace(/ObjectId\("(.*)"\)/, "$1") ===
-					friendData._id.toString().replace(/ObjectId\("(.*)"\)/, "$1");
+					uids[0].toString().replace(/ObjectId\("(.*)"\)/, "$1");
 			}
 
 			// check if the other user follows the current user
-			const isAFollowerUID = findID(req.user.followers, friendData._id);
+			const isAFollowerUID = findID(
+				req.user.followers,
+				new mongoose.Types.ObjectId(uids[0])
+			);
 			if (isAFollowerUID) {
 				friendIsAFollower =
 					isAFollowerUID.toString().replace(/ObjectId\("(.*)"\)/, "$1") ===
-					friendData._id.toString().replace(/ObjectId\("(.*)"\)/, "$1");
+					uids[0].toString().replace(/ObjectId\("(.*)"\)/, "$1");
 			}
 
 			const existingConversation: IConversation | undefined =
 				(await Conversation.findOne({
-					users: { $all: [String(currUID), String(friendData._id)] },
+					users: { $all: [String(currUID), uids[0]] },
 					isGroupchat: false
 				}).lean()) as IConversation | undefined;
 
@@ -131,16 +74,12 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 
 				// check if the users already have a conversation
 				if (existingConversation) {
-					// TODO - maybe send back the conversation so that if the user deleted it from their convo list, it'll appear again for them
-					console.log("ran");
-					res
-						.status(200)
-						.send("You already have a conversation with this user");
+					res.status(200).json(existingConversation);
 					return;
 				}
 
 				const conversation: IConversation = await Conversation.create({
-					users: [currUID, friendData._id],
+					users: [currUID, uids[0]],
 					isGroupchat: false
 				});
 
@@ -159,7 +98,7 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 				// add conversation to the friend's list of conversations too
 				await User.findByIdAndUpdate(
 					{
-						_id: friendData._id
+						_id: uids[0]
 					},
 					{
 						$push: {
@@ -211,43 +150,11 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 					(await Conversation.findOne({
 						isDMRequest: true,
 						requestedBy: currUID,
-						requestedTo: friendData._id
+						requestedTo: uids[0]
 					})) as IConversation | undefined;
 
 				if (!existingDMRequest) {
-					const dmRequestConversation: IConversation =
-						await Conversation.create({
-							users: [currUID, friendData._id],
-							isDMRequest: true,
-							requestedBy: currUID,
-							requestedTo: friendData._id
-						});
-
-					await User.findByIdAndUpdate(
-						{ _id: friendData._id },
-						{
-							$addToSet: {
-								dmRequests: dmRequestConversation._id
-							}
-						},
-						{
-							new: true
-						}
-					).lean();
-
-					const updatedUser: IUser = (await User.findByIdAndUpdate(
-						{
-							_id: currUID
-						},
-						{
-							$addToSet: {
-								conversations: dmRequestConversation._id
-							}
-						},
-						{
-							new: true
-						}
-					)) as IUser;
+					const updatedUser = await createDMRequest(currUID, uids);
 
 					res.status(201).json(updatedUser);
 					return;
@@ -257,47 +164,13 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 			}
 		}
 
-		if (fullNames.length >= 3) {
+		if (uids.length >= 2) {
 			// it's a group chat
+			console.log(uids);
 		}
 	} catch (error) {
 		console.error(
 			"Error in messages.ts file, createDM function controller".red.bold,
-			error
-		);
-		res.status(500).json({ message: (error as Error).message });
-	}
-};
-
-const getConversationChat = async (
-	req: Request,
-	res: Response
-): Promise<void> => {
-	try {
-		const { conversationID } = req.params;
-
-		if (!conversationID || !Types.ObjectId.isValid(conversationID)) {
-			res.status(200).send([]);
-			return;
-		}
-
-		const conversation = await Conversation.findById(conversationID)
-			.select("-__v -createdAt -updatedAt")
-			.populate({
-				path: "messages",
-				select: "-__v -updatedAt",
-				populate: {
-					path: "sender",
-					select: "_id username profilePicture"
-				}
-			})
-			.lean();
-
-		res.status(200).json(conversation?.messages || []);
-	} catch (error) {
-		console.error(
-			"Error in messages.ts file, getConversationChat function controller".red
-				.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });
@@ -412,89 +285,4 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-const deleteConversation = async (
-	req: Request,
-	res: Response
-): Promise<void> => {
-	try {
-		const { conversationID } = req.params;
-		const currUID: Types.ObjectId = req.user._id;
-
-		// ! Issue - when you delete a conversation, it doesn't delete the conversation from the user's list of conversations (via the frontend)
-
-		// checks if the other members of this conversation are still apart of it; if not, delete the conversation
-		// if the rest are still apart of it, just remove the current user from the conversation
-
-		const conversation: IConversation = (await Conversation.findById(
-			conversationID
-		).populate({
-			path: "users",
-			select: "_id"
-		})) as IConversation;
-
-		if (!conversation) {
-			res.status(404).json({ message: "Conversation not found" });
-			return;
-		}
-
-		let allOthersHaveLeft = true;
-
-		for (const userID of conversation.users) {
-			if (!userID._id.equals(currUID)) {
-				const user = await User.findById(userID._id);
-				if (user) {
-					const hasConversation = (
-						user.conversations as unknown as Types.ObjectId[]
-					).includes(new mongoose.Types.ObjectId(conversationID));
-					if (hasConversation) {
-						allOthersHaveLeft = false;
-						break;
-					}
-				}
-			}
-		}
-
-		if (allOthersHaveLeft) {
-			if (!conversation.messages.length && conversation.isDMRequest) {
-				// if the user has sent no message for this conversation and has deleted the conversation, then delete the DM request that was sent to the other user as well (remember that a DM request is sent regardless if the user sent a message or not)
-				await User.findByIdAndUpdate(conversation.requestedTo, {
-					$pull: {
-						dmRequests: conversationID
-					}
-				});
-			}
-
-			await User.findByIdAndUpdate(currUID, {
-				$pull: {
-					conversations: conversationID
-				}
-			});
-
-			await Conversation.findByIdAndDelete(conversationID);
-		} else {
-			await User.findByIdAndUpdate(currUID, {
-				$pull: {
-					conversations: conversationID
-				}
-			});
-		}
-
-		res.status(200).json({ message: "Conversation deleted or user removed" });
-	} catch (error) {
-		console.error(
-			"Error in messages.ts file, deleteConversation function controller".red
-				.bold,
-			error
-		);
-		res.status(500).json({ message: (error as Error).message });
-	}
-};
-
-export {
-	getSearchedUsers,
-	getAllConversations,
-	createDM,
-	getConversationChat,
-	postMessage,
-	deleteConversation
-};
+export { createDM, postMessage };
