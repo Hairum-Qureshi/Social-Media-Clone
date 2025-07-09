@@ -430,6 +430,9 @@ export default function useProfile(): ProfileTools {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["extendedBio", username] });
+		},
+		onError: error => {
+			console.error(error);
 		}
 	});
 
