@@ -17,7 +17,8 @@ export interface IConversation {
 			username: string;
 			profilePicture: string;
 		}
-	];
+	],
+	isAdmin: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
