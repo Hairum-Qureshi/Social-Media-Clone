@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import useDM from "../../../../../hooks/useDM";
+import useDM from "../../../../../hooks/dms-related/useDM";
 import { DMRequest } from "../../../../../interfaces";
 import DM from "../DM";
 import UserRequest from "./UserRequest";
