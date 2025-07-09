@@ -57,7 +57,7 @@ export default function checkOwner(
 					return;
 				}
 
-				if (!dmRequest.requestedTo.equals(currUID)) {
+				if (!dmRequest.requestedTo.some(id => id.equals(currUID))) {
 					res.status(403).json({ message: "Forbidden: not the owner" });
 					return;
 				}
@@ -70,11 +70,9 @@ export default function checkOwner(
 						new mongoose.Types.ObjectId(resourceID)
 					)
 				) {
-					res
-						.status(403)
-						.json({
-							message: "Forbidden: conversation does not belong to you"
-						});
+					res.status(403).json({
+						message: "Forbidden: conversation does not belong to you"
+					});
 					return;
 				}
 			}
