@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation } from "react-router-dom";
 import UserSearchModal from "./modal/UserSearchModal";
 import { useState } from "react";
-import useDM from "../../../../hooks/useDM";
+import useDM from "../../../../hooks/dms-related/useDM";
 import DM from "./DM";
 import {
 	ContactsProps,
