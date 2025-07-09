@@ -43,7 +43,13 @@ export interface Conversation {
 	requestedBy: UserData_Conversation;
 	requestedTo: string[];
 	messages: Message[];
-	isAdmin: boolean;
+	admin: {
+		_id: string;
+		username: string;
+		profilePicture: string;
+		fullName: string;
+		isVerified: boolean;
+	};
 }
 
 export interface WorkHistory {
