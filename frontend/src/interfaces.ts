@@ -43,13 +43,15 @@ export interface Conversation {
 	requestedBy: UserData_Conversation;
 	requestedTo: string[];
 	messages: Message[];
-	admin: {
-		_id: string;
-		username: string;
-		profilePicture: string;
-		fullName: string;
-		isVerified: boolean;
-	};
+	admins: [
+		{
+			_id: string;
+			username: string;
+			profilePicture: string;
+			fullName: string;
+			isVerified: boolean;
+		}
+	];
 }
 
 export interface WorkHistory {
@@ -329,13 +331,15 @@ export interface DMRequest {
 	createdAt: Date;
 	updatedAt: Date;
 	latestMessage: string;
-	admin: {
-		_id: string;
-		username: string;
-		profilePicture: string;
-		fullName: string;
-		isVerified: boolean;
-	};
+	admins: [
+		{
+			_id: string;
+			username: string;
+			profilePicture: string;
+			fullName: string;
+			isVerified: boolean;
+		}
+	];
 }
 
 export interface ProfilePreviewProps {
