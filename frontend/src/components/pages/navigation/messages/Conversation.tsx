@@ -65,11 +65,11 @@ export default function Conversation({
 	}, [location.pathname]);
 
 	return (
-		<div className="flex">
+		<div className="flex w-full max-w-full h-screen overflow-x-hidden">
 			<div
 				className={`${
 					location.pathname.split("/").length === 2 && "flex"
-				} h-screen flex-grow flex-col`}
+				} h-screen flex-grow min-w-0 flex flex-col`}
 			>
 				<div className="m-auto w-2/3">
 					{location.pathname.split("/").length === 2 && (
@@ -151,9 +151,9 @@ export default function Conversation({
 						/>
 					)}
 			</div>
-			{showInfoPanel && conversation && (
-				<div className={`${conversation?.isGroupchat ? "w-1/2" : "w-3/5"} ml-auto border-2 border-slate-600`}>
-					<InboxInfoPanel conversationData = {conversation} />
+			{conversation && showInfoPanel && (
+				<div className="w-72 border-l border-slate-600 bg-zinc-900 shrink-0">
+					<InboxInfoPanel conversationData={conversation} />
 				</div>
 			)}
 		</div>
