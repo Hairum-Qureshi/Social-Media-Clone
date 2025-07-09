@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { DMRequestFooterProps } from "../../../../../interfaces";
-import useDM from "../../../../../hooks/useDM";
+import useDM from "../../../../../hooks/dms-related/useDM";
 
 // ! - for group chats, you *might* need to have 'requestedByUID' as of type string[] instead of just string
 export default function DMRequestFooter({
