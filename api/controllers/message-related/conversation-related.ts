@@ -152,6 +152,7 @@ const deleteConversation = async (
 						dmRequests: conversationID
 					}
 				});
+				await Conversation.findByIdAndDelete(conversationID);
 			} else {
 				if (conversation.isDMRequest) {
 					// if the conversation is a DM request, then remove it from the requestedBy user's dmRequests
