@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Contacts from "./Contacts";
 import Conversation from "./Conversation";
 import { Conversation as IConversation } from "../../../../interfaces";
-import useDM from "../../../../hooks/useDM";
+import useDM from "../../../../hooks/dms-related/useDM";
 import { useLocation } from "react-router-dom";
 
 export default function Messages() {
