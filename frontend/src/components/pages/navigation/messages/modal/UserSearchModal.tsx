@@ -70,7 +70,7 @@ export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
 					disabled={
 						path.includes("/group")
 							? groupChatName.trim() === "" || searchedUsers.length < 2
-							: groupChatName.trim() === "" || searchedUsers.length !== 1
+							: searchedUsers.length !== 1
 					}
 					onClick={() => {
 						createDM(searchedUsers, groupChatName);
