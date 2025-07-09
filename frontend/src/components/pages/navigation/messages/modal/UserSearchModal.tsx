@@ -15,7 +15,7 @@ import {
 	UserSearchModalProps,
 	UserTagData
 } from "../../../../../interfaces";
-import useDM from "../../../../../hooks/useDM";
+import useDM from "../../../../../hooks/dms-related/useDM";
 import { useState } from "react";
 
 export default function UserSearchModal({ closeModal }: UserSearchModalProps) {
