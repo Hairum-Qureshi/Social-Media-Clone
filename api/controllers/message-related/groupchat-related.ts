@@ -4,7 +4,20 @@ import Conversation from "../../models/inbox/Conversation";
 import User from "../../models/User";
 import { IConversation, IMessage, IUser } from "../../interfaces";
 import Message from "../../models/inbox/Message";
-import { getSocketIDbyUID, io } from "../../socket";
+import { broadcastMessage } from "../../lib/utils/broadcastMessage";
+
+async function createSystemMessage(
+	systemMessage: string,
+	conversationID: string
+): Promise<IMessage> {
+	const message: IMessage = await Message.create({
+		message: systemMessage,
+		sender: new mongoose.Types.ObjectId("000000000000000000000001"),
+		conversationID
+	});
+
+	return message;
+}
 
 const makeAdmin = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -41,11 +54,10 @@ const makeAdmin = async (req: Request, res: Response): Promise<void> => {
 		// send notification in the chat that the current user made the user an admin
 		const systemMessage = `@${req.user.username} made @${validUser.username} an admin`;
 
-		const message: IMessage = await Message.create({
-			message: systemMessage,
-			sender: new mongoose.Types.ObjectId("000000000000000000000001"),
+		const message: IMessage = await createSystemMessage(
+			systemMessage,
 			conversationID
-		});
+		);
 
 		const updatedConversation: IConversation =
 			(await Conversation.findByIdAndUpdate(
@@ -64,14 +76,7 @@ const makeAdmin = async (req: Request, res: Response): Promise<void> => {
 				}
 			)) as IConversation;
 
-		for (let i = 0; i < updatedConversation.users.length; i++) {
-			const socketID = getSocketIDbyUID(
-				updatedConversation.users[i]._id.toString()
-			);
-			if (socketID) {
-				io.to(socketID).emit("newMessage", message);
-			}
-		}
+		broadcastMessage(updatedConversation.users, message);
 
 		res.status(200).json(updatedConversation);
 	} catch (error) {
@@ -84,4 +89,22 @@ const makeAdmin = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-export { makeAdmin };
+const removeUserFromGroupchat = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const { conversationID } = req.params;
+		const { uid } = req.body;
+		const currUID: Types.ObjectId = req.user._id;
+	} catch (error) {
+		console.error(
+			"Error in groupchat-related.ts file, removeUserFromGroupchat function controller"
+				.red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
+export { makeAdmin, removeUserFromGroupchat };
