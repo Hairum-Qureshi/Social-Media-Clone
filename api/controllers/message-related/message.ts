@@ -7,6 +7,7 @@ import Message from "../../models/inbox/Message";
 import { getSocketIDbyUID, io } from "../../socket";
 import { sendEmailNotification } from "../../lib/utils/sendEmailNotification";
 import { createDMRequest } from "./handle-dm-requests";
+import { broadcastMessage } from "../../lib/utils/broadcastMessage";
 
 function findID(
 	uidArray: Types.ObjectId[],
@@ -381,24 +382,20 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 			}
 		);
 
-		const foundPostedMessage = await Message.findById({
+		const foundPostedMessage: IMessage = (await Message.findById({
 			_id: postedMessage._id
 		})
 			.select("-updatedAt -__v")
 			.populate({
 				path: "sender",
 				select: "_id username profilePicture"
-			});
+			})) as IMessage;
 
 		if (conversation.isGroupchat) {
-			for (let i = 0; i < participants_filtered.length; i++) {
-				const socketID = getSocketIDbyUID(
-					participants_filtered[i]._id.toString()
-				);
-				if (socketID) {
-					io.to(socketID).emit("newMessage", foundPostedMessage);
-				}
-			}
+			broadcastMessage(
+				participants_filtered as unknown as Types.ObjectId[],
+				foundPostedMessage
+			);
 		} else {
 			const socketID = getSocketIDbyUID(
 				participants_filtered[0]._id.toString()
