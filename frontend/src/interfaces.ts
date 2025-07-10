@@ -503,3 +503,7 @@ export interface ContactsProps {
 export interface InboxInfoPanelProps {
 	conversationData: Conversation | DMRequest;
 }
+
+export interface GroupChatTools {
+	makeAdmin: (conversationID: string, uid: string) => void;
+}
