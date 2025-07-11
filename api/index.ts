@@ -9,7 +9,7 @@ import user from "./routes/user";
 import { v2 as cloudinary } from "cloudinary";
 import post from "./routes/post";
 import notification from "./routes/notification";
-import message from "./routes/message";
+import message from "./routes/message-related/dms-related";
 import { app, server } from "./socket";
 import path from "path";
 
@@ -33,14 +33,14 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const assetsPath = path.join(process.cwd(), 'assets');
-app.use('/assets', express.static(assetsPath));
+const assetsPath = path.join(process.cwd(), "assets");
+app.use("/assets", express.static(assetsPath));
 
 app.use("/api/auth", authentication);
 app.use("/api/user", user);
 app.use("/api/posts", post);
 app.use("/api/notifications", notification);
-app.use('/api/messages', message);
+app.use("/api/messages", message);
 
 const PORT: number = +process.env.PORT! || 2000;
 
