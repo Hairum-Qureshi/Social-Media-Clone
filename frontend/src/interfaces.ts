@@ -507,4 +507,5 @@ export interface InboxInfoPanelProps {
 export interface GroupChatTools {
 	makeAdmin: (conversationID: string, uid: string) => void;
 	leaveGroupChat: (conversationID: string) => void;
+	removeUserFromGroupChat: (conversationID: string, uid: string) => void;
 }
