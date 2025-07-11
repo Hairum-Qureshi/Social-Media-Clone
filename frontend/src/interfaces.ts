@@ -218,7 +218,7 @@ export interface UserSearchTools {
 	autoSearch: () => void;
 	searching: boolean;
 	returnedUsers: UserData[];
-	addUserTag: (user: UserData) => void;
+	addUserTag: (user: UserData, override?: boolean) => void;
 }
 
 export interface PostImage {
