@@ -23,7 +23,7 @@ export default function InboxInfoPanel({
 	const { makeAdmin, leaveGroupChat, removeUserFromGroupChat } = useGroupchat();
 
 	return (
-		<div className="text-white relative h-full overflow-hidden">
+		<div className="text-white relative h-full overflow-y-auto">
 			<div className="text-xl font-semibold border-b-2 border-slate-600">
 				<div className="p-4">Info</div>
 			</div>
@@ -100,7 +100,9 @@ export default function InboxInfoPanel({
 										<div
 											className="border border-red-500 w-7 h-7 flex items-center justify-center rounded-md p-1 text-red-500 mr-2 hover:cursor-pointer"
 											title="Kick user"
-											onClick = {() => removeUserFromGroupChat(conversationData._id, user._id)}
+											onClick={() =>
+												removeUserFromGroupChat(conversationData._id, user._id)
+											}
 										>
 											<FontAwesomeIcon icon={faBan} />
 										</div>
@@ -138,6 +140,11 @@ export default function InboxInfoPanel({
 					)}
 					<div>
 						<p className="font-semibold text-red-600 text-base">Delete Chat</p>
+						<p className="text-slate-400 text-xs my-2">
+							This will not delete the chat for everyone, it will only delete
+							the chat from your list of conversations. If another user sends a
+							message in the chat, it will reappear in your inbox.
+						</p>
 					</div>
 				</div>
 			</div>
