@@ -514,5 +514,6 @@ export interface GroupChatTools {
 }
 
 export interface RenameGCNameModalProps {
+	conversationID: string;
 	showGCRenameModal: (show: boolean) => void;
 }
