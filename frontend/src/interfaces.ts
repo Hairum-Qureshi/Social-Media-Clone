@@ -510,6 +510,7 @@ export interface GroupChatTools {
 	leaveGroupChat: (conversationID: string) => void;
 	removeUserFromGroupChat: (conversationID: string, uid: string) => void;
 	deleteGroupChat: (conversationID: string) => void;
+	renameGroupChat: (conversationID: string, newGroupName: string) => void;
 }
 
 export interface RenameGCNameModalProps {
