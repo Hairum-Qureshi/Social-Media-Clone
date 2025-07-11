@@ -66,7 +66,13 @@ export default function useGroupChat(): GroupChatTools {
 	};
 
 	const { mutate: removeUserFromGroupChatMutation } = useMutation({
-		mutationFn: async ({ conversationID, uid }: { conversationID: string, uid:string}) => {
+		mutationFn: async ({
+			conversationID,
+			uid
+		}: {
+			conversationID: string;
+			uid: string;
+		}) => {
 			const response = await axios.patch(
 				`${
 					import.meta.env.VITE_BACKEND_BASE_URL
@@ -81,7 +87,7 @@ export default function useGroupChat(): GroupChatTools {
 		}
 	});
 
-	const removeUserFromGroupChat = (conversationID: string, uid:string) => {
+	const removeUserFromGroupChat = (conversationID: string, uid: string) => {
 		const prompt = confirm(
 			"Are you sure you would to remove this user from the group chat? They will no longer be able to see the messages in this group chat"
 		);
@@ -114,9 +120,45 @@ export default function useGroupChat(): GroupChatTools {
 	});
 
 	const deleteGroupChat = (conversationID: string) => {
-
 		deleteGroupChatMutation({ conversationID });
 	};
 
-	return { makeAdmin, leaveGroupChat, removeUserFromGroupChat, deleteGroupChat };
+	const { mutate: updateGroupNameMutation } = useMutation({
+		mutationFn: async ({
+			conversationID,
+			newGroupName
+		}: {
+			conversationID: string;
+			newGroupName: string;
+		}) => {
+			const response = await axios.patch(
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/messages/conversations/${conversationID}/rename`,
+				{ newGroupName },
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["conversations"] });
+		}
+	});
+
+	const renameGroupChat = (conversationID: string, newGroupName: string) => {
+		if (!newGroupName?.trim()) {
+			alert("Group name cannot be empty");
+			return;
+		}
+
+		updateGroupNameMutation({ conversationID, newGroupName });
+	};
+
+	return {
+		makeAdmin,
+		leaveGroupChat,
+		removeUserFromGroupChat,
+		deleteGroupChat,
+		renameGroupChat
+	};
 }
