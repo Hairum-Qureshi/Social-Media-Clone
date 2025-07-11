@@ -15,7 +15,7 @@ import {
 import {
 	leaveGroupChat,
 	makeAdmin,
-	removeUserFromGroupchat
+	removeUserFromGroupChat
 } from "../controllers/message-related/groupchat-related";
 import checkAdminStatus from "../middleware/checkAdminStatus";
 
@@ -60,7 +60,7 @@ router.patch(
 	"/conversations/:conversationID/remove-user",
 	checkAuthStatus,
 	checkAdminStatus,
-	removeUserFromGroupchat
+	removeUserFromGroupChat
 );
 router.patch(
 	"/conversations/:conversationID/leave",
