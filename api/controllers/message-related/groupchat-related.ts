@@ -1,23 +1,10 @@
 import { Request, Response } from "express";
-import mongoose, { Types } from "mongoose";
+import { Types } from "mongoose";
 import Conversation from "../../models/inbox/Conversation";
 import User from "../../models/User";
 import { IConversation, IMessage, IUser } from "../../interfaces";
-import Message from "../../models/inbox/Message";
 import { broadcastMessage } from "../../lib/utils/broadcastMessage";
-
-async function createSystemMessage(
-	systemMessage: string,
-	conversationID: string
-): Promise<IMessage> {
-	const message: IMessage = await Message.create({
-		message: systemMessage,
-		sender: new mongoose.Types.ObjectId("000000000000000000000001"),
-		conversationID
-	});
-
-	return message;
-}
+import { createSystemMessage } from "../../lib/utils/createSystemMessage";
 
 const makeAdmin = async (req: Request, res: Response): Promise<void> => {
 	try {
