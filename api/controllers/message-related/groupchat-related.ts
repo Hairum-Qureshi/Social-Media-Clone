@@ -60,11 +60,10 @@ const removeUserFromGroupChat = async (
 	try {
 		const { conversationID } = req.params;
 		const { uid } = req.body;
-		const currUID: Types.ObjectId = req.user._id;
 
 		const validUser: IUser = (await User.findById(uid)) as IUser;
 
-		const systemMessage = `@${req.user.username} removed @${validUser.username} from the groupchat`;
+		const systemMessage = `@${req.user.username} removed @${validUser.username} from the group`;
 
 		const message: IMessage = await createSystemMessage(
 			systemMessage,
@@ -100,7 +99,6 @@ const removeUserFromGroupChat = async (
 
 		res.status(200).json(updatedConversation);
 
-		// send notification in the chat that the current user removed the user from the groupchat
 	} catch (error) {
 		console.error(
 			"Error in groupchat-related.ts file, removeUserFromGroupchat function controller"
