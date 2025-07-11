@@ -5,9 +5,9 @@ import mongoose, { Types } from "mongoose";
 import Conversation from "../../models/inbox/Conversation";
 import Message from "../../models/inbox/Message";
 import { getSocketIDbyUID, io } from "../../socket";
-import { sendEmailNotification } from "../../lib/utils/sendEmailNotification";
+import { sendEmailNotification } from "../../utils/sendEmailNotification";
 import { createDMRequest } from "./handle-dm-requests";
-import { broadcastMessage } from "../../lib/utils/broadcastMessage";
+import { broadcastMessage } from "../../utils/broadcastMessage";
 
 function findID(
 	uidArray: Types.ObjectId[],
