@@ -3,8 +3,8 @@ import { Types } from "mongoose";
 import User from "../../models/User";
 import { IUser, IWorkHistory } from "../../interfaces";
 import WorkHistory from "../../models/WorkHistory";
-import { sanitizeEditorContent } from "../../lib/utils/sanitizeHTML";
-import { extendedBioChecks } from "../../lib/utils/extendedBioChecks";
+import { sanitizeEditorContent } from "../../utils/sanitizeHTML";
+import { extendedBioChecks } from "../../utils/extendedBioChecks";
 
 const addExtendedBio = async (req: Request, res: Response): Promise<void> => {
 	try {

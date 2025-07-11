@@ -49,7 +49,10 @@ const acceptDMRequest = async (req: Request, res: Response): Promise<void> => {
 		const { requestID } = req.params;
 		const currUID: Types.ObjectId = req.user._id;
 
-		const convo = await Conversation.findById({ _id: requestID });
+		const convo: IConversation | undefined = (await Conversation.findById({
+			_id: requestID
+		})) as IConversation | undefined;
+
 		if (!convo) {
 			res.status(404).json({ message: "Conversation not found" });
 			return;

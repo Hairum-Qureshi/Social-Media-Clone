@@ -3,7 +3,7 @@ import fs from "fs";
 import { FOLDER_PATH } from "../../../config/multer-config";
 import { Types } from "mongoose";
 import { PostImage, UserData } from "../../../interfaces";
-import { handleProfileImageUploads } from "../../../lib/utils/handleProfileImageUploads";
+import { handleProfileImageUploads } from "../../../utils/handleProfileImageUploads";
 import Post from "../../../models/Post";
 
 const updateProfilePicture = async (

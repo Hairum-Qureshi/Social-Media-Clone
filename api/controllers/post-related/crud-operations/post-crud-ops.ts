@@ -6,7 +6,7 @@ import { IPost, IUser } from "../../../interfaces";
 import Post from "../../../models/Post";
 import { Types } from "mongoose";
 import User from "../../../models/User";
-import { checkIfLikedAndBookmarked } from "../../../lib/utils/checkIfLikedAndBookmarked";
+import { checkIfLikedAndBookmarked } from "../../../utils/checkIfLikedAndBookmarked";
 
 const createPost = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -255,7 +255,7 @@ const getUserPosts = async (req: Request, res: Response): Promise<void> => {
 					post._id,
 					currUID
 				);
-	
+
 				post.isBookmarked = isBookmarked;
 				post.isLiked = isLiked;
 

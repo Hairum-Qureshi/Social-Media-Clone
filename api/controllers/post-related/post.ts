@@ -4,7 +4,7 @@ import Post from "../../models/Post";
 import { Types } from "mongoose";
 import Notification from "../../models/Notification";
 import User from "../../models/User";
-import { checkIfLikedAndBookmarked } from "../../lib/utils/checkIfLikedAndBookmarked";
+import { checkIfLikedAndBookmarked } from "../../utils/checkIfLikedAndBookmarked";
 
 const getFollowingUsersPosts = async (
 	req: Request,

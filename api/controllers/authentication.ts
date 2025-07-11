@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import { IUser } from "../interfaces";
-import generateAndSetCookie from "../lib/utils/generateCookie";
-import getUserData from "../lib/utils/getUserData";
+import generateAndSetCookie from "../utils/generateCookie";
+import getUserData from "../utils/getUserData";
 
 const signUp = async (req: Request, res: Response): Promise<void> => {
 	try {

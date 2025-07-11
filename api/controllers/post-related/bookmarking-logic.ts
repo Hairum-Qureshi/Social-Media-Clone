@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import Post from "../../models/Post";
-import { checkIfLikedAndBookmarked } from "../../lib/utils/checkIfLikedAndBookmarked";
+import { checkIfLikedAndBookmarked } from "../../utils/checkIfLikedAndBookmarked";
 import { IPost, IUser } from "../../interfaces";
 import User from "../../models/User";
 import { Types } from "mongoose";

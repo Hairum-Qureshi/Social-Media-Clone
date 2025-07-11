@@ -37,14 +37,23 @@ const getAllConversations = async (
 
 		const user: IUser = (await User.findById(uid)
 			.select("-__v")
-			.populate({
-				path: "conversations",
-				populate: {
-					path: "users",
-					select:
-						"_id username fullName profilePicture isVerified createdAt bio numFollowers followers"
+			.populate([
+				{
+					path: "conversations",
+					populate: {
+						path: "users",
+						select:
+							"_id username fullName profilePicture isVerified createdAt bio numFollowers followers"
+					}
+				},
+				{
+					path: "conversations",
+					populate: {
+						path: "admins",
+						select: "_id username fullName profilePicture isVerified"
+					}
 				}
-			})
+			])
 			.lean()) as IUser;
 
 		if (!user.conversations || user.conversations.length === 0) {

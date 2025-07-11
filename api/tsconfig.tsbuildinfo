@@ -1,0 +1,1 @@
+{"root":["./index.ts","./interfaces.ts","./controllers/authentication.ts","./lib/utils/generatecookie.ts","./lib/utils/getuserdata.ts","./middleware/checkauthstatus.ts","./models/user.ts","./routes/authentication.ts","./types/request.d.ts"],"errors":true,"version":"5.7.2"}

@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 import { IUser } from "../../../interfaces";
 import User from "../../../models/User";
 import bcrypt from "bcrypt";
-import { bannedSettlerColonyVariations } from "../../../lib/utils/bannedSettlerColonyVariations";
+import { bannedSettlerColonyVariations } from "../../../utils/bannedSettlerColonyVariations";
 
 function correctLocation(location: string): string {
 	// TODO - update the logic so it also checks if the location includes the word 'israel' (and other variations)
@@ -122,7 +122,8 @@ const updateProfile = async (req: Request, res: Response): Promise<void> => {
 		return;
 	} catch (error) {
 		console.error(
-			"Error in profile-related.ts file, updateProfile function controller".red.bold,
+			"Error in profile-related.ts file, updateProfile function controller".red
+				.bold,
 			error
 		);
 		res.status(500).json({ message: (error as Error).message });
@@ -130,23 +131,23 @@ const updateProfile = async (req: Request, res: Response): Promise<void> => {
 };
 
 const getProfile = async (req: Request, res: Response): Promise<void> => {
-    // TODO - Need to exclude 'password' from the populate methods using select
-    try {
-        const { username } = req.params;
-        const user: IUser = (await User.findOne({ username })
-            .select("-password -__v")
-            .populate("followers")
-            .populate("following")) as IUser;
+	// TODO - Need to exclude 'password' from the populate methods using select
+	try {
+		const { username } = req.params;
+		const user: IUser = (await User.findOne({ username })
+			.select("-password -__v")
+			.populate("followers")
+			.populate("following")) as IUser;
 
-        res.status(200).json(user);
-    } catch (error) {
-        console.error(
-            "Error in profile-related.ts file, getProfile function controller".red.bold,
-            error
-        );
-        res.status(500).json({ message: (error as Error).message });
-    }
+		res.status(200).json(user);
+	} catch (error) {
+		console.error(
+			"Error in profile-related.ts file, getProfile function controller".red
+				.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
 };
 
-
-export { updateProfile, getProfile }
+export { updateProfile, getProfile };
