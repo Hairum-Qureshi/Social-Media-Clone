@@ -21,3 +21,5 @@ router.patch(
 // 	checkOwner("DM Request"),
 // 	acceptDMRequest
 // );
+
+export default router;

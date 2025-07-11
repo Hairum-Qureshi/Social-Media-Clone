@@ -27,3 +27,5 @@ router.patch(
     checkAuthStatus,
     renameGroupChat
 );
+
+export default router;
