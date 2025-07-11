@@ -124,7 +124,7 @@ export default function InboxInfoPanel({
 					</div>
 				))}
 			</div>
-			<div className="absolute bottom-0 w-full border-t-2 border-slate-600 bg-black h-32 mb-3">
+			<div className="absolute bottom-0 w-full border-t-2 border-slate-600 bg-black">
 				<div className="p-3">
 					{conversationData.isGroupchat && (
 						<div>
