@@ -10,10 +10,15 @@ const getSearchedUsers = async (req: Request, res: Response): Promise<void> => {
 		const currUser = req.user;
 
 		const users: IUser[] = (await User.find({
-			_id: { $ne: currUser._id }, // exclude the current user
-			$or: [
-				{ username: { $regex: searchedUser, $options: "i" } }, // case-insensitive
-				{ fullName: { $regex: searchedUser, $options: "i" } }
+			$and: [
+				{ _id: { $ne: currUser._id } },
+				{ username: { $ne: "system" } },
+				{
+					$or: [
+						{ username: { $regex: searchedUser, $options: "i" } },
+						{ fullName: { $regex: searchedUser, $options: "i" } }
+					]
+				}
 			]
 		})) as IUser[];
 
