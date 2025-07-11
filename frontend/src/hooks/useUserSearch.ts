@@ -19,11 +19,11 @@ export default function useUserSearch(): UserSearchTools {
 		setSearchedUsers(filteredSearchedUsers);
 	}
 
-	function addUserTag(user: UserData) {
+	function addUserTag(user: UserData, override = false) {
+		// 'override' is for the 'add user' search modal for group chats; it *overrides* the restriction of letting you add only one user
 		// TODO you *might* want to add a character limit restriction here
-
 		if (searchedUser.trim()) {
-			if (!path.includes("/group")) {
+			if (!path.includes("/group") && !override) {
 				if (searchedUsers.length > 0) return;
 				else
 					setSearchedUsers([
