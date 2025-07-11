@@ -20,7 +20,7 @@ export default function InboxInfoPanel({
 	// TODO - in the future, have it display all the images/videos sent in the group chat
 	// TODO - add buttons to undo giving someone admin
 
-	const { makeAdmin, leaveGroupChat } = useGroupchat();
+	const { makeAdmin, leaveGroupChat, removeUserFromGroupChat } = useGroupchat();
 
 	return (
 		<div className="text-white relative h-full overflow-hidden">
@@ -100,6 +100,7 @@ export default function InboxInfoPanel({
 										<div
 											className="border border-red-500 w-7 h-7 flex items-center justify-center rounded-md p-1 text-red-500 mr-2 hover:cursor-pointer"
 											title="Kick user"
+											onClick = {() => removeUserFromGroupChat(conversationData._id, user._id)}
 										>
 											<FontAwesomeIcon icon={faBan} />
 										</div>
