@@ -13,13 +13,15 @@ import { useNavigate } from "react-router-dom";
 
 export default function InboxInfoPanel({
 	conversationData,
-	showGCRenameModal
+	showGCRenameModal,
+	showUserSearchModal
 }: InboxInfoPanelProps) {
 	const { userData } = useAuthContext()!;
 	const { activeUsers } = useSocketContext()!;
 	const navigate = useNavigate();
 	// TODO - in the future, have it display all the images/videos sent in the group chat
 	// TODO - add buttons to undo giving someone admin
+	// TODO - deal with overflow issue when there's 4+ users in the group chat
 
 	const {
 		makeAdmin,
@@ -74,12 +76,15 @@ export default function InboxInfoPanel({
 				</div>
 				{conversationData.isGroupchat &&
 					checkIfAdmin(conversationData.admins, userData?._id) && (
-						<button className="border border-sky-700 rounded-md ml-auto mr-4 py-1 px-2 bg-sky-900">
+						<button
+							className="border border-sky-700 rounded-md ml-auto mr-4 py-1 px-2 bg-sky-900"
+							onClick={() => showUserSearchModal(true)}
+						>
 							Add User
 						</button>
 					)}
 			</div>
-			<div className="p-2 text-lg">
+			<div className="p-2 text-lg border-2 border-white overflow-y-scroll">
 				{conversationData.users.map((user: UserData_Conversation) => (
 					<div key={user._id} className="flex items-center my-2">
 						<img
