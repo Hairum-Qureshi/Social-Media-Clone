@@ -10,6 +10,9 @@ import { v2 as cloudinary } from "cloudinary";
 import post from "./routes/post";
 import notification from "./routes/notification";
 import message from "./routes/message-related/dms-related";
+import dms from "./routes/message-related/dms-related";
+import groupchat from "./routes/message-related/groupchat-related";
+import dmRequest from "./routes/message-related/dm-request-related";
 import { app, server } from "./socket";
 import path from "path";
 
@@ -41,6 +44,9 @@ app.use("/api/user", user);
 app.use("/api/posts", post);
 app.use("/api/notifications", notification);
 app.use("/api/messages", message);
+app.use("/api/messages", dms);
+app.use("/api/messages", groupchat);
+app.use("/api/messages", dmRequest);
 
 const PORT: number = +process.env.PORT! || 2000;
 
