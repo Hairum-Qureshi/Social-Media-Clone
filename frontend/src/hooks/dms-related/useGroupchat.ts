@@ -68,7 +68,7 @@ export default function useGroupChat(): GroupChatTools {
 			const response = await axios.patch(
 				`${
 					import.meta.env.VITE_BACKEND_BASE_URL
-				}/api/messages/conversations/${conversationID}/leave`,
+				}/api/messages/conversations/${conversationID}/remove-user`,
 				{ uid },
 				{ withCredentials: true }
 			);
