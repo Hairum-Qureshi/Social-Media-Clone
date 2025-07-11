@@ -75,7 +75,7 @@ const makeAdmin = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-const removeUserFromGroupchat = async (
+const removeUserFromGroupChat = async (
 	req: Request,
 	res: Response
 ): Promise<void> => {
@@ -325,4 +325,4 @@ const leaveGroupChat = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-export { makeAdmin, removeUserFromGroupchat, leaveGroupChat };
+export { makeAdmin, removeUserFromGroupChat, leaveGroupChat };
