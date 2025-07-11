@@ -3,7 +3,7 @@ import { RenameGCNameModalProps } from "../../../../../interfaces";
 import useGroupChat from "../../../../../hooks/dms-related/useGroupchat";
 
 export default function RenameGCNameModal({
-    conversationID,
+	conversationID,
 	showGCRenameModal
 }: RenameGCNameModalProps) {
 	const [newGCName, setNewGCName] = useState("");
@@ -29,7 +29,10 @@ export default function RenameGCNameModal({
 			<div className="flex justify-end mt-3">
 				<button
 					className="bg-blue-600 text-white px-3 py-1 rounded mr-2 hover:bg-blue-700"
-					onClick={() => renameGroupChat(conversationID, newGCName)}
+					onClick={() => {
+						renameGroupChat(conversationID, newGCName);
+						showGCRenameModal(false);
+					}}
 				>
 					Rename
 				</button>
