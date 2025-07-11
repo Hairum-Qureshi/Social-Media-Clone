@@ -14,10 +14,9 @@ export default async function checkAuthStatus(
 		const { uid } = req.body;
 		const currUID: Types.ObjectId = req.user._id;
 
-		const conversation: IConversation | undefined =
-			(await Conversation.findById(conversationID)) as
-				| IConversation
-				| undefined;
+		const conversation: IConversation | undefined = (await Conversation.findOne(
+			{ _id: conversationID, users: uid, admins: currUID, isGroupchat: true }
+		)) as IConversation | undefined;
 
 		if (!conversation) {
 			res.status(404).json({ message: "Conversation not found" });
