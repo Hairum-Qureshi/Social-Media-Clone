@@ -28,6 +28,12 @@ export default function useGroupChat(): GroupChatTools {
 	});
 
 	const makeAdmin = (conversationID: string, uid: string) => {
+		const confirmation = confirm(
+			"Are you sure you would like to make this user an admin?"
+		);
+
+		if (!confirmation) return;
+
 		makeAdminMutation({ conversationID, uid });
 	};
 
@@ -57,5 +63,31 @@ export default function useGroupChat(): GroupChatTools {
 		leaveGroupChatMutation({ conversationID });
 	};
 
-	return { makeAdmin, leaveGroupChat };
+	const { mutate: removeUserFromGroupChatMutation } = useMutation({
+		mutationFn: async ({ conversationID, uid }: { conversationID: string, uid:string}) => {
+			const response = await axios.patch(
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/messages/conversations/${conversationID}/leave`,
+				{ uid },
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["conversations"] });
+		}
+	});
+
+	const removeUserFromGroupChat = (conversationID: string, uid:string) => {
+		const prompt = confirm(
+			"Are you sure you would to remove this user from the group chat? They will no longer be able to see the messages in this group chat"
+		);
+
+		if (!prompt) return;
+
+		removeUserFromGroupChatMutation({ conversationID, uid });
+	};
+
+	return { makeAdmin, leaveGroupChat, removeUserFromGroupChat };
 }
