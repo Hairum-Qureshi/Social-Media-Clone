@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { GroupChatTools } from "../../interfaces";
+import { useNavigate } from "react-router-dom";
 
 export default function useGroupChat(): GroupChatTools {
 	const queryClient = useQueryClient();
+	const navigate = useNavigate();
 
 	const { mutate: makeAdminMutation } = useMutation({
 		mutationFn: async ({
@@ -89,5 +91,32 @@ export default function useGroupChat(): GroupChatTools {
 		removeUserFromGroupChatMutation({ conversationID, uid });
 	};
 
-	return { makeAdmin, leaveGroupChat, removeUserFromGroupChat };
+	const { mutate: deleteGroupChatMutation } = useMutation({
+		mutationFn: async ({ conversationID }: { conversationID: string }) => {
+			try {
+				const response = await axios.delete(
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/messages/conversations/${conversationID}`,
+					{ withCredentials: true }
+				);
+
+				return response.data;
+			} catch (error) {
+				console.error("Error deleting:", error);
+				throw new Error("Failed to delete notification");
+			}
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["conversations"] });
+			navigate("/messages");
+		}
+	});
+
+	const deleteGroupChat = (conversationID: string) => {
+
+		deleteGroupChatMutation({ conversationID });
+	};
+
+	return { makeAdmin, leaveGroupChat, removeUserFromGroupChat, deleteGroupChat };
 }
