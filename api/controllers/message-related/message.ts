@@ -20,18 +20,19 @@ function findID(
 }
 
 async function reAddConversation(
-	currUID: Types.ObjectId,
+	userID: Types.ObjectId,
 	conversation: IConversation,
 	DMSenderRemovedRequest: boolean,
 	isGroupChat: boolean = false
 ) {
 	// helper function for re-adding existing conversations that were removed by the user from their list of convos
+	// TODO - I feel like 'DMSenderRemovedRequest' is unnecessary?
 	let conditionalResIDs: Types.ObjectId[];
 
 	if (isGroupChat && !DMSenderRemovedRequest) {
 		conditionalResIDs = conversation.requestedTo;
 	} else if (!DMSenderRemovedRequest && !isGroupChat) {
-		conditionalResIDs = [currUID];
+		conditionalResIDs = [userID];
 	} else {
 		conditionalResIDs = [conversation.requestedBy];
 	}
@@ -54,6 +55,36 @@ async function reAddConversation(
 				}
 			);
 		}
+	}
+}
+
+async function findUserIDOfWhoRemovedChat(
+	conversation: IConversation,
+	conversationID: string,
+	isGroupChat: boolean
+) {
+	// This helper function is also responsible for preventing users from being re-added to group chats they have been removed from if another user from the group chat they once were apart of sends a message
+
+	let userWhoRemovedChatID: Types.ObjectId | undefined;
+	let isDMRequestSender = false;
+	for (let i = 0; i < conversation.users.length; i++) {
+		const user: IUser = (await User.findById(conversation.users[i])) as IUser;
+		const userHasChat = (
+			user.conversations as unknown as Types.ObjectId[]
+		).includes(new mongoose.Types.ObjectId(conversationID));
+		if (!userHasChat) {
+			userWhoRemovedChatID = user._id;
+			isDMRequestSender = conversation.requestedBy.equals(user._id);
+		}
+	}
+
+	if (userWhoRemovedChatID) {
+		await reAddConversation(
+			userWhoRemovedChatID,
+			conversation,
+			isDMRequestSender,
+			isGroupChat
+		);
 	}
 }
 
@@ -205,14 +236,6 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 			// it's a group chat
 
 			// TODO - will need to replicate logic for checking if a group chat with the same users already exists (or consider allowing duplicate group chats with the same users)
-
-			// TODO - implement the following group chat settings buttons:
-			// * allowing a user to leave a group chat (if the number of users goes down to 2, set "isGroupChat" to false; think about what to do if the user is the only one left in the group chat)
-			//   * IF THE ADMIN leaves the group chat, implement a system to set the next user the admin
-			//   * Add "username has left the group" message to the group chat
-			// * the admin is able to set other users as admins
-			// * the admin is able to remove other users from the group chat
-
 			if (!groupChatName?.trim()) {
 				// frontend already makes sure this is provided, however, if the user *somehow* bypasses the frontend check, this is a safeguard
 				res.status(400).json({ message: "Group chat name is required" });
@@ -297,14 +320,14 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		const participants: IConversation = (await Conversation.findById({
-			_id: conversationID
-		})
-			.populate("users")
-			.select("-__v -password -conversations")
-			.lean()) as IConversation;
+		// const participants: IConversation = (await Conversation.findById({
+		// 	_id: conversationID
+		// })
+		// 	.populate("users")
+		// 	.select("-__v -password -conversations")
+		// 	.lean()) as IConversation;
 
-		const participants_filtered: IUser[] = participants.users.filter(
+		const participants_filtered: IUser[] = conversation.users.filter(
 			user => !user._id.equals(req.user._id)
 		) as unknown as IUser[];
 
@@ -357,10 +380,12 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 
 		if (conversation.isGroupchat) {
 			// if a user who's in a group chat decides to remove that group chat from their list of conversations, then the group chat will be re-added to their list of conversations when another user sends a message in that group chat
-			await reAddConversation(currUID, conversation, false, true);
+			// * await reAddConversation(currUID, conversation, false, true);
+			await findUserIDOfWhoRemovedChat(conversation, conversationID, true);
 		} else {
-			// When the user sends a DM request and then deletes it, the receiver receives the DM request and if they accept itand if they send a message back, the convo the DM sender deleted will be re-added to their list of convos; however, if the receiver just accepted it but did not send a message back, then the convo is not re-added to the sender's list of convos
-			await reAddConversation(currUID, conversation, true);
+			// When the user sends a DM request and then deletes it, the receiver receives the DM request and if they accept it and if they send a message back, the convo the DM sender deleted will be re-added to their list of convos; however, if the receiver just accepted it but did not send a message back, then the convo is not re-added to the sender's list of convos
+
+			await findUserIDOfWhoRemovedChat(conversation, conversationID, false);
 		}
 
 		// TODO - handle case if the user uploads any images too!
@@ -369,6 +394,13 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 			sender,
 			conversationID
 		});
+
+		if (!conversation.users.includes(currUID)) {
+			res
+				.status(403)
+				.json({ message: "You are not a participant of this conversation" });
+			return;
+		}
 
 		await Conversation.findByIdAndUpdate(
 			{ _id: conversationID },
@@ -404,9 +436,6 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 				io.to(socketID).emit("newMessage", foundPostedMessage);
 			}
 		}
-
-		// if (receiverSocketID)
-		// 	io.to(receiverSocketID).emit("newMessage", foundPostedMessage);
 
 		res.status(201).json(foundPostedMessage);
 	} catch (error) {
