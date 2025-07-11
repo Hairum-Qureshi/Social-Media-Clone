@@ -11,6 +11,7 @@ import useDM from "../../../../hooks/dms-related/useDM";
 import useSocketContext from "../../../../contexts/SocketIOContext";
 import DMRequestFooter from "../messages/request-related/DMRequestFooter";
 import InboxInfoPanel from "./inbox/InboxInfoPanel";
+import RenameGCNameModal from "./inbox/RenameGCNameModal";
 
 export default function Conversation({
 	defaultSubtext,
@@ -24,6 +25,11 @@ export default function Conversation({
 	const contentEditableDivRef = useRef<HTMLDivElement>(null);
 	const { activeUsers } = useSocketContext()!;
 	const [showInfoPanel, setShowInfoPanel] = useState(false);
+	const [showGroupChatRenameModal, setGroupChatRenameModal] = useState(false);
+
+	function showGCRenameModal(show: boolean) {
+		setGroupChatRenameModal(show);
+	}
 
 	// TODO - add GIF functionality
 	// TODO - add an upload image functionality
@@ -64,10 +70,14 @@ export default function Conversation({
 		setShowInfoPanel(false);
 	}, [location.pathname]);
 
-	console.log('->>', conversation);
-
 	return (
 		<div className="flex w-full max-w-full h-screen overflow-x-hidden">
+			{showGroupChatRenameModal && conversation && (
+				<RenameGCNameModal
+					conversationID={conversation._id}
+					showGCRenameModal={showGCRenameModal}
+				/>
+			)}
 			<div
 				className={`${
 					location.pathname.split("/").length === 2 && "flex"
@@ -124,7 +134,7 @@ export default function Conversation({
 												you={message.sender._id === userData?._id}
 												message={message.message}
 												timestamp={message.createdAt}
-												isSystem = {message.sender.username === "system"}
+												isSystem={message.sender.username === "system"}
 											/>
 										);
 									})}
@@ -156,7 +166,10 @@ export default function Conversation({
 			</div>
 			{conversation && showInfoPanel && (
 				<div className="w-72 border-l border-slate-600 bg-zinc-900 shrink-0 relative">
-					<InboxInfoPanel conversationData={conversation} />
+					<InboxInfoPanel
+						conversationData={conversation}
+						showGCRenameModal={showGCRenameModal}
+					/>
 				</div>
 			)}
 		</div>
