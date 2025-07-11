@@ -11,7 +11,8 @@ import useDM from "../../../../hooks/dms-related/useDM";
 import useSocketContext from "../../../../contexts/SocketIOContext";
 import DMRequestFooter from "../messages/request-related/DMRequestFooter";
 import InboxInfoPanel from "./inbox/InboxInfoPanel";
-import RenameGCNameModal from "./inbox/RenameGCNameModal";
+import RenameGCNameModal from "./inbox/modals/RenameGCNameModal";
+import UserSearchModal from "./inbox/modals/UserSearchModal";
 
 export default function Conversation({
 	defaultSubtext,
@@ -26,9 +27,16 @@ export default function Conversation({
 	const { activeUsers } = useSocketContext()!;
 	const [showInfoPanel, setShowInfoPanel] = useState(false);
 	const [showGroupChatRenameModal, setGroupChatRenameModal] = useState(false);
+	const [showUserSearchModal, setShowUserSearchModal] = useState(false);
 
 	function showGCRenameModal(show: boolean) {
 		setGroupChatRenameModal(show);
+		if (showUserSearchModal) setShowUserSearchModal(false);
+	}
+
+	function showSearchModal(show: boolean) {
+		setShowUserSearchModal(show);
+		if (showGroupChatRenameModal) setGroupChatRenameModal(false);
 	}
 
 	// TODO - add GIF functionality
@@ -76,6 +84,13 @@ export default function Conversation({
 				<RenameGCNameModal
 					conversationID={conversation._id}
 					showGCRenameModal={showGCRenameModal}
+				/>
+			)}
+			{showUserSearchModal && conversation && (
+				<UserSearchModal
+					conversationID={conversation._id}
+					showSearchModal={showSearchModal}
+					conversation={conversation}
 				/>
 			)}
 			<div
@@ -169,6 +184,7 @@ export default function Conversation({
 					<InboxInfoPanel
 						conversationData={conversation}
 						showGCRenameModal={showGCRenameModal}
+						showUserSearchModal={showSearchModal}
 					/>
 				</div>
 			)}
