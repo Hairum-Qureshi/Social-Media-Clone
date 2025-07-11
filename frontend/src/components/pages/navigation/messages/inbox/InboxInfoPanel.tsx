@@ -12,7 +12,8 @@ import useGroupchat from "../../../../../hooks/dms-related/useGroupchat";
 import { useNavigate } from "react-router-dom";
 
 export default function InboxInfoPanel({
-	conversationData
+	conversationData,
+	showGCRenameModal
 }: InboxInfoPanelProps) {
 	const { userData } = useAuthContext()!;
 	const { activeUsers } = useSocketContext()!;
@@ -47,7 +48,6 @@ export default function InboxInfoPanel({
 						</div>
 					</>
 				)}
-
 				{conversationData.isGroupchat &&
 					checkIfAdmin(conversationData.admins, userData?._id) && (
 						<>
@@ -56,7 +56,7 @@ export default function InboxInfoPanel({
 									Change Group Photo
 								</button>
 							</div>
-							<div>
+							<div onClick={() => showGCRenameModal(true)}>
 								<button className="px-1 py-1.5 w-full border border-sky-500 rounded-md bg-sky-800">
 									Change Group Name
 								</button>
