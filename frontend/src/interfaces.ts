@@ -503,6 +503,7 @@ export interface ContactsProps {
 export interface InboxInfoPanelProps {
 	conversationData: Conversation | DMRequest;
 	showGCRenameModal: (show: boolean) => void;
+	showSearchModal: (show:boolean) => void;
 }
 
 export interface GroupChatTools {
