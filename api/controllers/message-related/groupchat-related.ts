@@ -3,8 +3,8 @@ import { Types } from "mongoose";
 import Conversation from "../../models/inbox/Conversation";
 import User from "../../models/User";
 import { IConversation, IMessage, IUser } from "../../interfaces";
-import { broadcastMessage } from "../../lib/utils/broadcastMessage";
-import { createSystemMessage } from "../../lib/utils/createSystemMessage";
+import { broadcastMessage } from "../../utils/broadcastMessage";
+import { createSystemMessage } from "../../utils/createSystemMessage";
 
 const makeAdmin = async (req: Request, res: Response): Promise<void> => {
 	try {
