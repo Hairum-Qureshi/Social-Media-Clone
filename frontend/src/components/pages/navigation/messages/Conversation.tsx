@@ -64,6 +64,8 @@ export default function Conversation({
 		setShowInfoPanel(false);
 	}, [location.pathname]);
 
+	console.log('->>', conversation);
+
 	return (
 		<div className="flex w-full max-w-full h-screen overflow-x-hidden">
 			<div
@@ -90,7 +92,7 @@ export default function Conversation({
 								currUID={userData?._id}
 								status={
 									activeUsers.includes(
-										getFriend(conversation.users, userData?._id)._id
+										getFriend(conversation.users, userData?._id)?._id
 									)
 										? Status.Online
 										: Status.Offline
@@ -122,6 +124,7 @@ export default function Conversation({
 												you={message.sender._id === userData?._id}
 												message={message.message}
 												timestamp={message.createdAt}
+												isSystem = {message.sender.username === "system"}
 											/>
 										);
 									})}
