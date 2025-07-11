@@ -23,7 +23,6 @@ const makeAdmin = async (req: Request, res: Response): Promise<void> => {
 	try {
 		const { conversationID } = req.params;
 		const { uid } = req.body;
-		const currUID: Types.ObjectId = req.user._id;
 
 		const validUser: IUser = (await User.findById(uid)) as IUser;
 
