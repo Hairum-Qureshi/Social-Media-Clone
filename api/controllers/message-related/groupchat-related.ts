@@ -27,14 +27,6 @@ const makeAdmin = async (req: Request, res: Response): Promise<void> => {
 
 		const validUser: IUser = (await User.findById(uid)) as IUser;
 
-		// first check if the user by UID is actually in that conversation
-		const convo: IConversation | undefined = (await Conversation.findOne({
-			_id: conversationID,
-			users: uid,
-			admins: currUID,
-			isGroupchat: true
-		})) as IConversation | undefined;
-
 		// check if the current user is the admin of the conversation and if they are, give the user by UID admin privileges (though I feel the middleware should check this)
 
 		// send notification in the chat that the current user made the user an admin
@@ -84,30 +76,7 @@ const removeUserFromGroupChat = async (
 		const { uid } = req.body;
 		const currUID: Types.ObjectId = req.user._id;
 
-		// ! for some reason if you leave a group chat, it's added to DM requests?
-
-		const validUser: IUser | undefined = (await User.findById(uid)) as
-			| IUser
-			| undefined;
-
-		if (!validUser) {
-			res.status(404).json({ message: "User not found" });
-			return;
-		}
-
-		const convo: IConversation | undefined = (await Conversation.findOne({
-			_id: conversationID,
-			users: uid,
-			admins: currUID,
-			isGroupchat: true
-		})) as IConversation | undefined;
-
-		if (!convo) {
-			res.status(404).json({
-				message: "Conversation not found"
-			});
-			return;
-		}
+		const validUser: IUser = (await User.findById(uid)) as IUser;
 
 		const systemMessage = `@${req.user.username} removed @${validUser.username} from the groupchat`;
 
@@ -162,15 +131,9 @@ const leaveGroupChat = async (req: Request, res: Response): Promise<void> => {
 		const currUID: Types.ObjectId = req.user._id;
 
 		// check if the current user is the last to leave the group chat and if so, delete the group chat
-		const conversation: IConversation | undefined =
-			(await Conversation.findById(conversationID)) as
-				| IConversation
-				| undefined;
-
-		if (!conversation) {
-			res.status(404).json({ message: "Conversation not found" });
-			return;
-		}
+		const conversation: IConversation = (await Conversation.findById(
+			conversationID
+		)) as IConversation;
 
 		const systemMessage = `@${req.user.username} left the group chat`;
 
