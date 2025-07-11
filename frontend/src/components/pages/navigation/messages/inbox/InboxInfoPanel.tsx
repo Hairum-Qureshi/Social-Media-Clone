@@ -20,7 +20,12 @@ export default function InboxInfoPanel({
 	// TODO - in the future, have it display all the images/videos sent in the group chat
 	// TODO - add buttons to undo giving someone admin
 
-	const { makeAdmin, leaveGroupChat, removeUserFromGroupChat } = useGroupchat();
+	const {
+		makeAdmin,
+		leaveGroupChat,
+		removeUserFromGroupChat,
+		deleteGroupChat
+	} = useGroupchat();
 
 	return (
 		<div className="text-white relative h-full overflow-y-auto">
@@ -124,7 +129,7 @@ export default function InboxInfoPanel({
 					{conversationData.isGroupchat && (
 						<div>
 							<p
-								className="font-semibold text-red-600 text-base"
+								className="font-semibold text-red-600 text-base hover:cursor-pointer"
 								onClick={() => {
 									leaveGroupChat(conversationData._id);
 									navigate("/messages");
@@ -139,7 +144,12 @@ export default function InboxInfoPanel({
 						</div>
 					)}
 					<div>
-						<p className="font-semibold text-red-600 text-base">Delete Chat</p>
+						<p
+							className="font-semibold text-red-600 text-base hover:cursor-pointer"
+							onClick={() => deleteGroupChat(conversationData._id)}
+						>
+							Delete Chat
+						</p>
 						<p className="text-slate-400 text-xs my-2">
 							This will not delete the chat for everyone, it will only delete
 							the chat from your list of conversations. If another user sends a
