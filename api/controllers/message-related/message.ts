@@ -380,7 +380,6 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 
 		if (conversation.isGroupchat) {
 			// if a user who's in a group chat decides to remove that group chat from their list of conversations, then the group chat will be re-added to their list of conversations when another user sends a message in that group chat
-			// * await reAddConversation(currUID, conversation, false, true);
 			await findUserIDOfWhoRemovedChat(conversation, conversationID, true);
 		} else {
 			// When the user sends a DM request and then deletes it, the receiver receives the DM request and if they accept it and if they send a message back, the convo the DM sender deleted will be re-added to their list of convos; however, if the receiver just accepted it but did not send a message back, then the convo is not re-added to the sender's list of convos
