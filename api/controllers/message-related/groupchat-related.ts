@@ -98,7 +98,6 @@ const removeUserFromGroupChat = async (
 		broadcastMessage(updatedConversation.users, message);
 
 		res.status(200).json(updatedConversation);
-
 	} catch (error) {
 		console.error(
 			"Error in groupchat-related.ts file, removeUserFromGroupchat function controller"
@@ -272,4 +271,49 @@ const leaveGroupChat = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
-export { makeAdmin, removeUserFromGroupChat, leaveGroupChat };
+const renameGroupChat = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { conversationID } = req.params;
+		const { newGroupName } = req.body;
+
+		if (!newGroupName?.trim()) {
+			res.status(400).json({ message: "Group name cannot be empty" });
+			return;
+		}
+
+		const systemMessage = `@${req.user.username} renamed the group chat to "${newGroupName}"`;
+		const message: IMessage = await createSystemMessage(
+			systemMessage,
+			conversationID
+		);
+
+		const updatedConversation: IConversation =
+			(await Conversation.findByIdAndUpdate(
+				conversationID,
+				{
+					$set: {
+						groupName: newGroupName,
+						latestMessage: systemMessage
+					},
+					$addToSet: {
+						messages: message._id
+					}
+				},
+				{
+					new: true
+				}
+			)) as IConversation;
+
+		broadcastMessage(updatedConversation.users, message);
+		res.status(200).json(updatedConversation);
+	} catch (error) {
+		console.error(
+			"Error in groupchat-related.ts file, renameGroupChat function controller"
+				.red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
+export { makeAdmin, removeUserFromGroupChat, leaveGroupChat, renameGroupChat };
