@@ -503,7 +503,7 @@ export interface ContactsProps {
 export interface InboxInfoPanelProps {
 	conversationData: Conversation | DMRequest;
 	showGCRenameModal: (show: boolean) => void;
-	showUserSearchModal: (show:boolean) => void;
+	showUserSearchModal: (show: boolean) => void;
 }
 
 export interface GroupChatTools {
@@ -512,6 +512,10 @@ export interface GroupChatTools {
 	removeUserFromGroupChat: (conversationID: string, uid: string) => void;
 	deleteGroupChat: (conversationID: string) => void;
 	renameGroupChat: (conversationID: string, newGroupName: string) => void;
+	addSearchedUsers: (
+		conversationID: string,
+		searchedUsers: UserTagData[]
+	) => void;
 }
 
 export interface RenameGCNameModalProps {
