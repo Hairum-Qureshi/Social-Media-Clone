@@ -516,6 +516,7 @@ export interface GroupChatTools {
 		conversationID: string,
 		searchedUsers: UserTagData[]
 	) => void;
+	handleImage: (event: React.ChangeEvent<HTMLInputElement>, convesationID:string) => void;
 }
 
 export interface RenameGCNameModalProps {
