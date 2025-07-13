@@ -12,7 +12,6 @@ router.get("/dm-requests", checkAuthStatus, getDMRequests);
 router.patch(
 	"/dm-requests/:requestID/accept",
 	checkAuthStatus,
-	checkOwner("DM Request"),
 	acceptDMRequest
 );
 // router.delete(
