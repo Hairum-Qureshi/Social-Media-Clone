@@ -84,7 +84,7 @@ export default function Post({
 								@{postData.user.username}
 								{postData.user.isVerified && (
 									<span
-										className="text-purple-500"
+										className="text-purple-500 ml-2"
 										title="This is a verified account"
 									>
 										<FontAwesomeIcon icon={faCertificate} />
