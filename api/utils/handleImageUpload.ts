@@ -5,12 +5,14 @@ import { FOLDER_PATH } from "../config/multer-config";
 import path from "path";
 import User from "../models/User";
 import fs from "fs";
+import Conversation from "../models/inbox/Conversation";
 
 export async function handleImageUpload(
 	uploadedImageType: string,
 	imageType: string,
-	currUID: Types.ObjectId
-): Promise<UserData> {
+	currUID: Types.ObjectId,
+	supplimentalID?: Types.ObjectId
+): Promise<UserData | undefined> {
 	const uploadedImage = await cloudinary.uploader.upload(
 		`${FOLDER_PATH}/${uploadedImageType}`,
 		{
@@ -21,7 +23,7 @@ export async function handleImageUpload(
 	);
 
 	const uploadedImageURL = uploadedImage.secure_url;
-	let updatedUser: UserData;
+	let updatedUser: UserData | undefined;
 
 	if (imageType === "pfp") {
 		updatedUser = (await User.findByIdAndUpdate(
@@ -33,6 +35,16 @@ export async function handleImageUpload(
 				new: true
 			}
 		)) as UserData;
+	} else if (imageType === "groupPhoto") {
+		await Conversation.findByIdAndUpdate(
+			supplimentalID,
+			{
+				groupPhoto: uploadedImageURL
+			},
+			{
+				new: true
+			}
+		);
 	} else {
 		updatedUser = (await User.findByIdAndUpdate(
 			{ _id: currUID },
@@ -52,7 +64,13 @@ export async function handleImageUpload(
 		}
 
 		uploadedFiles.forEach(uploadedFile => {
-			if (uploadedFile.includes(`${currUID}-${imageType}`)) {
+			if (
+				uploadedFile.includes(
+					imageType === "groupPhoto"
+						? `${supplimentalID}-${imageType}`
+						: `${currUID}-${imageType}`
+				)
+			) {
 				fs.unlink(`${FOLDER_PATH}/${uploadedFile}`, err => {
 					if (err) {
 						console.error(
