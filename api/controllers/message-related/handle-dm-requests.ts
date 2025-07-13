@@ -33,7 +33,14 @@ const getDMRequests = async (req: Request, res: Response): Promise<void> => {
 					}
 				]
 			});
-		res.status(200).json(result?.dmRequests || []);
+
+		const sortedDMRequests = (result?.dmRequests as IConversation[]).sort(
+			(a, b) => {
+				return b.createdAt.getTime() - a.createdAt.getTime();
+			}
+		);
+
+		res.status(200).json(sortedDMRequests || []);
 	} catch (error) {
 		console.error(
 			"Error in handle-dm-requests.ts file, getDMRequests function controller"
@@ -58,7 +65,7 @@ const acceptDMRequest = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
-		// if the admin of a group chat removed the user from the group, the DM request to that recipient is still visible (unless they refresh their page); if they hit accept, this condition will prevent them from still being added to the group chat 
+		// if the admin of a group chat removed the user from the group, the DM request to that recipient is still visible (unless they refresh their page); if they hit accept, this condition will prevent them from still being added to the group chat
 		// * may not even need this conditional, but it's good to have just in case
 		if (!convo?.users.includes(currUID)) {
 			res
