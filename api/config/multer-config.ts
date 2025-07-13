@@ -12,6 +12,8 @@ const storage = multer.diskStorage({
 			? `${req.user._id}-pfp.${ext}`
 			: req.body.imageType === "backdrop" && !isPfp
 			? `${req.user._id}-backdrop.${ext}`
+			: req.body.imageType === "groupPhoto" && !isPfp
+			? `${req.params.conversationID}-groupPhoto.${ext}`
 			: `${req.body.postID}-${req.user._id}-${crypto.randomUUID()}.${ext}`;
 		callback(null, filename);
 	}
