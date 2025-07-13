@@ -11,8 +11,10 @@ export async function handleImageUpload(
 	uploadedImageType: string,
 	imageType: string,
 	currUID: Types.ObjectId,
-	supplimentalID?: Types.ObjectId
+	supplimentalID?: string
 ): Promise<UserData | undefined> {
+	// supplimentalID is only used if you need to use an ID other than 'currUID' for your database query
+
 	const uploadedImage = await cloudinary.uploader.upload(
 		`${FOLDER_PATH}/${uploadedImageType}`,
 		{
