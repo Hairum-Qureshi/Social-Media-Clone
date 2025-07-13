@@ -37,6 +37,7 @@ async function reAddConversation(
 		conditionalResIDs = [conversation.requestedBy];
 	}
 
+	// ! I feel like you can use User.findManyAndUpdate({ _id: { $in: conditionalResIDs } }) instead of a for loop
 	for (let i = 0; i < conditionalResIDs.length; i++) {
 		const user: IUser = (await User.findById(conditionalResIDs[i])) as IUser;
 		const conversationExists = (
@@ -306,6 +307,7 @@ const createDM = async (req: Request, res: Response): Promise<void> => {
 const postMessage = async (req: Request, res: Response): Promise<void> => {
 	try {
 		// TODO - make it handle attachments
+		// TODO - in the future, like what you did in the 'groupchat-related.ts' file's, 'addUsersToGroupChat' controller function with the '@username said: "quote"' HTML, consider doing that here too
 
 		const { message, sender, attachments } = req.body;
 		const { conversationID } = req.params;
@@ -370,7 +372,7 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 						participants_filtered[0].email,
 						participants_filtered[0].fullName,
 						message,
-						req.user.username
+						`${req.user.fullName} (@${req.user.email}) wants to add you to a private conversation on X-Clone!`
 					);
 				}
 			}
