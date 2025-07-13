@@ -17,7 +17,7 @@ export interface IConversation {
 			username: string;
 			profilePicture: string;
 		}
-	],
+	];
 	admins: Types.ObjectId[];
 	createdAt: Date;
 	updatedAt: Date;
@@ -144,4 +144,11 @@ export interface IMessage {
 export interface PostImage {
 	_id: Types.ObjectId;
 	postImages: string[];
+}
+
+export interface SearchedUsersMetaData {
+	_id: Types.ObjectId;
+	username: string;
+	fullName: string;
+	email: string;
 }
