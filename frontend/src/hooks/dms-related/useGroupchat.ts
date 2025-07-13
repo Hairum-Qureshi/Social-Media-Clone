@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { GroupChatTools } from "../../interfaces";
+import { GroupChatTools, UserTagData } from "../../interfaces";
 import { useNavigate } from "react-router-dom";
+import { blobURLToFile } from "../../utils/blobURLToFile";
 
 export default function useGroupChat(): GroupChatTools {
 	const queryClient = useQueryClient();
@@ -154,11 +155,96 @@ export default function useGroupChat(): GroupChatTools {
 		updateGroupNameMutation({ conversationID, newGroupName });
 	};
 
+	const { mutate: addUsersToGCMutation } = useMutation({
+		mutationFn: async ({
+			conversationID,
+			searchedUsersUIDs
+		}: {
+			conversationID: string;
+			searchedUsersUIDs: string[];
+		}) => {
+			const response = await axios.patch(
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/messages/conversations/${conversationID}/add-users`,
+				{ searchedUsersUIDs },
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["conversations"] });
+		}
+	});
+
+	const addSearchedUsers = (
+		conversationID: string,
+		searchedUsers: UserTagData[]
+	) => {
+		const searchedUsersUIDs = searchedUsers.map(user => user._id);
+		addUsersToGCMutation({ conversationID, searchedUsersUIDs });
+	};
+
+	const { mutate: uploadGroupChatPhoto } = useMutation({
+		mutationFn: async ({
+			blobURL,
+			conversationID
+		}: {
+			blobURL: string;
+			conversationID: string;
+		}) => {
+			try {
+				const formData = new FormData();
+				const res: File = await blobURLToFile(
+					blobURL,
+					"groupPhoto",
+					conversationID
+				);
+
+				formData.append("isPfp", "false"); // needs to come first because in the backend, if this comes after, it'll be undefined in the multer config!
+				formData.append("imageType", "groupPhoto");
+				formData.append("groupPhoto", res);
+
+				const response = await axios.patch(
+					`${
+						import.meta.env.VITE_BACKEND_BASE_URL
+					}/api/messages/conversations/${conversationID}/group-photo`,
+					formData,
+					{
+						withCredentials: true,
+						headers: { "Content-Type": "multipart/form-data" }
+					}
+				);
+
+				return response.data;
+			} catch (error) {
+				console.error("Error in updating group chat photo:", error);
+				throw new Error("Failed to update group chat photo");
+			}
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["conversations"] });
+		}
+	});
+
+	function handleImage(
+		event: React.ChangeEvent<HTMLInputElement>,
+		conversationID: string
+	) {
+		const files: FileList | null = event.target.files;
+		if (files && files.length > 0) {
+			const blobURL = window.URL.createObjectURL(files[0]);
+			uploadGroupChatPhoto({ blobURL, conversationID });
+		}
+	}
+
 	return {
 		makeAdmin,
 		leaveGroupChat,
 		removeUserFromGroupChat,
 		deleteGroupChat,
-		renameGroupChat
+		renameGroupChat,
+		addSearchedUsers,
+		handleImage
 	};
 }
