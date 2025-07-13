@@ -58,6 +58,15 @@ const acceptDMRequest = async (req: Request, res: Response): Promise<void> => {
 			return;
 		}
 
+		// if the admin of a group chat removed the user from the group, the DM request to that recipient is still visible (unless they refresh their page); if they hit accept, this condition will prevent them from still being added to the group chat 
+		// * may not even need this conditional, but it's good to have just in case
+		if (!convo?.users.includes(currUID)) {
+			res
+				.status(403)
+				.json({ message: "You are no longer a member of this group" });
+			return;
+		}
+
 		const updatedConversation: IConversation =
 			(await Conversation.findByIdAndUpdate(
 				{ _id: requestID },
@@ -89,42 +98,47 @@ const acceptDMRequest = async (req: Request, res: Response): Promise<void> => {
 
 export async function createDMRequest(
 	currUID: Types.ObjectId,
-	uids: string[]
-): Promise<IUser> {
-	const dmRequestConversation: IConversation = await Conversation.create({
-		users: [currUID, uids[0]],
-		isDMRequest: true,
-		requestedBy: currUID,
-		requestedTo: uids[0]
-	});
+	uids: string[],
+	isGroupChat = false,
+	conversationID?: Types.ObjectId
+) {
+	// Group Chat Case
+	if (isGroupChat) {
+		await User.updateMany(
+			{ _id: { $in: uids } },
+			{ $addToSet: { dmRequests: conversationID } }
+		);
+	} else {
+		// One-on-One DM Request Case
+		const uid: Types.ObjectId = new Types.ObjectId(uids[0]);
 
-	await User.findByIdAndUpdate(
-		{ _id: uids[0] },
-		{
+		const dmConversation: IConversation = await Conversation.create({
+			users: [currUID, uid],
+			isDMRequest: true,
+			requestedBy: currUID,
+			requestedTo: uid
+		});
+
+		// Add convo to target user's dmRequests
+		await User.findByIdAndUpdate(uid, {
 			$addToSet: {
-				dmRequests: dmRequestConversation._id
+				dmRequests: dmConversation._id
 			}
-		},
-		{
-			new: true
-		}
-	).lean();
+		});
 
-	const updatedUser: IUser = (await User.findByIdAndUpdate(
-		{
-			_id: currUID
-		},
-		{
-			$addToSet: {
-				conversations: dmRequestConversation._id
-			}
-		},
-		{
-			new: true
-		}
-	)) as IUser;
+		// Add convo to currUID's conversations
+		const updatedUser: IUser = (await User.findByIdAndUpdate(
+			currUID,
+			{
+				$addToSet: {
+					conversations: dmConversation._id
+				}
+			},
+			{ new: true }
+		)) as IUser;
 
-	return updatedUser;
+		return updatedUser;
+	}
 }
 
 export { getDMRequests, acceptDMRequest };
