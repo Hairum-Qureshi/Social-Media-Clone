@@ -10,6 +10,7 @@ import useSocketContext from "../../../../../contexts/SocketIOContext";
 import livePulseGIF from "../../../../../assets/green-live-pulse.gif";
 import useGroupchat from "../../../../../hooks/dms-related/useGroupchat";
 import { useNavigate } from "react-router-dom";
+import { useRef } from "react";
 
 export default function InboxInfoPanel({
 	conversationData,
@@ -29,6 +30,9 @@ export default function InboxInfoPanel({
 		removeUserFromGroupChat,
 		deleteGroupChat
 	} = useGroupchat();
+
+	const inputRef = useRef<HTMLInputElement>(null);
+	const { handleImage } = useGroupchat();
 
 	return (
 		<div className="text-white relative h-full overflow-y-auto">
@@ -54,9 +58,19 @@ export default function InboxInfoPanel({
 					checkIfAdmin(conversationData.admins, userData?._id) && (
 						<>
 							<div className="mb-4">
-								<button className="px-1 py-1.5 w-full border border-purple-500 rounded-md bg-purple-900">
+								<button
+									className="px-1 py-1.5 w-full border border-purple-500 rounded-md bg-purple-900"
+									onClick={() => inputRef.current?.click()}
+								>
 									Change Group Photo
 								</button>
+								<input
+									type="file"
+									accept="image/*"
+									className="invisible"
+									ref={inputRef}
+									onChange={event => handleImage(event, conversationData._id)}
+								/>
 							</div>
 							<div onClick={() => showGCRenameModal(true)}>
 								<button className="px-1 py-1.5 w-full border border-sky-500 rounded-md bg-sky-800">
