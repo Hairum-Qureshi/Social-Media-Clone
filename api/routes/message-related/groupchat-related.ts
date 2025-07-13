@@ -47,7 +47,7 @@ router.patch(
 	"/conversations/:conversationID/group-photo",
 	checkAuthStatus,
 	checkAdminStatus,
-	upload.single("group-photo"),
+	upload.single("groupPhoto"),
 	uploadGroupPhoto
 );
 
