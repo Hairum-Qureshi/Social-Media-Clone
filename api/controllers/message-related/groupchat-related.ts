@@ -12,6 +12,9 @@ import { broadcastMessage } from "../../utils/broadcastMessage";
 import { createSystemMessage } from "../../utils/createSystemMessage";
 import { createDMRequest } from "./handle-dm-requests";
 import { sendEmailNotification } from "../../utils/sendEmailNotification";
+import fs from "fs";
+import { FOLDER_PATH } from "../../config/multer-config";
+import { handleImageUpload } from "../../utils/handleImageUpload";
 
 const makeAdmin = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -537,10 +540,63 @@ const addUsersToGroupChat = async (
 	}
 };
 
+const uploadGroupPhoto = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { conversationID } = req.params;
+		const currUID: Types.ObjectId = req.user._id;
+		// TODO - display a loading animation or something to let the frontend know the image is being uploaded
+
+		const uploadedFiles: string[] = fs.readdirSync(FOLDER_PATH);
+		const uploadedGroupPhoto: string | undefined = uploadedFiles.find(
+			(uploadedFile: string) => {
+				if (uploadedFile.includes(`${conversationID}-groupPhoto`))
+					return uploadedFile;
+			}
+		);
+
+		if (uploadedGroupPhoto) {
+			await handleImageUpload(
+				uploadedGroupPhoto,
+				"groupPhoto",
+				currUID,
+				conversationID
+			);
+
+			const SYSTEM_MESSAGE = `@${req.user.username} updated the group photo`;
+			const message: IMessage = await createSystemMessage(
+				SYSTEM_MESSAGE,
+				conversationID
+			);
+
+			const finalUpdatedConvo = await Conversation.findByIdAndUpdate(
+				conversationID,
+				{
+					$addToSet: {
+						messages: message._id
+					},
+					$set: {
+						latestMessage: SYSTEM_MESSAGE
+					}
+				}
+			);
+
+			res.status(200).json(finalUpdatedConvo);
+		}
+	} catch (error) {
+		console.error(
+			"Error in groupchat-related.ts file, uploadGroupPhoto function controller"
+				.red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
 export {
 	makeAdmin,
 	removeUserFromGroupChat,
 	leaveGroupChat,
 	renameGroupChat,
-	addUsersToGroupChat
+	addUsersToGroupChat,
+	uploadGroupPhoto
 };
