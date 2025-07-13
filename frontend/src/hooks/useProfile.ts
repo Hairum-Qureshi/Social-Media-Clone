@@ -170,8 +170,8 @@ export default function useProfile(): ProfileTools {
 				const formData = new FormData();
 				const res: File = await blobURLToFile(
 					blobURL,
-					userID,
-					"profile-picture"
+					"profile-picture",
+					userID
 				);
 
 				formData.append("isPfp", "true"); // needs to come first because in the backend, if this comes after, it'll be undefined in the multer config!
@@ -211,7 +211,7 @@ export default function useProfile(): ProfileTools {
 		}) => {
 			try {
 				const formData = new FormData();
-				const res: File = await blobURLToFile(blobURL, userID, "backdrop");
+				const res: File = await blobURLToFile(blobURL, "backdrop", userID);
 
 				formData.append("isPfp", "false"); // needs to come first because in the backend, if this comes after, it'll be undefined in the multer config!
 				formData.append("imageType", "backdrop");
