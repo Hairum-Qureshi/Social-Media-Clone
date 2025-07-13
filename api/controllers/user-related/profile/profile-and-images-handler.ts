@@ -21,7 +21,7 @@ const updateProfilePicture = async (
 		);
 
 		if (uploadedPfp) {
-			const updatedUser: UserData = await handleImageUpload(
+			const updatedUser: UserData | undefined = await handleImageUpload(
 				uploadedPfp,
 				"pfp",
 				currUID
@@ -56,7 +56,7 @@ const updateProfileBackdrop = async (
 		);
 
 		if (uploadedBackdrop) {
-			const updatedUser: UserData = await handleImageUpload(
+			const updatedUser: UserData | undefined = await handleImageUpload(
 				uploadedBackdrop,
 				"backdrop",
 				currUID
