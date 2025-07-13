@@ -3,7 +3,7 @@ import fs from "fs";
 import { FOLDER_PATH } from "../../../config/multer-config";
 import { Types } from "mongoose";
 import { PostImage, UserData } from "../../../interfaces";
-import { handleProfileImageUploads } from "../../../utils/handleProfileImageUploads";
+import { handleImageUpload } from "../../../utils/handleImageUpload";
 import Post from "../../../models/Post";
 
 const updateProfilePicture = async (
@@ -21,7 +21,7 @@ const updateProfilePicture = async (
 		);
 
 		if (uploadedPfp) {
-			const updatedUser: UserData = await handleProfileImageUploads(
+			const updatedUser: UserData = await handleImageUpload(
 				uploadedPfp,
 				"pfp",
 				currUID
@@ -56,7 +56,7 @@ const updateProfileBackdrop = async (
 		);
 
 		if (uploadedBackdrop) {
-			const updatedUser: UserData = await handleProfileImageUploads(
+			const updatedUser: UserData = await handleImageUpload(
 				uploadedBackdrop,
 				"backdrop",
 				currUID
