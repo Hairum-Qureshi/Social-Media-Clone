@@ -150,6 +150,8 @@ export default function Conversation({
 												message={message.message}
 												timestamp={message.createdAt}
 												isSystem={message.sender.username === "system"}
+												isGroupChat = {conversation.isGroupchat}
+												username = {message.sender.username}
 											/>
 										);
 									})}
