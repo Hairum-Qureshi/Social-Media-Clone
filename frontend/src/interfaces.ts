@@ -494,6 +494,8 @@ export interface ChatBubbleProps {
 	message: string;
 	timestamp: Date;
 	isSystem?: boolean;
+	isGroupChat: boolean;
+	username: string;
 }
 
 export interface ContactsProps {
@@ -516,7 +518,10 @@ export interface GroupChatTools {
 		conversationID: string,
 		searchedUsers: UserTagData[]
 	) => void;
-	handleImage: (event: React.ChangeEvent<HTMLInputElement>, convesationID:string) => void;
+	handleImage: (
+		event: React.ChangeEvent<HTMLInputElement>,
+		convesationID: string
+	) => void;
 }
 
 export interface RenameGCNameModalProps {
