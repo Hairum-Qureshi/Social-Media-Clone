@@ -9,7 +9,9 @@ export default function ChatBubble({
 	you,
 	message,
 	timestamp,
-	isSystem = false
+	isSystem = false,
+	isGroupChat,
+	username
 }: ChatBubbleProps) {
 	const { userData } = useAuthContext()!;
 
@@ -32,6 +34,7 @@ export default function ChatBubble({
 			className={`flex flex-col m-2 ${
 				you ? "items-end" : "items-start"
 			} break-words whitespace-pre-wrap`}
+			title={isGroupChat ? `@${username}` : ""}
 		>
 			<div className="bg-sky-500 p-2 rounded-md w-fit max-w-[75%] overflow-wrap break-words whitespace-pre-wrap">
 				<p>{message}</p>
