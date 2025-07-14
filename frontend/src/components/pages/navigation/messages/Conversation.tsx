@@ -13,6 +13,7 @@ import DMRequestFooter from "../messages/request-related/DMRequestFooter";
 import InboxInfoPanel from "./inbox/InboxInfoPanel";
 import RenameGCNameModal from "./inbox/modals/RenameGCNameModal";
 import UserSearchModal from "./inbox/modals/UserSearchModal";
+import { ToastContainer } from "react-toastify";
 
 export default function Conversation({
 	defaultSubtext,
@@ -80,6 +81,17 @@ export default function Conversation({
 
 	return (
 		<div className="flex w-full max-w-full h-screen overflow-x-hidden">
+			<ToastContainer
+				position="top-center"
+				autoClose={3000}
+				hideProgressBar={false}
+				closeOnClick
+				draggable
+				pauseOnHover
+				toastClassName={() =>
+					"bg-black text-white text-sm font-medium rounded-lg px-4 py-3 shadow-md text-center border border-white"
+				}
+			/>
 			{showGroupChatRenameModal && conversation && (
 				<RenameGCNameModal
 					conversationID={conversation._id}
@@ -150,8 +162,8 @@ export default function Conversation({
 												message={message.message}
 												timestamp={message.createdAt}
 												isSystem={message.sender.username === "system"}
-												isGroupChat = {conversation.isGroupchat}
-												username = {message.sender.username}
+												isGroupChat={conversation.isGroupchat}
+												username={message.sender.username}
 											/>
 										);
 									})}
