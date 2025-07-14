@@ -119,9 +119,9 @@ export default function useDM(): DMTools {
 		if (message && userData) {
 			if (message.length > 280) {
 				toast(
-					"Message is too long. Please shorten it to 280 characters or less.",
+					"Message is too long. Please shorten it to 280 characters or less",
 					{
-						autoClose: 600,
+						autoClose: 800,
 						hideProgressBar: true
 					}
 				);
@@ -158,7 +158,11 @@ export default function useDM(): DMTools {
 			}
 		}
 
-		if (!message) alert("Please provide a message");
+		if (!message)
+			toast("Message cannot be empty", {
+				autoClose: 600,
+				hideProgressBar: true
+			});
 	}
 
 	const { data: dmRequests } = useQuery({
