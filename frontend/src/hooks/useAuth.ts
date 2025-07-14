@@ -4,29 +4,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import useSocketContext from "../contexts/SocketIOContext";
 import { useNavigate } from "react-router-dom";
-
-interface AuthTools {
-	signUp: (
-		event: React.FormEvent,
-		username: string,
-		fullName: string,
-		email: string,
-		password: string
-	) => void;
-	signUpIsPending: boolean;
-	signIn: (event: React.FormEvent, username: string, password: string) => void;
-	signInIsPending: boolean;
-	isSignInError: boolean;
-	isSignUpError: boolean;
-	signOut: () => void;
-}
-
-interface FormData {
-	username: string;
-	fullName?: string;
-	email?: string;
-	password: string;
-}
+import { AuthTools, FormData } from "../interfaces";
 
 // TODO - if the user leaves the form empty and tries signing in or up, the toaster notif isn't red because it's not detected as an error
 
