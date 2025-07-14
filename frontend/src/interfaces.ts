@@ -522,6 +522,7 @@ export interface GroupChatTools {
 		event: React.ChangeEvent<HTMLInputElement>,
 		convesationID: string
 	) => void;
+	userGroupChatStatus: (conversationID: string) => Promise<boolean>;
 }
 
 export interface RenameGCNameModalProps {
