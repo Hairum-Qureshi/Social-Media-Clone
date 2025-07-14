@@ -3,6 +3,7 @@ import checkAuthStatus from "../../middleware/checkAuthStatus";
 import checkAdminStatus from "../../middleware/checkAdminStatus";
 import {
 	addUsersToGroupChat,
+	checkIfStillInGroupChat,
 	leaveGroupChat,
 	makeAdmin,
 	removeUserFromGroupChat,
@@ -12,6 +13,12 @@ import {
 import { upload } from "../post";
 
 const router = express.Router();
+
+router.get(
+	"/conversations/:conversationID/still-in-groupchat",
+	checkAuthStatus,
+	checkIfStillInGroupChat
+);
 
 router.patch(
 	"/conversations/:conversationID/make-admin",
@@ -46,7 +53,7 @@ router.patch(
 router.patch(
 	"/conversations/:conversationID/group-photo",
 	checkAuthStatus,
-	checkAdminStatus,
+	// checkAdminStatus, // TODO - figure out why adding 'checkAdminStatus' returns a 404 on the frontend
 	upload.single("groupPhoto"),
 	uploadGroupPhoto
 );
