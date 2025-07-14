@@ -11,6 +11,7 @@ import useSocketContext from "../../contexts/SocketIOContext";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useGroupChat from "./useGroupchat";
+import { toast } from "react-toastify";
 
 export default function useDM(): DMTools {
 	const queryClient = useQueryClient();
@@ -117,13 +118,23 @@ export default function useDM(): DMTools {
 	) {
 		if (message && userData) {
 			if (message.length > 280) {
-				return alert(
-					"Message is too long. Please shorten it to 280 characters or less."
+				toast(
+					"Message is too long. Please shorten it to 280 characters or less.",
+					{
+						autoClose: 600,
+						hideProgressBar: true
+					}
 				);
+				return;
 			}
-
 			if (!(await userGroupChatStatus(conversationID))) {
-				return alert("You are not a part of this conversation");
+				toast("You are no longer part of this conversation", {
+					autoClose: 600,
+					hideProgressBar: true
+				});
+				navigate("/messages");
+				queryClient.invalidateQueries({ queryKey: ["conversations"] });
+				return;
 			} else {
 				queryClient.setQueryData(
 					["messages", convoID],
