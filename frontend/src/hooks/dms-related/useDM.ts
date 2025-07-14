@@ -1,10 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { UserData, UserTagData, DMTools, Message } from "../../../src/interfaces";
+import {
+	UserData,
+	UserTagData,
+	DMTools,
+	Message
+} from "../../../src/interfaces";
 import axios from "axios";
 import useAuthContext from "../../contexts/AuthContext";
 import useSocketContext from "../../contexts/SocketIOContext";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useGroupChat from "./useGroupchat";
 
 export default function useDM(): DMTools {
 	const queryClient = useQueryClient();
@@ -12,6 +18,7 @@ export default function useDM(): DMTools {
 	const convoID: string = window.location.pathname.split("/")[3];
 	const { receivedMessage } = useSocketContext()!;
 	const navigate = useNavigate();
+	const { userGroupChatStatus } = useGroupChat();
 
 	const { data: conversations = [] } = useQuery({
 		queryKey: ["conversations"],
@@ -103,7 +110,7 @@ export default function useDM(): DMTools {
 		}
 	});
 
-	function sendMessage(
+	async function sendMessage(
 		message: string | undefined,
 		uploadedImage: string,
 		conversationID: string
@@ -115,25 +122,29 @@ export default function useDM(): DMTools {
 				);
 			}
 
-			queryClient.setQueryData(
-				["messages", convoID],
-				(prevMessages: Message[] = []) => [
-					...prevMessages,
-					{
-						message,
-						sender: {
-							_id: userData._id,
-							username: userData.username,
-							profilePicture: userData.profilePicture
-						},
-						attachments: [],
-						conversationID,
-						createdAt: new Date()
-					}
-				]
-			);
+			if (!(await userGroupChatStatus(conversationID))) {
+				return alert("You are not a part of this conversation");
+			} else {
+				queryClient.setQueryData(
+					["messages", convoID],
+					(prevMessages: Message[] = []) => [
+						...prevMessages,
+						{
+							message,
+							sender: {
+								_id: userData._id,
+								username: userData.username,
+								profilePicture: userData.profilePicture
+							},
+							attachments: [],
+							conversationID,
+							createdAt: new Date()
+						}
+					]
+				);
 
-			sendMessageMutate({ message, userData, uploadedImage, conversationID });
+				sendMessageMutate({ message, userData, uploadedImage, conversationID });
+			}
 		}
 
 		if (!message) alert("Please provide a message");
