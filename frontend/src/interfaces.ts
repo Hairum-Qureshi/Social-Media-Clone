@@ -529,3 +529,26 @@ export interface RenameGCNameModalProps {
 	conversationID: string;
 	showGCRenameModal: (show: boolean) => void;
 }
+
+export interface AuthTools {
+	signUp: (
+		event: React.FormEvent,
+		username: string,
+		fullName: string,
+		email: string,
+		password: string
+	) => void;
+	signUpIsPending: boolean;
+	signIn: (event: React.FormEvent, username: string, password: string) => void;
+	signInIsPending: boolean;
+	isSignInError: boolean;
+	isSignUpError: boolean;
+	signOut: () => void;
+}
+
+export interface FormData {
+	username: string;
+	fullName?: string;
+	email?: string;
+	password: string;
+}
