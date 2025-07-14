@@ -592,11 +592,31 @@ const uploadGroupPhoto = async (req: Request, res: Response): Promise<void> => {
 	}
 };
 
+const checkIfStillInGroupChat = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	const { conversationID } = req.params;
+	const currUID: Types.ObjectId = req.user._id;
+
+	const conversation: IConversation | undefined = (await Conversation.findById(
+		conversationID
+	)) as IConversation | undefined;
+
+	if (!conversation) {
+		res.status(404).json({ message: "Conversation not found" });
+		return;
+	}
+
+	res.status(200).send(conversation.users.includes(currUID));
+};
+
 export {
 	makeAdmin,
 	removeUserFromGroupChat,
 	leaveGroupChat,
 	renameGroupChat,
 	addUsersToGroupChat,
-	uploadGroupPhoto
+	uploadGroupPhoto,
+	checkIfStillInGroupChat
 };
