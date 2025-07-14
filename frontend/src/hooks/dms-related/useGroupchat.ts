@@ -238,6 +238,23 @@ export default function useGroupChat(): GroupChatTools {
 		}
 	}
 
+	async function userGroupChatStatus(conversationID: string): Promise<boolean> {
+		try {
+			const response = await axios.get(
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/messages/conversations/${conversationID}/still-in-groupchat`,
+				{
+					withCredentials: true
+				}
+			);
+			return response.data;
+		} catch (error) {
+			console.error(error);
+			return false;
+		}
+	}
+
 	return {
 		makeAdmin,
 		leaveGroupChat,
@@ -245,6 +262,7 @@ export default function useGroupChat(): GroupChatTools {
 		deleteGroupChat,
 		renameGroupChat,
 		addSearchedUsers,
-		handleImage
+		handleImage,
+		userGroupChatStatus
 	};
 }
