@@ -18,7 +18,7 @@ export default function ProfilePreview({
 				<div className="w-full justify-center">
 					<div className="flex items-center justify-center">
 						<img
-							src={getFriend(conversation?.users, currUID).profilePicture}
+							src={getFriend(conversation?.users, currUID)?.profilePicture}
 							alt="User pfp"
 							className="w-20 h-20 rounded-full object-cover"
 						/>
@@ -26,32 +26,32 @@ export default function ProfilePreview({
 
 					<div className="text-base text-center mt-2 hover:cursor-pointer">
 						<p className="font-semibold">
-							{getFriend(conversation?.users, currUID).fullName}
+							{getFriend(conversation?.users, currUID)?.fullName}
 						</p>
 						<p className="text-zinc-500">
-							@{getFriend(conversation?.users, currUID).username}
+							@{getFriend(conversation?.users, currUID)?.username}
 						</p>
 						<p className="my-3">
-							{getFriend(conversation?.users, currUID).bio}
+							{getFriend(conversation?.users, currUID)?.bio}
 						</p>
 						<p className="text-sm text-zinc-500 mt-2">
 							Joined&nbsp;
 							{
 								getMonthAndYear(
-									getFriend(conversation?.users, currUID).createdAt
+									getFriend(conversation?.users, currUID)?.createdAt
 								)?.month
 							}
 							&nbsp;
 							{
 								getMonthAndYear(
-									getFriend(conversation?.users, currUID).createdAt
+									getFriend(conversation?.users, currUID)?.createdAt
 								)?.year
 							}
 							&nbsp;·&nbsp;
-							{getFriend(conversation?.users, currUID).numFollowers}
+							{getFriend(conversation?.users, currUID)?.numFollowers}
 							&nbsp;Follower
-							{getFriend(conversation?.users, currUID).numFollowers === 0 ||
-							getFriend(conversation?.users, currUID).numFollowers > 1
+							{getFriend(conversation?.users, currUID)?.numFollowers === 0 ||
+							getFriend(conversation?.users, currUID)?.numFollowers > 1
 								? "s"
 								: ""}
 						</p>
@@ -61,7 +61,7 @@ export default function ProfilePreview({
 						) &&
 							!location.pathname.includes("/messages/requests") && (
 								<div className="bg-sky-950 mt-3 rounded-md p-1 text-base">
-									@{getFriend(conversation?.users, currUID).username} isn't
+									@{getFriend(conversation?.users, currUID)?.username} isn't
 									following you. A DM request has been sent to them.
 								</div>
 							)}
@@ -71,7 +71,7 @@ export default function ProfilePreview({
 						) &&
 							location.pathname.includes("/messages/requests") && (
 								<div className="bg-sky-950 mt-3 rounded-md p-1 text-base">
-									@{getFriend(conversation?.users, currUID).username} isn't
+									@{getFriend(conversation?.users, currUID)?.username} isn't
 									following you.
 								</div>
 							)}
