@@ -458,7 +458,7 @@ const addUsersToGroupChat = async (
 			}
 		).username;
 
-		const filteredUids: Types.ObjectId[] = (
+		const filteredUIDs: Types.ObjectId[] = (
 			searchedUsersUIDs as string[]
 		).filter((uid: string) =>
 			areMutuals(req, new Types.ObjectId(uid))
@@ -470,7 +470,7 @@ const addUsersToGroupChat = async (
 			searchedUsersUIDs.includes(user._id.toString())
 		);
 
-		if (!filteredUids.length) {
+		if (!filteredUIDs.length) {
 			// none of the users are mutuals with the current user
 			createDMRequest(
 				currUID,
@@ -481,7 +481,7 @@ const addUsersToGroupChat = async (
 
 			await Conversation.findByIdAndUpdate(updatedConversation._id, {
 				$addToSet: {
-					requestedTo: searchedUsersUIDs
+					requestedTo: filteredUIDs
 				}
 			});
 
