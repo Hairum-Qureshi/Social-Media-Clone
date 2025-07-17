@@ -351,7 +351,7 @@ export interface DMTools {
 	dmRequests: DMRequest[];
 	acceptDMRequest: (dmRequestID: string) => void;
 	deleteConversation: (conversationID: string) => void;
-	deleteDMRequest: (dmRequestID: string, uids:string[]) => void;
+	deleteDMRequest: (dmRequestID: string, uid:string) => void;
 }
 
 export interface SocketContextData {
