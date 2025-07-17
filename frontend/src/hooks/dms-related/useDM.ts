@@ -228,6 +228,33 @@ export default function useDM(): DMTools {
 		deleteConversationMutation({ conversationID });
 	};
 
+	const { mutate: deleteDMRequestMutate } = useMutation({
+		mutationFn: async ({
+			dmRequestID,
+			uid
+		}: {
+			dmRequestID: string;
+			uid: string;
+		}) => {
+			const response = await axios.delete(
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/messages/dm-requests/${dmRequestID}/delete?uid=${uid}`,
+				{ withCredentials: true }
+			);
+			return response.data;
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["dmRequests"] });
+			queryClient.invalidateQueries({ queryKey: ["conversations"] });
+			navigate("/messages");
+		}
+	});
+
+	const deleteDMRequest = (dmRequestID: string, uid: string) => {
+		deleteDMRequestMutate({ dmRequestID, uid });
+	};
+
 	return {
 		createDM,
 		conversations,
@@ -235,6 +262,7 @@ export default function useDM(): DMTools {
 		messages,
 		dmRequests,
 		acceptDMRequest,
-		deleteConversation
+		deleteConversation,
+		deleteDMRequest
 	};
 }
