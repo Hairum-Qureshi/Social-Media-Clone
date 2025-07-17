@@ -355,6 +355,35 @@ const postMessage = async (req: Request, res: Response): Promise<void> => {
 				}
 			)) as IConversation;
 
+			if (!conversation.isGroupchat) {
+				// if the receiver declines a DM request, the conversation is not added to their list of conversations, but they're still considered a member of the conversation
+				const hasDeclinedDMRequest: IConversation | undefined =
+					(await Conversation.findOne({
+						_id: conversationID,
+						requestedBy: currUID,
+						users: { $in: [participants_filtered[0]] },
+						isGroupchat: false
+					})) as IConversation | undefined;
+
+				const receiverConversation: IUser = (await User.findOne({
+					_id: participants_filtered[0],
+					conversations: { $in: [hasDeclinedDMRequest?._id] }
+				})) as IUser;
+
+				if (hasDeclinedDMRequest && !receiverConversation) {
+					// send the DM request again if the receiver declined the DM request but the sender sent another message
+					await createDMRequest(
+						currUID,
+						[participants_filtered[0]._id.toString()],
+						false,
+						new mongoose.Types.ObjectId(conversationID),
+						true
+					);
+
+					// TODO - send an email notification
+				}
+			}
+
 			if (updatedConvo.messages.length === 1) {
 				if (updatedConvo.isGroupchat) {
 					for (let i = 0; i < participants_filtered.length; i++) {
