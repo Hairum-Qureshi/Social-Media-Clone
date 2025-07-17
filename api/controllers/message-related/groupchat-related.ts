@@ -512,7 +512,7 @@ const addUsersToGroupChat = async (
 			}
 		} else {
 			await User.updateMany(
-				{ _id: { $in: filteredUids } },
+				{ _id: { $in: filteredUIDs } },
 				{ $addToSet: { conversations: conversationID } }
 			);
 		}
