@@ -1,14 +1,26 @@
 import { Link } from "react-router-dom";
-import { DMRequestFooterProps } from "../../../../../interfaces";
+import {
+	DMRequestFooterProps,
+	UserData_Conversation
+} from "../../../../../interfaces";
 import useDM from "../../../../../hooks/dms-related/useDM";
+import { useEffect, useState } from "react";
 
-// ! - for group chats, you *might* need to have 'requestedByUID' as of type string[] instead of just string
 export default function DMRequestFooter({
 	dmRequestID,
 	dmRequestData,
 	currUID
 }: DMRequestFooterProps) {
-	const { acceptDMRequest } = useDM();
+	const { acceptDMRequest, deleteDMRequest } = useDM();
+	const [uid, setUID] = useState<string>();
+
+	useEffect(() => {
+		const foundUID = dmRequestData.users.find(
+			(user: UserData_Conversation) => user._id === currUID
+		);
+
+		if (foundUID) setUID(foundUID._id);
+	}, []);
 
 	return (
 		<div className="w-full relative bg-black">
@@ -32,7 +44,10 @@ export default function DMRequestFooter({
 						<button className="border border-red-500 rounded-xl w-1/2 p-1.5 mr-2">
 							Block or report
 						</button>
-						<button className="border border-red-600 rounded-xl w-1/2 p-1.5">
+						<button
+							className="border border-red-600 rounded-xl w-1/2 p-1.5"
+							onClick={() => uid && deleteDMRequest(dmRequestID, uid)}
+						>
 							Delete
 						</button>
 					</div>
