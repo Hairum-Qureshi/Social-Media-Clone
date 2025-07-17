@@ -43,6 +43,7 @@ export default function Conversation({
 	// TODO - add GIF functionality
 	// TODO - add an upload image functionality
 	// TODO - add logic to render out 'M', 'K', etc. if the user has millions or thousands of followers
+	// TODO - maybe style the toast notification for notifications that are errors (ex. 'message cannot be blank') so it stands out
 
 	function handlePaste(e: React.ClipboardEvent<HTMLDivElement>) {
 		const image = e.clipboardData || window.Clipboard;
@@ -140,7 +141,7 @@ export default function Conversation({
 							{!conversation.isGroupchat && (
 								<Link
 									to={`/${
-										getFriend(conversation?.users, userData?._id).username
+										getFriend(conversation?.users, userData?._id)?.username
 									}`}
 								>
 									<ProfilePreview
