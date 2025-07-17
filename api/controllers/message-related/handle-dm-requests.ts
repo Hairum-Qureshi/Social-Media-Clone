@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import { Types } from "mongoose";
 import User from "../../models/User";
 import Conversation from "../../models/inbox/Conversation";
-import { IConversation, IUser } from "../../interfaces";
+import { IConversation, IMessage, IUser } from "../../interfaces";
+import { createSystemMessage } from "../../utils/createSystemMessage";
+import { broadcastMessage } from "../../utils/broadcastMessage";
 
 const getDMRequests = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -107,7 +109,8 @@ export async function createDMRequest(
 	currUID: Types.ObjectId,
 	uids: string[],
 	isGroupChat = false,
-	conversationID?: Types.ObjectId
+	conversationID?: Types.ObjectId,
+	hasBeenDeclinedBefore = false
 ) {
 	// Group Chat Case
 	if (isGroupChat) {
@@ -115,37 +118,165 @@ export async function createDMRequest(
 			{ _id: { $in: uids } },
 			{ $addToSet: { dmRequests: conversationID } }
 		);
+
+		await Conversation.updateMany(
+			{ _id: conversationID },
+			{
+				$addToSet: {
+					requestedTo: { $each: uids }
+				}
+			}
+		);
 	} else {
 		// One-on-One DM Request Case
 		const uid: Types.ObjectId = new Types.ObjectId(uids[0]);
 
-		const dmConversation: IConversation = await Conversation.create({
-			users: [currUID, uid],
-			isDMRequest: true,
-			requestedBy: currUID,
-			requestedTo: uid
-		});
+		if (hasBeenDeclinedBefore) {
+			// If the user has declined a DM request before, re-send it
+			const updatedConversation: IConversation =
+				(await Conversation.findByIdAndUpdate(conversationID, {
+					$addToSet: {
+						requestedTo: uids[0]
+					}
+				})) as IConversation;
 
-		// Add convo to target user's dmRequests
-		await User.findByIdAndUpdate(uid, {
-			$addToSet: {
-				dmRequests: dmConversation._id
-			}
-		});
-
-		// Add convo to currUID's conversations
-		const updatedUser: IUser = (await User.findByIdAndUpdate(
-			currUID,
-			{
+			const updatedUser: IUser = (await User.findByIdAndUpdate(uid, {
 				$addToSet: {
-					conversations: dmConversation._id
+					dmRequests: updatedConversation._id
 				}
-			},
-			{ new: true }
-		)) as IUser;
+			})) as IUser;
 
-		return updatedUser;
+			return updatedUser;
+		} else {
+			const dmConversation: IConversation = await Conversation.create({
+				users: [currUID, uid],
+				isDMRequest: true,
+				requestedBy: currUID,
+				requestedTo: uid
+			});
+
+			// Add convo to target user's dmRequests
+			await User.findByIdAndUpdate(uid, {
+				$addToSet: {
+					dmRequests: dmConversation._id
+				}
+			});
+
+			// Add convo to currUID's conversations
+			const updatedUser: IUser = (await User.findByIdAndUpdate(
+				currUID,
+				{
+					$addToSet: {
+						conversations: dmConversation._id
+					}
+				},
+				{ new: true }
+			)) as IUser;
+
+			return updatedUser;
+		}
 	}
 }
 
-export { getDMRequests, acceptDMRequest };
+const deleteDMRequest = async (req: Request, res: Response): Promise<void> => {
+	try {
+		const { requestID } = req.params;
+		const { uid } = req.query;
+
+		const dmRequest: IConversation = (await Conversation.findById(
+			requestID
+		).populate({
+			path: "requestedTo",
+			select: "username"
+		})) as IConversation;
+
+		interface RequestedToMetaData {
+			_id: Types.ObjectId;
+			username: string;
+		}
+
+		const userMetaData = (
+			dmRequest.requestedTo as unknown as RequestedToMetaData[]
+		).find((user: RequestedToMetaData) => {
+			return user._id.toString() === uid?.toString();
+		});
+
+		if (dmRequest.isGroupchat && userMetaData) {
+			const SYSTEM_MESSAGE = `@${userMetaData.username} has left the group chat`;
+
+			const message: IMessage = await createSystemMessage(
+				SYSTEM_MESSAGE,
+				requestID
+			);
+
+			const updatedRequest: IConversation =
+				(await Conversation.findByIdAndUpdate(
+					requestID,
+					{
+						$pull: {
+							users: uid,
+							requestedTo: uid
+						},
+						$addToSet: {
+							messages: message._id
+						},
+						$set: {
+							latestMessage: SYSTEM_MESSAGE
+						}
+					},
+					{
+						new: true
+					}
+				)) as IConversation;
+
+			await User.findByIdAndUpdate(uid, {
+				$pull: {
+					dmRequests: requestID
+				}
+			});
+
+			const participants_filtered: IUser[] = updatedRequest.users.filter(
+				user => !user._id.equals(req.user._id)
+			) as unknown as IUser[];
+
+			broadcastMessage(
+				participants_filtered as unknown as Types.ObjectId[],
+				message
+			);
+
+			res.status(200).json(updatedRequest);
+			return;
+		} else {
+			const updatedRequest: IConversation =
+				(await Conversation.findByIdAndUpdate(
+					requestID,
+					{
+						$pull: {
+							requestedTo: uid
+						}
+					},
+					{
+						new: true
+					}
+				)) as IConversation;
+
+			await User.findByIdAndUpdate(uid, {
+				$pull: {
+					dmRequests: requestID
+				}
+			});
+
+			res.status(200).json(updatedRequest);
+			return;
+		}
+	} catch (error) {
+		console.error(
+			"Error in handle-dm-requests.ts file, deleteDMRequest function controller"
+				.red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
+export { getDMRequests, acceptDMRequest, deleteDMRequest };
