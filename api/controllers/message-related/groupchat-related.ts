@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import mongoose, { Types } from "mongoose";
+import { Types } from "mongoose";
 import Conversation from "../../models/inbox/Conversation";
 import User from "../../models/User";
 import {
@@ -18,6 +18,7 @@ import { handleImageUpload } from "../../utils/handleImageUpload";
 
 const makeAdmin = async (req: Request, res: Response): Promise<void> => {
 	try {
+		// TODO - maybe consider refraining admins from making users they recently added to the group chat as an admin if the receiver hasn't accepted being added in the group chat
 		const { conversationID } = req.params;
 		const { uid } = req.body;
 
@@ -477,6 +478,12 @@ const addUsersToGroupChat = async (
 				true,
 				updatedConversation._id
 			);
+
+			await Conversation.findByIdAndUpdate(updatedConversation._id, {
+				$addToSet: {
+					requestedTo: searchedUsersUIDs
+				}
+			});
 
 			const HTML_CONTENT = `<div style="font-family: Arial, sans-serif; background-color: #f7f9fc; padding: 20px;">
 				<div style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 20px; max-width: 600px; margin: auto;">
