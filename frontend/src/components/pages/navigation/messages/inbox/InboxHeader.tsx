@@ -32,12 +32,12 @@ export default function InboxHeader({
 			) : (
 				<div className="flex items-center">
 					<img
-						src={getFriend(conversation?.users, currUID).profilePicture}
+						src={getFriend(conversation?.users, currUID)?.profilePicture}
 						alt="User pfp"
 						className="w-8 h-8 rounded-full object-cover mr-3"
 					/>
 					<p>
-						{getFriend(conversation?.users, currUID).fullName}
+						{getFriend(conversation?.users, currUID)?.fullName}
 						{status === "ONLINE" ? (
 							<span className="text-green-600 font-light ml-5">Online</span>
 						) : (
