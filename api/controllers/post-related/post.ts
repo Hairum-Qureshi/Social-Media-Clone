@@ -207,7 +207,7 @@ const handleLikes = async (req: Request, res: Response) => {
 					link: `${process.env.FRONTEND_URL}/post/${postID}`
 				});
 
-				await incrementNotificationCount(currUID);
+				await incrementNotificationCount(post.user);
 			}
 
 			res.status(200).json({ ...updatedPost, isLiked: true });
