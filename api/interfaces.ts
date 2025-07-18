@@ -92,7 +92,7 @@ export interface UserData {
 	updatedAt: Date;
 }
 
-export enum NotificationTypes {
+enum NotificationTypes {
 	Like = "LIKE",
 	Comment = "COMMENT",
 	Follow = "FOLLOW",
@@ -155,4 +155,14 @@ export interface SearchedUsersMetaData {
 	username: string;
 	fullName: string;
 	email: string;
+}
+
+export interface NotificationPayload {
+	userID: string;
+	username: string;
+	userPfp: string;
+	notifType: NotificationTypes;
+	notifDescription: string;
+	notifDate: string;
+	notifID: string;
 }
