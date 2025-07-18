@@ -12,22 +12,17 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import useAuthContext from "../../../contexts/AuthContext";
-import { useEffect, useState } from "react";
 import PostModal from "../../post/PostModal";
 import Editor from "../feed/editor-tools/Editor";
+import usePosts from "../../../hooks/usePosts";
 
 export default function SideNavbar() {
 	const { signOut } = useAuth();
 	const { userData } = useAuthContext()!;
-	const [showPostModal, setShowPostModal] = useState(false);
 	const isFeed: boolean = window.location.pathname === "/";
+	const { showPostModal, showThePostModal } = usePosts();
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		setShowPostModal(false);
-	}, [navigate]);
-
-	// TODO - need to make the icons centered
 	return (
 		<>
 			{showPostModal && !isFeed ? (
@@ -35,118 +30,123 @@ export default function SideNavbar() {
 					<Editor showBorder={false} />
 				</PostModal>
 			) : null}
-			<div className="bg-black border-r-2 border-r-gray-700 text-white h-screen lg:w-1/4 w-20 overflow-hidden flex">
-				<div className="h-ful w-full lg:relative items-center justify-center">
-					<Link to="/">
-						<img
-							src={TwitterXSVG}
-							alt="Twitter-X SVG"
-							className="w-10 h-10 mt-3"
-						/>
-					</Link>
-					<div className="text-2xl p-2">
+			<div className="w-80 bg-black border-r-2 border-r-gray-700 text-white h-screen overflow-hidden flex items-center justify-center relative">
+				<div className="w-7/12 flex items-center h-full flex-col">
+					<div className="w-full">
 						<Link to="/">
-							<div className="ml-3">
-								<div className="my-6 -ml-4 hover:bg-gray-800 p-2 rounded-full">
-									<span>
-										<FontAwesomeIcon icon={faHouse} />
-									</span>
-									<span className="ml-5 hidden lg:inline-block">Home</span>
-								</div>
-							</div>
+							<img
+								src={TwitterXSVG}
+								alt="Twitter-X SVG"
+								className="w-12 h-12 mt-3"
+							/>
 						</Link>
-						<Link to="/explore">
-							<div className="ml-3">
-								<div className="my-6 -ml-4 hover:bg-gray-800 p-2 rounded-full">
-									<span>
-										<FontAwesomeIcon icon={faMagnifyingGlass} />
-									</span>
-									<span className="ml-5 hidden lg:inline-block">Explore</span>
-								</div>
-							</div>
-						</Link>
-						<Link to="/notifications">
-							<div className="ml-3">
-								<div className="my-6 -ml-4 hover:bg-gray-800 p-2 rounded-full">
-									<span>
-										<FontAwesomeIcon icon={faBell} />
-									</span>
-									<span className="ml-5 hidden lg:inline-block">
-										Notifications
-									</span>
-								</div>
-							</div>
-						</Link>
-						<Link to="/messages">
-							<div className="ml-3">
-								<div className="my-6 -ml-4 hover:bg-gray-800 p-2 rounded-full">
-									<span>
-										<FontAwesomeIcon icon={faMessage} />
-									</span>
-									<span className="ml-5 hidden lg:inline-block">Messages</span>
-								</div>
-							</div>
-						</Link>
-						<Link to="/bookmarks">
-							<div className="ml-3">
-								<div className="my-6 -ml-4 hover:bg-gray-800 p-2 rounded-full">
-									<span>
-										<FontAwesomeIcon icon={faBookmark} />
-									</span>
-									<span className="ml-5 hidden lg:inline-block">Bookmarks</span>
-								</div>
-							</div>
-						</Link>
-						<Link to={`/${userData?.username}`}>
-							<div className="ml-3">
-								<div className="my-6 -ml-4 hover:bg-gray-800 p-2 rounded-full">
-									<span>
-										<FontAwesomeIcon icon={faUser} />
-									</span>
-									<span className="ml-5 hidden lg:inline-block">Profile</span>
-								</div>
+					</div>
+					<div className="w-full text-2xl mt-3">
+						<Link to="/">
+							<div className="hover:bg-gray-800 p-2 rounded-full">
+								<span className="mr-4">
+									<FontAwesomeIcon icon={faHouse} />
+								</span>
+								<span>Home</span>
 							</div>
 						</Link>
 					</div>
-					<div className="lg:absolute lg:bottom-0 lg:left-0 lg:w-full flex flex-col items-center justify-center text-center">
-						<div className="w-full rounded-full p-2 text-lg text-black font-bold text-center">
-							<div
-								className="bg-white p-2 lg:rounded-md hover:cursor-pointer lg:mr-4"
-								onClick={() => setShowPostModal(true)}
-							>
-								POST
+					<div className="w-full text-2xl mt-3">
+						<Link to="/explore">
+							<div className="hover:bg-gray-800 p-2 rounded-full">
+								<span className="mr-4">
+									<FontAwesomeIcon icon={faMagnifyingGlass} />
+								</span>
+								<span>Explore</span>
 							</div>
+						</Link>
+					</div>
+					<div className="w-full text-2xl mt-3">
+						<Link to="/notifications">
+							<div className="hover:bg-gray-800 p-2 rounded-full">
+								<span className="mr-4">
+									<FontAwesomeIcon icon={faBell} />
+								</span>
+								<span>Notifications</span>
+							</div>
+						</Link>
+					</div>
+					<div className="w-full text-2xl mt-3">
+						<Link to="/messages">
+							<div className="hover:bg-gray-800 p-2 rounded-full">
+								<span className="mr-4">
+									<FontAwesomeIcon icon={faMessage} />
+								</span>
+								<span>Messages</span>
+							</div>
+						</Link>
+					</div>
+					<div className="w-full text-2xl mt-3">
+						<Link to="/bookmarks">
+							<div className="hover:bg-gray-800 p-2 rounded-full">
+								<span className="mr-4">
+									<FontAwesomeIcon icon={faBookmark} />
+								</span>
+								<span>Bookmarks</span>
+							</div>
+						</Link>
+					</div>
+					<div className="w-full text-2xl mt-3">
+						<Link to={`/${userData?.username}`}>
+							<div className="hover:bg-gray-800 p-2 rounded-full">
+								<span className="mr-4">
+									<FontAwesomeIcon icon={faUser} />
+								</span>
+								<span>Profile</span>
+							</div>
+						</Link>
+					</div>
+					<div
+						className="w-full text-2xl mt-3"
+						onClick={() => {
+							const confirmation = confirm(
+								"Are you sure you would like to sign out?"
+							);
+							if (confirmation) {
+								signOut();
+								navigate("/sign-in");
+							}
+						}}
+					>
+						<div className="hover:bg-gray-800 p-2 rounded-full">
+							<span className="mr-4">
+								<FontAwesomeIcon
+									icon={faRightFromBracket}
+									className="ml-auto"
+								/>
+							</span>
+							<span>Sign Out</span>
 						</div>
-						<div className="w-full lg:rounded-md text-base font-bold text-center my-8 break-all">
-							<div className="hover:bg-gray-800 p-2 rounded-md lg:mx-2 hover:cursor-pointer">
-								<div className="flex items-center">
+					</div>
+					<div className="w-full text-2xl mt-6">
+						<button
+							className="p-2 bg-white text-black rounded-md text-lg w-full font-semibold"
+							onClick={() => showThePostModal(true)}
+						>
+							POST
+						</button>
+					</div>
+					<div className="absolute bottom-0 w-full p-3 hover:cursor-pointer">
+						<Link to={`/${userData?.username}`}>
+							<div className="flex">
+								<div className="w-12 h-12">
 									<img
 										src={userData?.profilePicture}
-										alt="User pfp"
-										className="lg:w-10 lg:h-10 w-12 h-12 rounded-full"
+										alt="User profile picture"
+										className="w-12 h-12 object-cover rounded-full"
 									/>
-									<Link to={`/${userData?.username}`} className="w-full">
-										<div className="hidden lg:flex lg:flex-col lg:w-full lg:text-left">
-											<span
-												className="text-lg font-bold flex justify-between items-center ml-3"
-												onClick={signOut}
-											>
-												{userData?.fullName}
-												<Link to="/sign-in">
-													<FontAwesomeIcon
-														icon={faRightFromBracket}
-														className="ml-auto"
-													/>
-												</Link>
-											</span>
-											<span className="text-sm text-gray-400 font-light ml-3">
-												@{userData?.username}
-											</span>
-										</div>
-									</Link>
+								</div>
+								<div className="ml-3 font-semibold">
+									<p>{userData?.fullName}</p>
+									<p className="text-slate-500">@{userData?.username}</p>
 								</div>
 							</div>
-						</div>
+						</Link>
 					</div>
 				</div>
 			</div>
