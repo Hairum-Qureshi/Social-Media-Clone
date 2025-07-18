@@ -61,6 +61,7 @@ export interface IUser {
 	workHistory: IWorkHistory[];
 	dmRequests: IConversation[];
 	numNotifications: number;
+	hasReadNotifications: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -86,6 +87,7 @@ export interface UserData {
 	workHistory: IWorkHistory[];
 	dmRequests: IConversation[];
 	numNotifications: number;
+	hasReadNotifications: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
