@@ -1,7 +1,17 @@
 import { Request, Response } from "express";
 import { Types } from "mongoose";
 import Notification from "../models/Notification";
-import { INotification } from "../interfaces";
+import { INotification, IUser } from "../interfaces";
+import User from "../models/User";
+
+async function decrementNotificationCount(currUID: Types.ObjectId) {
+	const numNotifications = ((await User.findById(currUID)) as IUser)
+		.numNotifications;
+	await User.findByIdAndUpdate(currUID, {
+		numNotifications: numNotifications - 1 || 0,
+		hasReadNotifications: true
+	});
+}
 
 const getAllNotifications = async (req: Request, res: Response) => {
 	try {
@@ -59,6 +69,8 @@ const deleteNotification = async (
 			return;
 		}
 
+		decrementNotificationCount(currUID);
+
 		await Notification.findByIdAndDelete({ _id: notificationID });
 
 		res.status(200).json({ message: "Notification deleted successfully" });
@@ -78,6 +90,10 @@ const deleteNotifications = async (req: Request, res: Response) => {
 
 		await Notification.deleteMany({
 			to: currUID
+		});
+
+		await User.findByIdAndUpdate(currUID, {
+			numNotifications: 0
 		});
 
 		res.status(200).json({ message: "Notifications deleted successfully" });
