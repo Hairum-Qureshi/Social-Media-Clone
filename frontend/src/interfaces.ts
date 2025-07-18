@@ -89,6 +89,7 @@ export interface UserData {
 	extendedBio: string;
 	workHistory: WorkHistory[];
 	numNotifications: number;
+	hasReadNotifications: boolean;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -352,7 +353,7 @@ export interface DMTools {
 	dmRequests: DMRequest[];
 	acceptDMRequest: (dmRequestID: string) => void;
 	deleteConversation: (conversationID: string) => void;
-	deleteDMRequest: (dmRequestID: string, uid:string) => void;
+	deleteDMRequest: (dmRequestID: string, uid: string) => void;
 }
 
 export interface SocketContextData {
