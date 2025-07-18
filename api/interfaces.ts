@@ -60,6 +60,7 @@ export interface IUser {
 	extendedBio: string;
 	workHistory: IWorkHistory[];
 	dmRequests: IConversation[];
+	numNotifications: number;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -84,6 +85,7 @@ export interface UserData {
 	extendedBio: string;
 	workHistory: IWorkHistory[];
 	dmRequests: IConversation[];
+	numNotifications: number;
 	createdAt: Date;
 	updatedAt: Date;
 }
