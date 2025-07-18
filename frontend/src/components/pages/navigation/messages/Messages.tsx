@@ -16,8 +16,6 @@ export default function Messages() {
 
 	const { conversations } = useDM();
 
-	console.log(conversation);
-
 	useEffect(() => {
 		if (conversation && location.pathname === "/messages") {
 			setConversation(undefined);
@@ -30,12 +28,14 @@ export default function Messages() {
 			conversation => conversation._id === convoID
 		);
 
-		if (pathname.length === 5) { // for DMs
+		if (pathname.length === 5) {
+			// for DMs
 			if (convo) {
 				setConvo(convo);
 			}
 		}
-		if (pathname.length === 4) { // for group chats
+		if (pathname.length === 4) {
+			// for group chats
 			if (convo) {
 				setConvo(convo);
 			}
@@ -44,10 +44,10 @@ export default function Messages() {
 
 	return (
 		<div className="bg-black inline-flex w-full">
-			<div className="border border-slate-600 w-5/12">
+			<div className="border border-slate-600 w-2/3">
 				<Contacts setConvo={setConvo} />
 			</div>
-			<div className="text-white border border-slate-600 w-[625px]">
+			<div className="text-white w-full">
 				<Conversation
 					defaultSubtext={
 						!conversation
