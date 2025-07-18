@@ -102,7 +102,7 @@ export default function SideNavbar() {
 						</Link>
 					</div>
 					<div
-						className="w-full text-2xl mt-3"
+						className="w-full text-2xl mt-3 hover:cursor-pointer"
 						onClick={() => {
 							const confirmation = confirm(
 								"Are you sure you would like to sign out?"
