@@ -104,6 +104,10 @@ const userSchema = new Schema(
 		numNotifications: {
 			type: Number,
 			default: 0
+		},
+		hasReadNotifications: {
+			type: Boolean,
+			default: true
 		}
 	},
 	{
