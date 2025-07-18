@@ -165,7 +165,7 @@ const handleFollowStatus = async (
 			notifType: "FOLLOW"
 		});
 
-		await incrementNotificationCount(req.user._id);
+		await incrementNotificationCount(new mongoose.Types.ObjectId(uid));
 
 		res.status(200).json({
 			message: "User followed successfully"
