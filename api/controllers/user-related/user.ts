@@ -3,6 +3,7 @@ import { IUser } from "../../interfaces";
 import User from "../../models/User";
 import Notification from "../../models/Notification";
 import mongoose, { Types } from "mongoose";
+import { incrementNotificationCount } from "../../utils/IncrementNotificationCount";
 
 const getSuggestedUsers = async (
 	req: Request,
@@ -164,6 +165,8 @@ const handleFollowStatus = async (
 			notifType: "FOLLOW"
 		});
 
+		await incrementNotificationCount(req.user._id);
+
 		res.status(200).json({
 			message: "User followed successfully"
 		});
@@ -176,6 +179,5 @@ const handleFollowStatus = async (
 		res.status(500).json({ message: (error as Error).message });
 	}
 };
-
 
 export { getSuggestedUsers, handleFollowStatus };
