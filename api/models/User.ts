@@ -100,6 +100,10 @@ const userSchema = new Schema(
 		dmRequests: {
 			type: [Types.ObjectId],
 			ref: "Conversation"
+		},
+		numNotifications: {
+			type: Number,
+			default: 0
 		}
 	},
 	{
