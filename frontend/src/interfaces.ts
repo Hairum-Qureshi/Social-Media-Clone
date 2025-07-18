@@ -88,6 +88,7 @@ export interface UserData {
 	conversations: Conversation;
 	extendedBio: string;
 	workHistory: WorkHistory[];
+	numNotifications: number;
 	createdAt: Date;
 	updatedAt: Date;
 }
