@@ -553,3 +553,9 @@ export interface FormData {
 	email?: string;
 	password: string;
 }
+
+export interface UserSearchModalConvoProps {
+	conversationID: string;
+	showSearchModal: (show: boolean) => void;
+	conversation: Conversation | DMRequest;
+}
