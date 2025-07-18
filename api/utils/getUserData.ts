@@ -22,6 +22,7 @@ export default function getUserData(user: IUser): UserData {
 		conversations: user.conversations,
 		extendedBio: user.extendedBio,
 		workHistory: user.workHistory,
-		dmRequests: user.dmRequests
+		dmRequests: user.dmRequests,
+		numNotifications: user.numNotifications
 	};
 }
