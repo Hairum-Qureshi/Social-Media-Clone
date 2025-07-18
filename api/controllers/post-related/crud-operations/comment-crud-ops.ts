@@ -51,7 +51,7 @@ const postComment = async (req: Request, res: Response): Promise<void> => {
 				notifType: "COMMENT"
 			});
 
-			await incrementNotificationCount(currUID);
+			await incrementNotificationCount(post.user);
 		}
 
 		res.status(200).json(updatedPost);
