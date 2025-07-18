@@ -81,7 +81,7 @@ export default function Conversation({
 	}, [location.pathname]);
 
 	return (
-		<div className="flex w-full max-w-full h-screen overflow-x-hidden">
+		<div className="flex w-full h-screen overflow-x-hidden">
 			<ToastContainer
 				position="top-center"
 				autoClose={3000}
@@ -90,7 +90,7 @@ export default function Conversation({
 				draggable
 				pauseOnHover
 				toastClassName={() =>
-					"bg-black text-white text-sm font-medium rounded-lg px-4 py-3 shadow-md text-center border border-white"
+					"bg-black text-white text-sm font-medium rounded-lg px-4 py-3 shadow-md text-center"
 				}
 			/>
 			{showGroupChatRenameModal && conversation && (
