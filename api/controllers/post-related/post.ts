@@ -5,6 +5,7 @@ import { Types } from "mongoose";
 import Notification from "../../models/Notification";
 import User from "../../models/User";
 import { checkIfLikedAndBookmarked } from "../../utils/checkIfLikedAndBookmarked";
+import { incrementNotificationCount } from "../../utils/IncrementNotificationCount";
 
 const getFollowingUsersPosts = async (
 	req: Request,
@@ -205,6 +206,8 @@ const handleLikes = async (req: Request, res: Response) => {
 					notifType: "LIKE",
 					link: `${process.env.FRONTEND_URL}/post/${postID}`
 				});
+
+				await incrementNotificationCount(currUID);
 			}
 
 			res.status(200).json({ ...updatedPost, isLiked: true });
