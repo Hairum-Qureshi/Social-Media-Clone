@@ -30,7 +30,7 @@ export default function SideNavbar() {
 					<Editor showBorder={false} />
 				</PostModal>
 			) : null}
-			<div className="w-80 bg-black border-r-2 border-r-gray-700 text-white h-screen overflow-hidden flex items-center justify-center relative">
+			<div className="w-80 bg-black border-r-2 border-r-gray-700 text-white h-screen flex items-center justify-center relative">
 				<div className="w-7/12 flex items-center h-full flex-col">
 					<div className="w-full">
 						<Link to="/">
