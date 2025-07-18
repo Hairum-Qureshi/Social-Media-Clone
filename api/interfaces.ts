@@ -92,7 +92,7 @@ export interface UserData {
 	updatedAt: Date;
 }
 
-enum NotificationTypes {
+export enum NotificationTypes {
 	Like = "LIKE",
 	Comment = "COMMENT",
 	Follow = "FOLLOW",
