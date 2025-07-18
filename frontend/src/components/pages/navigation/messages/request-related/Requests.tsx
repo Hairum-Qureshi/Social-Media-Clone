@@ -18,7 +18,7 @@ export default function Requests() {
 
 	return (
 		<div className="bg-black inline-flex w-full">
-			<div className="border border-slate-600 w-5/12 flex-shrink-0">
+			<div className="border border-slate-600 w-2/3">
 				<UserRequest />
 				{!filteredDMRequests || !filteredDMRequests.length ? (
 					<div className="text-zinc-500 m-10">
@@ -33,7 +33,11 @@ export default function Requests() {
 							return (
 								<div className="text-white">
 									<Link
-										to={dm.isGroupchat ? `/messages/requests/${dm.messages[0].conversationID}` : `/messages/requests/${dm.messages[0].conversationID}/${dm.requestedBy._id}-${userData?._id}`}
+										to={
+											dm.isGroupchat
+												? `/messages/requests/${dm.messages[0].conversationID}`
+												: `/messages/requests/${dm.messages[0].conversationID}/${dm.requestedBy._id}-${userData?._id}`
+										}
 										onClick={() => setDMRequest(dm)}
 									>
 										<DM
@@ -56,7 +60,7 @@ export default function Requests() {
 					})
 				)}
 			</div>
-			<div className="text-white border border-slate-600 w-[625px]">
+			<div className="text-white border border-slate-600 w-full">
 				<Conversation
 					defaultSubtext={""}
 					showHeaderText={!dmRequest ? true : false}
