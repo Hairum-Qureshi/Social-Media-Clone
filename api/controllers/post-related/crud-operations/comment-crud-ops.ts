@@ -4,6 +4,7 @@ import Post from "../../../models/Post";
 import { IPost } from "../../../interfaces";
 import Notification from "../../../models/Notification";
 import { Comment } from "../../../interfaces";
+import { incrementNotificationCount } from "../../../utils/IncrementNotificationCount";
 
 const postComment = async (req: Request, res: Response): Promise<void> => {
 	try {
@@ -49,12 +50,15 @@ const postComment = async (req: Request, res: Response): Promise<void> => {
 				to: post.user,
 				notifType: "COMMENT"
 			});
+
+			await incrementNotificationCount(currUID);
 		}
 
 		res.status(200).json(updatedPost);
 	} catch (error) {
 		console.error(
-			"Error in comment-crud-ops.ts file, postComment function controller".red.bold,
+			"Error in comment-crud-ops.ts file, postComment function controller".red
+				.bold,
 			error
 		);
 		res.status(500).json({ error: "Internal Server Error" });
@@ -101,7 +105,8 @@ const deleteComment = async (req: Request, res: Response) => {
 		res.status(200).json({ message: "Comment deleted successfully" });
 	} catch (error) {
 		console.error(
-			"Error in comment-crud-ops.ts file, deleteComment function controller".red.bold,
+			"Error in comment-crud-ops.ts file, deleteComment function controller".red
+				.bold,
 			error
 		);
 		res.status(500).json({ error: "Internal Server Error" });
