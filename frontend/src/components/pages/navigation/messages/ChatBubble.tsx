@@ -2,6 +2,12 @@ import moment from "moment";
 import { ChatBubbleProps } from "../../../../interfaces";
 import useAuthContext from "../../../../contexts/AuthContext";
 import { formatSystemMessage } from "../../../../utils/formatSystemMessage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+	faArrowLeft,
+	faCrown,
+	faPlus
+} from "@fortawesome/free-solid-svg-icons";
 
 // TODO - design the chat bubble so it looks like a bubble
 
@@ -19,10 +25,25 @@ export default function ChatBubble({
 		<div>
 			<div className="w-full flex justify-center mt-3">
 				<div
-					className="bg-sky-950 w-11/12 text-sky-300 text-sm italic px-3 py-1.5 rounded-sm border border-sky-500 shadow-sm"
+					className="w-11/12 text-slate-500 text-sm px-3 py-1.5 text-center shadow-sm"
 					title={moment(timestamp).fromNow()}
 				>
-					<p>{formatSystemMessage(userData, message)}</p>
+					<p className="flex items-center justify-center">
+						{message.includes("left") || message.includes("removed") ? (
+							<span className="text-red-600 mr-2 text-lg">
+								<FontAwesomeIcon icon={faArrowLeft} />
+							</span>
+						) : message.includes("added") ? (
+							<span className="text-green-500 mr-2 text-lg">
+								<FontAwesomeIcon icon={faPlus} />
+							</span>
+						) : message.includes("admin") ? (
+							<span className="text-yellow-500 mr-2 text-lg">
+								<FontAwesomeIcon icon={faCrown} />
+							</span>
+						) : undefined}
+						{formatSystemMessage(userData, message)}
+					</p>
 				</div>
 			</div>
 			<p className="text-right text-xs text-gray-300 mt-1 mr-2">
@@ -31,7 +52,7 @@ export default function ChatBubble({
 		</div>
 	) : (
 		<div
-			className={`flex flex-col m-2 ${
+			className={`flex flex-col m-2 mt-6 ${
 				you ? "items-end" : "items-start"
 			} break-words whitespace-pre-wrap`}
 			title={isGroupChat ? `@${username}` : ""}
