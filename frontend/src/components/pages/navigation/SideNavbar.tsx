@@ -15,6 +15,7 @@ import useAuthContext from "../../../contexts/AuthContext";
 import PostModal from "../../post/PostModal";
 import Editor from "../feed/editor-tools/Editor";
 import usePosts from "../../../hooks/usePosts";
+import useNotifications from "../../../hooks/useNotifications";
 
 export default function SideNavbar() {
 	const { signOut } = useAuth();
@@ -22,6 +23,7 @@ export default function SideNavbar() {
 	const isFeed: boolean = window.location.pathname === "/";
 	const { showPostModal, showThePostModal } = usePosts();
 	const navigate = useNavigate();
+	useNotifications(); // needed to be called because without it, if you're on any other page (that's not the notifications page), you won't see the live count of notifications or any notifications appear
 
 	return (
 		<>
@@ -31,7 +33,7 @@ export default function SideNavbar() {
 				</PostModal>
 			) : null}
 			<div className="w-80 bg-black border-r-2 border-r-gray-700 text-white h-screen flex items-center justify-center relative">
-				<div className="w-7/12 flex items-center h-full flex-col">
+				<div className="w-3/4 flex items-center h-full flex-col">
 					<div className="w-full">
 						<Link to="/">
 							<img
@@ -61,13 +63,24 @@ export default function SideNavbar() {
 							</div>
 						</Link>
 					</div>
-					<div className="w-full text-2xl mt-3">
+					<div className="w-full text-2xl mt-3 flex items-center">
 						<Link to="/notifications">
-							<div className="hover:bg-gray-800 p-2 rounded-full">
+							<div className="hover:bg-gray-800 p-2 rounded-full flex items-center">
 								<span className="mr-4">
 									<FontAwesomeIcon icon={faBell} />
 								</span>
-								<span>Notifications</span>
+								<div className="flex items-center">
+									<span>Notifications</span>
+									{userData &&
+										!userData.hasReadNotifications &&
+										userData.numNotifications > 0 && (
+											<span className="bg-red-600 text-white text-xs font-bold min-w-[1.25rem] h-5 px-2 flex items-center justify-center rounded-full leading-none ml-2">
+												{userData.numNotifications > 99
+													? "99+"
+													: userData.numNotifications}
+											</span>
+										)}
+								</div>
 							</div>
 						</Link>
 					</div>
