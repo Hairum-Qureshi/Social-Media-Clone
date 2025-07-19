@@ -1,9 +1,15 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { ContextProps, Message, SocketContextData } from "../interfaces";
+import { createContext, useContext, useRef, useState } from "react";
+import {
+	ContextProps,
+	Message,
+	NotificationPayload,
+	SocketContextData
+} from "../interfaces";
 import { io, Socket } from "socket.io-client";
 import useAuthContext from "./AuthContext";
 
 export const SocketContext = createContext<SocketContextData | null>(null);
+// TODO - need to handle case where tab goes idle and causes users to be offline
 
 export const SocketProvider = ({ children }: ContextProps) => {
 	const socketRef = useRef<Socket | null>(null);
@@ -15,6 +21,9 @@ export const SocketProvider = ({ children }: ContextProps) => {
 	const typingTimeout = useRef<ReturnType<typeof setInterval> | null>(null);
 	const isTyping = useRef(false);
 	const [typingIndicatorChatID, setTypingIndicatorChatID] = useState("");
+	const [notificationData, setNotificationData] = useState<
+		NotificationPayload | undefined
+	>();
 
 	const connectSocket = () => {
 		if (!userData?._id) return;
@@ -38,6 +47,13 @@ export const SocketProvider = ({ children }: ContextProps) => {
 			setTypingUser(typingUser);
 			setUserIsTyping(isTyping);
 		});
+
+		socket.on(
+			"receiveNotification",
+			(notificationPayload: NotificationPayload) => {
+				setNotificationData(notificationPayload);	
+			}
+		);
 	};
 
 	function handleTypingIndicator(
@@ -72,23 +88,8 @@ export const SocketProvider = ({ children }: ContextProps) => {
 		}, 1000);
 	}
 
-	// Responsible for reconnecting the user if the tab goes idle
-	useEffect(() => {
-		const handleFocus = () => {
-			connectSocket();
-		};
-
-		window.addEventListener("focus", handleFocus);
-
-		return () => {
-			window.removeEventListener("focus", handleFocus);
-		};
-	}, []);
-
 	const disconnectSocket = () => {
-		if (socketRef.current?.connected) {
-			socketRef.current.disconnect();
-		}
+		if (socketRef.current?.connected) socketRef.current.disconnect();
 	};
 
 	const value: SocketContextData = {
@@ -99,7 +100,8 @@ export const SocketProvider = ({ children }: ContextProps) => {
 		handleTypingIndicator,
 		typingIndicatorChatID,
 		userIsTyping,
-		typingUser
+		typingUser,
+		notificationData
 	};
 
 	return (
