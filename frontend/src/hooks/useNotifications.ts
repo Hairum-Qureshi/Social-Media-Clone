@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Notification } from "../interfaces";
+import useSocketContext from "../contexts/SocketIOContext";
+import { useEffect } from "react";
 
 interface NotificationTools {
 	notificationData: Notification[];
@@ -11,6 +13,14 @@ interface NotificationTools {
 
 export default function useNotifications(): NotificationTools {
 	const queryClient = useQueryClient();
+	const { notificationData: notifData } = useSocketContext();
+
+	useEffect(() => {
+		if (notifData) {
+			queryClient.refetchQueries({ queryKey: ["notifications"] });
+			queryClient.refetchQueries({ queryKey: ["user"] });
+		}
+	}, [notifData]);
 
 	const { data: notificationData, isLoading } = useQuery({
 		queryKey: ["notifications"],
