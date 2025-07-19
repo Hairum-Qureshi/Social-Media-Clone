@@ -561,3 +561,13 @@ export interface UserSearchModalConvoProps {
 	showSearchModal: (show: boolean) => void;
 	conversation: Conversation | DMRequest;
 }
+
+export interface NotificationPayload {
+	userID: string;
+	username: string;
+	userPfp: string;
+	notifType: NotificationTypes;
+	notifDescription: string;
+	notifDate: string;
+	notifID: string;
+}
