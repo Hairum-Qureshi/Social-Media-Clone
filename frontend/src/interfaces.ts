@@ -356,6 +356,17 @@ export interface DMTools {
 	deleteDMRequest: (dmRequestID: string, uid: string) => void;
 }
 
+export interface NotificationPayload {
+	from: {
+		_id: string;
+		username: string;
+		profilePicture: string;
+	};
+	notifType: NotificationTypes;
+	link: string | undefined;
+	notificationsCount: number;
+}
+
 export interface SocketContextData {
 	connectSocket: () => void;
 	disconnectSocket: () => void;
@@ -369,6 +380,7 @@ export interface SocketContextData {
 	typingIndicatorChatID: string;
 	userIsTyping: boolean;
 	typingUser: string;
+	notificationData: NotificationPayload | undefined;
 }
 
 enum NotificationTypes {
@@ -560,14 +572,4 @@ export interface UserSearchModalConvoProps {
 	conversationID: string;
 	showSearchModal: (show: boolean) => void;
 	conversation: Conversation | DMRequest;
-}
-
-export interface NotificationPayload {
-	userID: string;
-	username: string;
-	userPfp: string;
-	notifType: NotificationTypes;
-	notifDescription: string;
-	notifDate: string;
-	notifID: string;
 }
