@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
-import { IPost, IUser } from "../../interfaces";
+import { INotification, IPost, IUser } from "../../interfaces";
 import Post from "../../models/Post";
 import { Types } from "mongoose";
 import Notification from "../../models/Notification";
 import User from "../../models/User";
 import { checkIfLikedAndBookmarked } from "../../utils/checkIfLikedAndBookmarked";
 import { incrementNotificationCount } from "../../utils/IncrementNotificationCount";
+import { getSocketIDbyUID, io } from "../../socket";
 
 const getFollowingUsersPosts = async (
 	req: Request,
@@ -200,14 +201,33 @@ const handleLikes = async (req: Request, res: Response) => {
 
 			// if the current user likes their own post, don't notify them
 			if (!post.user.equals(currUID)) {
-				await Notification.create({
+				const notifDoc = new Notification({
 					from: currUID,
 					to: post.user,
 					notifType: "LIKE",
 					link: `${process.env.FRONTEND_URL}/post/${postID}`
 				});
 
-				await incrementNotificationCount(post.user);
+				await notifDoc.save();
+
+				const populatedNotification = await notifDoc.populate({
+					path: "from",
+					select: "_id username profilePicture"
+				});
+
+				const notificationsCount = await incrementNotificationCount(post.user);
+
+				const notificationPayload = {
+					from: populatedNotification.from,
+					notifType: populatedNotification.notifType,
+					link: populatedNotification.link,
+					notificationsCount
+				}
+
+				const socketID = getSocketIDbyUID(post.user.toString());
+				if (socketID) {
+					io.to(socketID).emit("receiveNotification", notificationPayload);
+				}
 			}
 
 			res.status(200).json({ ...updatedPost, isLiked: true });
