@@ -23,7 +23,7 @@ export default function SideNavbar() {
 	const isFeed: boolean = window.location.pathname === "/";
 	const { showPostModal, showThePostModal } = usePosts();
 	const navigate = useNavigate();
-	useNotifications(); // needed to be called because without it, if you're on any other page (that's not the notifications page), you won't see the live count of notifications or any notifications appear
+	const { markAllNotifsAsRead } = useNotifications(); // needed to be called because without it, if you're on any other page (that's not the notifications page), you won't see the live count of notifications or any notifications appear
 
 	return (
 		<>
@@ -63,7 +63,7 @@ export default function SideNavbar() {
 							</div>
 						</Link>
 					</div>
-					<div className="w-full text-2xl mt-3 flex items-center">
+					<div className="w-full text-2xl mt-3 flex items-center" onClick = {() => markAllNotifsAsRead()}>
 						<Link to="/notifications">
 							<div className="hover:bg-gray-800 p-2 rounded-full flex items-center">
 								<span className="mr-4">
