@@ -86,7 +86,7 @@ export default function useNotifications(): NotificationTools {
 
 	async function markAllNotifsAsRead() {
 		try {
-			const response = await axios.put(
+			const response = await axios.patch(
 				`${
 					import.meta.env.VITE_BACKEND_BASE_URL
 				}/api/notifications/mark-all-read`,
