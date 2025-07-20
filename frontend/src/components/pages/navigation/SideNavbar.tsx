@@ -23,7 +23,7 @@ export default function SideNavbar() {
 	const isFeed: boolean = window.location.pathname === "/";
 	const { showPostModal, showThePostModal } = usePosts();
 	const navigate = useNavigate();
-	const { markAllNotifsAsRead } = useNotifications(); // needed to be called because without it, if you're on any other page (that's not the notifications page), you won't see the live count of notifications or any notifications appear
+	const { markAllNotifsAsRead } = useNotifications(); // this also helps because if you're on any other page (that's not the notifications page), you won't see the live count of notifications or any notifications appear
 
 	return (
 		<>
