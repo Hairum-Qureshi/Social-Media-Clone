@@ -1,15 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { Notification } from "../interfaces";
+import { NotificationTools } from "../interfaces";
 import useSocketContext from "../contexts/SocketIOContext";
 import { useEffect } from "react";
-
-interface NotificationTools {
-	notificationData: Notification[];
-	deleteNotification: (notificationID: string) => void;
-	isLoading: boolean;
-	deleteAllNotifications: () => void;
-}
 
 export default function useNotifications(): NotificationTools {
 	const queryClient = useQueryClient();
@@ -91,10 +84,28 @@ export default function useNotifications(): NotificationTools {
 		if (confirmation) deletionAll();
 	};
 
+	async function markAllNotifsAsRead() {
+		try {
+			const response = await axios.put(
+				`${
+					import.meta.env.VITE_BACKEND_BASE_URL
+				}/api/notifications/mark-all-read`,
+				{ withCredentials: true }
+			);
+
+			if (response) {
+				queryClient.invalidateQueries({ queryKey: ["notifications"] });
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
 	return {
 		notificationData,
 		deleteNotification,
 		isLoading,
-		deleteAllNotifications
+		deleteAllNotifications,
+		markAllNotifsAsRead
 	};
 }
