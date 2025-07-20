@@ -94,7 +94,7 @@ export default function useNotifications(): NotificationTools {
 			);
 
 			if (response) {
-				queryClient.invalidateQueries({ queryKey: ["notifications"] });
+				queryClient.invalidateQueries({ queryKey: ["user"] });
 			}
 		} catch (error) {
 			console.log(error);
