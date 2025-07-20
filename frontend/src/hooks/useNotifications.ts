@@ -90,6 +90,7 @@ export default function useNotifications(): NotificationTools {
 				`${
 					import.meta.env.VITE_BACKEND_BASE_URL
 				}/api/notifications/mark-all-read`,
+				{},
 				{ withCredentials: true }
 			);
 
