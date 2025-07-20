@@ -145,8 +145,8 @@ export default function useProfile(): ProfileTools {
 					return response.data;
 				}
 			} catch (error) {
-				console.error("Error posting:", error);
-				throw new Error("Failed to create post");
+				console.error("Error following:", error);
+				throw new Error("Failed to follow user");
 			}
 		},
 		onSuccess: () => {
@@ -198,6 +198,7 @@ export default function useProfile(): ProfileTools {
 			queryClient.invalidateQueries({ queryKey: ["profile", username] });
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
+			queryClient.invalidateQueries({ queryKey: ["followReccs"] });
 		}
 	});
 
