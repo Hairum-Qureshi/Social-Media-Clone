@@ -18,19 +18,13 @@ const getSuggestedUsers = async (
 		const usersCurrUserFollowed: Types.ObjectId[] =
 			getUsersCurrUserFollowed?.following || [];
 
-		if (usersCurrUserFollowed.length === 0) {
-			res.status(200).json([]);
-			return;
-		}
-
-		// TODO - *might* need to tweak this logic so it also does not show users you're already following
 		const users: IUser[] = (await User.aggregate([
 			{
 				$match: {
-					$ne: {
-						_id: currUID
-					}
-				},
+					_id: { $nin: [currUID, ...usersCurrUserFollowed] }
+				}
+			},
+			{
 				$sample: {
 					size: 10
 				}
@@ -38,13 +32,15 @@ const getSuggestedUsers = async (
 		])) as IUser[];
 
 		const filteredUsers: IUser[] = users.filter(
-			(user: IUser) => !usersCurrUserFollowed.includes(user._id)
-		);
+			(user: IUser) =>
+				!user._id.equals("000000000000000000000001") &&
+				!user._id.equals(currUID)
+		); // excludes the SYSTEM and current user
 
-		const suggestedUsers: IUser[] = filteredUsers.slice(0, 4);
-		suggestedUsers.forEach((user: IUser) => {
-			user.password = undefined;
-		});
+		const suggestedUsers: IUser[] = filteredUsers.map((user: IUser) => {
+			delete user.password;
+			return user;
+		}) as IUser[];
 
 		res.status(200).json(suggestedUsers);
 	} catch (error) {
