@@ -581,3 +581,7 @@ export interface NotificationTools {
 	deleteAllNotifications: () => void;
 	markAllNotifsAsRead: () => void;
 }
+
+export interface FeedTools {
+	getFollowReccs: UserData[];
+}
