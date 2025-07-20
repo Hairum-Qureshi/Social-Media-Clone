@@ -573,3 +573,11 @@ export interface UserSearchModalConvoProps {
 	showSearchModal: (show: boolean) => void;
 	conversation: Conversation | DMRequest;
 }
+
+export interface NotificationTools {
+	notificationData: Notification[];
+	deleteNotification: (notificationID: string) => void;
+	isLoading: boolean;
+	deleteAllNotifications: () => void;
+	markAllNotifsAsRead: () => void;
+}
