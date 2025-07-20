@@ -7,6 +7,6 @@ const router = express.Router();
 router.get('/all', checkAuthStatus, getAllNotifications);
 router.delete('/all', checkAuthStatus, deleteNotifications);
 router.delete("/:notificationID", checkAuthStatus, deleteNotification);
-router.put("/mark-all-read", checkAuthStatus, markAllNotifsAsRead);
+router.patch("/mark-all-read", checkAuthStatus, markAllNotifsAsRead);
 
 export default router;
