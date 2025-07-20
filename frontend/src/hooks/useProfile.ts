@@ -151,6 +151,7 @@ export default function useProfile(): ProfileTools {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["profile", username] });
+			queryClient.invalidateQueries({ queryKey: ["followReccs"] });
 		}
 	});
 
@@ -198,7 +199,6 @@ export default function useProfile(): ProfileTools {
 			queryClient.invalidateQueries({ queryKey: ["profile", username] });
 			queryClient.invalidateQueries({ queryKey: ["user"] });
 			queryClient.invalidateQueries({ queryKey: ["currentProfilePosts"] });
-			queryClient.invalidateQueries({ queryKey: ["followReccs"] });
 		}
 	});
 
