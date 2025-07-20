@@ -107,4 +107,32 @@ const deleteNotifications = async (req: Request, res: Response) => {
 	}
 };
 
-export { getAllNotifications, deleteNotification, deleteNotifications };
+const markAllNotifsAsRead = async (
+	req: Request,
+	res: Response
+): Promise<void> => {
+	try {
+		const currUID: Types.ObjectId = req.user._id;
+
+		await User.findByIdAndUpdate(currUID, {
+			numNotifications: 0,
+			hasReadNotifications: true
+		});
+
+		res.status(200).send("User updated");
+	} catch (error) {
+		console.error(
+			"Error in notification.ts file, markAllNotifsAsRead function controller"
+				.red.bold,
+			error
+		);
+		res.status(500).json({ message: (error as Error).message });
+	}
+};
+
+export {
+	getAllNotifications,
+	deleteNotification,
+	deleteNotifications,
+	markAllNotifsAsRead
+};
